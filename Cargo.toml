@@ -1,0 +1,6 @@
+[package]
+name = "bookmarkt"
+version = "0.1.0"
+authors = ["vlnk <dftvlnk@gmail.com>"]
+
+[dependencies]
