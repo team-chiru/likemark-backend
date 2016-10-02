@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["vlnk <dftvlnk@gmail.com>"]
 
 [dependencies]
+rusqlite = "0.7.3"
+time = "0.1.3"
