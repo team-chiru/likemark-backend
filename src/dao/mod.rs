@@ -1,1 +1,1 @@
-mod bookmark;
+pub mod bookmark;
