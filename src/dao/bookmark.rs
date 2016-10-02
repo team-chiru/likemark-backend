@@ -12,7 +12,7 @@ struct bookmark {
     time_created: Timespec,
     url: String,
     stamp: Timespec,
-    revNo: i32
+    rev_no: i32
 
 }
 
