@@ -1,8 +1,8 @@
 extern crate rusqlite;
 extern crate time;
 
-use time::Timespec;
-use rusqlite::Connection;
+use self::time::Timespec;
+use self::rusqlite::Connection;
 
 
 #[derive(Debug)]
