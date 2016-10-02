@@ -1,1 +1,2 @@
-mod dao;
+pub mod dao;
+pub mod logic;
