@@ -1,7 +1,7 @@
 UPDATE bookmarkt.bookmark SET
     id = {{ id }},
     name = {{ name }},
-    type = {{ type }}
+    url = {{ url }}
 WHERE
     id = {{ id }}
 ;
