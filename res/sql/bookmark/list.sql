@@ -1,9 +1,9 @@
 SELECT
 	b.id,
 	b.name,
-	b.type
+	b.url
 FROM  bookmarkt.bookmark b
 WHERE
-	( {{ type }} IS NULL OR {{ type }} = b.type) AND
+	( {{ url }} IS NULL OR {{ type }} = b.url) AND
 	( {{ name }} IS NULL OR b.name = {{ name }})
 ;
