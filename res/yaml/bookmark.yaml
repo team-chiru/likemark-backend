@@ -1,2 +1,6 @@
 - id
 - name
+- time_created
+- url
+- stamp
+- rev_no
