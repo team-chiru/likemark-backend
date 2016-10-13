@@ -7,6 +7,13 @@ pub fn create_connection() -> bool {
     return false;
 }
 
+
+pub fn list_bookmark() -> bool {
+
+return false;
+
+}
+
 pub fn hello_from_dao() -> String {
     "Hello, I am bookmark dao!".to_string()
 }

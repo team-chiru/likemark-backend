@@ -1,6 +1,8 @@
 extern crate time;
 use self::time::Timespec;
 
+
+
 #[derive(Debug)]
 struct Bookmark {
     id: i32,
