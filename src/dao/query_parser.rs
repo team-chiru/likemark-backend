@@ -7,5 +7,3 @@ pub fn load_sql_file( path: &str ) -> &str{
         return " ";
 
 }
-
-let mut a = 5;
