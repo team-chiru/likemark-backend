@@ -2,7 +2,9 @@ extern crate rusqlite;
 use self::rusqlite::Connection;
 
 
-pub fn create_connection() -> bool {
+
+pub fn create_connection() -> bool{
+
     Connection::open_in_memory().unwrap();
     return false;
 }
