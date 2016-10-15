@@ -1,6 +1,7 @@
-- id
-- name
-- time_created
-- url
-- stamp
-- rev_no
+Bookmark:
+     id : 1234
+     name : "bookmark"
+     time_created : "a date object"
+     url : "url link"
+     stamp : "a date object"
+     rev_no : 1234
