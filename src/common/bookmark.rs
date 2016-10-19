@@ -1,10 +1,9 @@
-extern crate time;
+extern crate chrono;
 extern crate yaml_rust;
 
-use self::time::Timespec;
+use self::chrono::*;
 use self::yaml_rust::Yaml;
 use std::collections::BTreeMap;
-
 
 #[derive(Debug)]
 pub struct Bookmark {
@@ -12,22 +11,22 @@ pub struct Bookmark {
     pub name: String,
     //time_created: Timespec,
     pub url: String,
-    //stamp: Timespec,
+    pub stamp: DateTime<UTC>,
     pub rev_no: i32
 }
 
 enum QueryValue {
     Integer(i32),
     String(String),
-    Date(Timespec)
+    Date(DateTime<UTC>)
 }
 
-impl<'a> Into<&'a str> for QueryValue {
-    fn into(self) -> &'a str {
+impl<'a> Into<String> for QueryValue {
+    fn into(self) -> String {
         match self {
-            QueryValue::Integer(i) => "1",
-            QueryValue::String(s) => "s",
-            QueryValue::Date(t) =>"t"
+            QueryValue::Integer(i) => format!("{}", i),
+            QueryValue::String(s) => s,
+            QueryValue::Date(t) => t.to_rfc2822()
         }
     }
 }
@@ -40,7 +39,7 @@ impl Bookmark {
         btree.insert("name", QueryValue::String(self.name));
         //btree.insert("time_created", QueryValue::Date(self.time_created));
         btree.insert("url", QueryValue::String(self.url));
-        //btree.insert("stamp", QueryValue::Date(self.stamp));
+        btree.insert("stamp", QueryValue::Date(self.stamp));
         btree.insert("rev_no", QueryValue::Integer(self.rev_no));
 
         let mut yaml = String::new();
@@ -50,7 +49,9 @@ impl Bookmark {
             yaml.push_str("\t");
             yaml.push_str(k);
             yaml.push_str(": ");
-            yaml.push_str(v.into());
+
+            let s: String = v.into();
+            yaml.push_str(s.as_str());
             yaml.push_str("\n");
         }
 
