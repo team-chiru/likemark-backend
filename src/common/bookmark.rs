@@ -9,28 +9,31 @@ use std::collections::BTreeMap;
 #[derive(Debug)]
 pub struct Bookmark {
     pub id: i32,
-    pub name: &'static str,
+    pub name: String,
     //time_created: Timespec,
-    pub url: &'static str,
+    pub url: String,
     //stamp: Timespec,
     pub rev_no: i32
-
 }
 
 enum QueryValue {
     Integer(i32),
-    String(&'static str),
+    String(String),
     Date(Timespec)
 }
 
 impl<'a> Into<&'a str> for QueryValue {
     fn into(self) -> &'a str {
-        "tu msoules"
+        match self {
+            QueryValue::Integer(i) => "1",
+            QueryValue::String(s) => "s",
+            QueryValue::Date(t) =>"t"
+        }
     }
 }
 
 impl Bookmark {
-    pub fn to_yaml(&self) -> String {
+    pub fn to_yaml(self) -> String {
         let mut btree = BTreeMap::new();
 
         btree.insert("id", QueryValue::Integer(self.id));
