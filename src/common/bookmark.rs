@@ -11,14 +11,14 @@ pub struct Bookmark {
     pub name: String,
     //time_created: Timespec,
     pub url: String,
-    pub stamp: DateTime<UTC>,
+    pub stamp: DateTime<Local>,
     pub rev_no: i32
 }
 
 enum QueryValue {
     Integer(i32),
     String(String),
-    Date(DateTime<UTC>)
+    Date(DateTime<Local>)
 }
 
 impl<'a> Into<String> for QueryValue {
