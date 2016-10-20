@@ -15,7 +15,7 @@ fn main() {
     //println!("{}", load_sql_file("res/sql/bookmark/read.sql"));
 
     let now = Local::now();
-    let b = Bookmark { id: 1, name: String::from("test"), url: String::from("test"), stamp: now, rev_no: 0};
+    let b = Bookmark { id: 1, name: String::from("test"), url: String::from("test.com"), time_created: now, stamp: now, rev_no: 0};
     println!("{}", b.to_yaml());
 
 
