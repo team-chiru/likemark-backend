@@ -21,7 +21,7 @@ pub enum QueryValue {
     Date(DateTime<Local>)
 }
 
-impl<'a> Into<String> for QueryValue {
+impl Into<String> for QueryValue {
     fn into(self) -> String {
         match self {
             QueryValue::Integer(i) => format!("{}", i),
@@ -30,6 +30,17 @@ impl<'a> Into<String> for QueryValue {
         }
     }
 }
+
+/*
+impl<'a> Into<String> for &'a QueryValue {
+    fn into(self) -> String {
+        match self {
+            QueryValue::Integer(i) => format!("{}", i),
+            QueryValue::String(s) => s,
+            QueryValue::Date(t) => t.to_rfc2822()
+        }
+    }
+} */
 
 impl Bookmark {
     pub fn to_yaml(self) -> String {

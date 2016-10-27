@@ -1,10 +1,14 @@
+extern crate regex;
+
 use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 use std::io::Read;
 use std::collections::BTreeMap;
-use common::bookmark::Bookmark;
-use common::bookmark::QueryValue;
+//use common::bookmark::Bookmark;
+//use common::bookmark::QueryValue;
+use common::bookmark::*;
+use self::regex::Regex;
 
 pub fn load_sql_file(path: &str) -> String {
     let mut absolute_path = PathBuf::from(path);
@@ -25,14 +29,26 @@ pub fn load_sql_file(path: &str) -> String {
 
 
 pub fn parse_query(btree: BTreeMap<String, QueryValue>, query: String) -> String {
+    let re = Regex::new(r"\{\{ +(\w+) +\}\}").unwrap();
+    let mut replaced_query = String::from(query.clone());
 
-    let mut replaced_query = query;
+    for capture in re.captures_iter(query.as_str()){
 
-    for (k, v) in btree {
-        let pattern = format!("{{ {:} }}", k);
-        let dump: String = v.into();
-        replaced_query.replace(pattern, dump.as_str());
+        let query_tag = capture.at(0).unwrap_or("");
+        let query_key = capture.at(1).unwrap_or("");
+
+
+        let btree_value = match btree.get(query_key){
+            Some(v) => v.into(),
+            None => panic!("wrong btree key value")
+        };
+
+        let dump: String = btree_value;
+        replaced_query = query.replace(query_tag, dump.as_str());
     }
 
+
+
     replaced_query
+
 }

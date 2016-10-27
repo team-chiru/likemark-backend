@@ -1,6 +1,7 @@
 extern crate bookmarkt;
 extern crate chrono;
 
+
 use bookmarkt::common::bookmark::Bookmark;
 use bookmarkt::dao::bookmark_dao::*;
 //use bookmarkt::dao::query_parser::*;
