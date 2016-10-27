@@ -28,7 +28,7 @@ pub fn load_sql_file(path: &str) -> String {
 }
 
 
-pub fn parse_query(btree: BTreeMap<String, QueryValue>, query: String) -> String {
+pub fn parse_query(btree: &BTreeMap<String, QueryValue>, query: String) -> String {
     let re = Regex::new(r"\{\{ +(\w+) +\}\}").unwrap();
     let mut replaced_query = String::from(query.clone());
 
@@ -37,18 +37,14 @@ pub fn parse_query(btree: BTreeMap<String, QueryValue>, query: String) -> String
         let query_tag = capture.at(0).unwrap_or("");
         let query_key = capture.at(1).unwrap_or("");
 
-
-        let btree_value = match btree.get(query_key){
-            Some(v) => v.into(),
-            None => panic!("wrong btree key value")
+        let value = match btree.get(query_key) {
+            Some(v) => v.clone(),
+            None => panic!("error")
         };
 
-        let dump: String = btree_value;
-        replaced_query = query.replace(query_tag, dump.as_str());
+        let dump: String = value.into();
+        replaced_query = replaced_query.replace(query_tag, dump.as_str());
     }
 
-
-
     replaced_query
-
 }

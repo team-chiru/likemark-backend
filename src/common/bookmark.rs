@@ -2,7 +2,6 @@ extern crate chrono;
 extern crate yaml_rust;
 
 use self::chrono::*;
-use self::yaml_rust::Yaml;
 use std::collections::BTreeMap;
 
 #[derive(Debug)]
@@ -21,26 +20,15 @@ pub enum QueryValue {
     Date(DateTime<Local>)
 }
 
-impl Into<String> for QueryValue {
-    fn into(self) -> String {
-        match self {
-            QueryValue::Integer(i) => format!("{}", i),
-            QueryValue::String(s) => s,
-            QueryValue::Date(t) => t.to_rfc2822()
-        }
-    }
-}
-
-/*
 impl<'a> Into<String> for &'a QueryValue {
     fn into(self) -> String {
         match self {
-            QueryValue::Integer(i) => format!("{}", i),
-            QueryValue::String(s) => s,
-            QueryValue::Date(t) => t.to_rfc2822()
+            &QueryValue::Integer(i) => format!("{}", i),
+            &QueryValue::String(ref s) => format!("{}", s),
+            &QueryValue::Date(t) => t.to_rfc2822()
         }
     }
-} */
+}
 
 impl Bookmark {
     pub fn to_yaml(self) -> String {
@@ -61,7 +49,7 @@ impl Bookmark {
             yaml.push_str(k);
             yaml.push_str(": ");
 
-            let s: String = v.into();
+            let s: String = (&v).into();
             yaml.push_str(s.as_str());
             yaml.push_str("\n");
         }
@@ -69,19 +57,16 @@ impl Bookmark {
         yaml
     }
 
-pub fn to_btree(self) -> BTreeMap<String, QueryValue> {
-    let mut btree : BTreeMap<String, QueryValue> = BTreeMap::new();
+    pub fn to_btree(self) -> BTreeMap<String, QueryValue> {
+        let mut btree : BTreeMap<String, QueryValue> = BTreeMap::new();
 
-    btree.insert(String::from("id"), QueryValue::Integer(self.id));
-    btree.insert(String::from("name"), QueryValue::String(self.name));
-    btree.insert(String::from("url"), QueryValue::String(self.url));
-    btree.insert(String::from("time_created"), QueryValue::Date(self.time_created));
-    btree.insert(String::from("stamp"), QueryValue::Date(self.stamp));
-    btree.insert(String::from("rev_no"), QueryValue::Integer(self.rev_no));
+        btree.insert(String::from("id"), QueryValue::Integer(self.id));
+        btree.insert(String::from("name"), QueryValue::String(self.name));
+        btree.insert(String::from("url"), QueryValue::String(self.url));
+        btree.insert(String::from("time_created"), QueryValue::Date(self.time_created));
+        btree.insert(String::from("stamp"), QueryValue::Date(self.stamp));
+        btree.insert(String::from("rev_no"), QueryValue::Integer(self.rev_no));
 
-    btree
-}
-
-
-
+        btree
+    }
 }
