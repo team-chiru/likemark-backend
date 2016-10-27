@@ -5,8 +5,6 @@ use std::fs::File;
 use std::path::PathBuf;
 use std::io::Read;
 use std::collections::BTreeMap;
-//use common::bookmark::Bookmark;
-//use common::bookmark::QueryValue;
 use common::bookmark::*;
 use self::regex::Regex;
 
