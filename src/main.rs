@@ -17,8 +17,8 @@ fn main() {
     println!("---- test load sql ----");
     //println!("{}", load_sql_file("res/sql/bookmark/read.sql"));
     let read_sql = load_sql_file("res/sql/bookmark/read.sql");
-    let delete_sql = load_sql_file("res/sql/bookmark/delete.sql");
     let insert_sql = load_sql_file("res/sql/bookmark/insert.sql");
+    let delete_sql = load_sql_file("res/sql/bookmark/delete.sql");
     let update_sql = load_sql_file("res/sql/bookmark/update.sql");
     let list_sql = load_sql_file("res/sql/bookmark/list.sql");
 
