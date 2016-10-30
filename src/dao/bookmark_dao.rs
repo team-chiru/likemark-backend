@@ -2,7 +2,7 @@ extern crate chrono;
 extern crate rusqlite;
 
 use common::bookmark::Bookmark;
-use dao::query_parser::load_sql_file;
+use dao::query_parser::*;
 use self::rusqlite::Connection;
 
 #[derive(Debug)]
@@ -30,26 +30,31 @@ impl BookmarkDao {
         }
     }
 
-    pub fn insert(&self, b: Bookmark ) -> bool {
+    pub fn insert(&self, b: Bookmark ) {
         //self.connection.execute(query, params: &[&ToSql])
-        false
+
 
     }
 
-    pub fn delete(&self) -> bool {
-        false
+    pub fn delete(&self) {
+
     }
 
-    pub fn read(&self, b: Bookmark) -> bool {
-        false
+    pub fn read(&self, b: Bookmark) {
+
     }
 
-    pub fn update(&self, b: Bookmark ) -> bool {
-        false
+    pub fn update(&self, b: Bookmark ){
+
     }
 
-    pub fn list(&self, b: Bookmark) -> bool {
-        false
+    pub fn list(&self, b: Bookmark) {
+        let parsed_query = parse_query(&b.to_btree(), self.list_sql);
+
+        match self.connection.execute(parsed_query.as_str(), &[] ) {
+            Ok(listed) => println!("{} rows were listed", listed),
+            Err(err) => println!("listed failed: {}", err),
+        }
     }
 }
 
