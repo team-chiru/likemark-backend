@@ -31,28 +31,46 @@ impl BookmarkDao {
     }
 
     pub fn insert(&self, b: Bookmark ) {
-        //self.connection.execute(query, params: &[&ToSql])
+        let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
-
+        match self.connection.execute(insert_query.as_str(), &[] ) {
+            Ok(insert) => println!("{} rows were inserted", insert),
+            Err(err) => println!("insert failed: {}", err),
+        }
     }
 
-    pub fn delete(&self) {
+    pub fn delete(&self, b: Bookmark) {
+        let delete_query = parse_query(&b.to_btree(), String::from(&*self.delete_sql));
 
+        match self.connection.execute(delete_query.as_str(), &[] ) {
+            Ok(delete) => println!("{} row was deleted", delete),
+            Err(err) => println!("delete failed: {}", err),
+        }
     }
 
     pub fn read(&self, b: Bookmark) {
+        let read_query = parse_query(&b.to_btree(), String::from(&*self.read_sql));
 
+        match self.connection.execute(read_query.as_str(), &[] ) {
+            Ok(read) => println!("{} rows were readed", read),
+            Err(err) => println!("reading failed: {}", err),
+        }
     }
 
     pub fn update(&self, b: Bookmark ){
+        let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
 
+        match self.connection.execute(update_query.as_str(), &[] ) {
+            Ok(update) => println!("{} rows were listed", update),
+            Err(err) => println!("listed failed: {}", err),
+        }
     }
 
     pub fn list(&self, b: Bookmark) {
-        let parsed_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
+        let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
 
-        match self.connection.execute(parsed_query.as_str(), &[] ) {
-            Ok(listed) => println!("{} rows were listed", listed),
+        match self.connection.execute(list_query.as_str(), &[] ) {
+            Ok(list) => println!("{} rows were listed", list),
             Err(err) => println!("listed failed: {}", err),
         }
     }
