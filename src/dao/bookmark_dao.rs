@@ -49,7 +49,7 @@ impl BookmarkDao {
     }
 
     pub fn list(&self, b: Bookmark) {
-        let parsed_query = parse_query(&b.to_btree(), self.list_sql);
+        let parsed_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
 
         match self.connection.execute(parsed_query.as_str(), &[] ) {
             Ok(listed) => println!("{} rows were listed", listed),
