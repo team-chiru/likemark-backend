@@ -4,6 +4,7 @@ extern crate rusqlite;
 use common::bookmark::Bookmark;
 use dao::query_parser::*;
 use self::rusqlite::Connection;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct BookmarkDao {
@@ -21,7 +22,7 @@ impl BookmarkDao {
     pub fn new() -> BookmarkDao {
 
         BookmarkDao {
-            connection: Connection::open_in_memory().unwrap(),
+            connection: Connection::open(Path::new("res/BOOKMARKT.db")).unwrap(),
             read_sql: load_sql_file("res/sql/bookmark/read.sql"),
             delete_sql: load_sql_file("res/sql/bookmark/delete.sql"),
             insert_sql: load_sql_file("res/sql/bookmark/insert.sql"),
@@ -30,7 +31,7 @@ impl BookmarkDao {
         }
     }
 
-    pub fn insert(&self, b: Bookmark ) {
+    pub fn insert(&self, b: Bookmark) {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
         match self.connection.execute(insert_query.as_str(), &[] ) {
