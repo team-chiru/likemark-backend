@@ -31,6 +31,24 @@ impl BookmarkDao {
     }
 
     pub fn insert(&self, b: Bookmark ) -> bool {
+        //self.connection.execute(query, params: &[&ToSql])
+        false
+
+    }
+
+    pub fn delete(&self) -> bool {
+        false
+    }
+
+    pub fn read(&self, b: Bookmark) -> bool {
+        false
+    }
+
+    pub fn update(&self, b: Bookmark ) -> bool {
+        false
+    }
+
+    pub fn list(&self, b: Bookmark) -> bool {
         false
     }
 }
