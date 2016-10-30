@@ -1,21 +1,26 @@
+extern crate chrono;
 extern crate rusqlite;
-
 
 use self::rusqlite::Connection;
 
-
-pub fn create_connection() -> bool{
-
-    Connection::open_in_memory().unwrap();
-    return false;
+#[derive(Debug)]
+pub struct BookmarkDao {
+    connection: rusqlite::Connection
 }
 
 
-pub fn list_bookmark() -> bool {
+impl BookmarkDao {
+    pub fn new() -> BookmarkDao {
+        let conn = Connection::open_in_memory().unwrap();
+        BookmarkDao { connection:conn }
+    }
 
-    return false;
-
+    pub fn insert(&self, b:Bookmark ) -> bool {
+        false
+    }
 }
+
+
 
 
 pub fn hello_from_dao() -> String {
