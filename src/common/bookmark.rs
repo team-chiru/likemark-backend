@@ -69,6 +69,7 @@ impl Bookmark {
 
         btree
     }
+
 }
 
 impl PartialEq for Bookmark {

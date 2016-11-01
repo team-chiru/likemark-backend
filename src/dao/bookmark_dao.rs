@@ -78,21 +78,42 @@ impl BookmarkDao {
         let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
 
         match self.connection.execute(update_query.as_str(), &[] ) {
-            Ok(update) => panic!("{} rows were listed", update),
+            Ok(update) => update,
             Err(err) => panic!("listed failed: {}", err),
-        }
+        };
+
     }
 
-    pub fn list(&self, b: Bookmark) {
+    pub fn list(&self, b: Bookmark) -> &[Bookmark] {
+        let list_bookmark = Vec::new();
         let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
 
-        match self.connection.execute(list_query.as_str(), &[] ) {
-            Ok(list) => panic!("{} rows were listed", list),
+         let query_result = match self.connection.prepare(list_query.as_str()) {
+            Ok(list) => list,
             Err(err) => panic!("listed failed: {}", err),
+        };
+
+        let mut bookmark_iter = query_result.query_map(&[], |row| {
+            let time_dump: String = row.get(3);
+            let stamp_dump: String = row.get(4);
+
+            Bookmark {
+                id: row.get(0),
+                name: row.get(1),
+                url: row.get(2),
+                time_created: DateTime::<Local>::from_str(time_dump.as_str()).unwrap(),
+                stamp: DateTime::<Local>::from_str(stamp_dump.as_str()).unwrap(),
+                rev_no: row.get(5)
+            }
+        }).unwrap();
+
+        for bookmark in bookmark_iter {
+            list_bookmark.push(bookmark);
         }
+
+        list_bookmark as &[Bookmark]
     }
 }
-
 
 
 
