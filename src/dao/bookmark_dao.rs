@@ -5,6 +5,8 @@ use common::bookmark::Bookmark;
 use dao::query_parser::*;
 use self::rusqlite::Connection;
 use std::path::Path;
+use std::str::FromStr;
+use self::chrono::*;
 
 #[derive(Debug)]
 pub struct BookmarkDao {
@@ -47,13 +49,29 @@ impl BookmarkDao {
         }
     }
 
-    pub fn read(&self, b: Bookmark) {
+    pub fn read(&self, b: Bookmark) -> Result<Bookmark, rusqlite::Error> {
         let read_query = parse_query(&b.to_btree(), String::from(&*self.read_sql));
 
-        match self.connection.execute(read_query.as_str(), &[] ) {
-            Ok(read) => panic!("{} rows were readed", read),
-            Err(err) => panic!("reading failed: {}", err),
-        }
+        let mut stmt = match self.connection.prepare(read_query.as_str()) {
+            Ok(read) => read,
+            Err(err) => panic!("delete failed: {}", err),
+        };
+
+        let bookmark_iter = stmt.query_map(&[], |row| {
+            let time_dump: String = row.get(3);
+            let stamp_dump: String = row.get(4);
+
+            Bookmark {
+                id: row.get(0),
+                name: row.get(1),
+                url: row.get(2),
+                time_created: DateTime::<Local>::from_str(time_dump.as_str()).unwrap(),
+                stamp: DateTime::<Local>::from_str(stamp_dump.as_str()).unwrap(),
+                rev_no: row.get(5)
+            }
+        }).unwrap();
+
+        bookmark_iter.last().expect("read failed !")
     }
 
     pub fn update(&self, b: Bookmark) {

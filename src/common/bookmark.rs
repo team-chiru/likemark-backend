@@ -70,3 +70,33 @@ impl Bookmark {
         btree
     }
 }
+
+impl PartialEq for Bookmark {
+    fn eq(&self, b: &Bookmark) -> bool {
+        if self.id != b.id {
+            return false;
+        }
+
+        if self.name != b.name {
+            return false;
+        }
+
+        if self.url != b.url {
+            return false;
+        }
+
+        if self.time_created != b.time_created {
+            return false;
+        }
+
+        if self.stamp != b.stamp {
+            return false;
+        }
+
+        if self.rev_no != b.rev_no {
+            return false;
+        }
+
+        return true;
+    }
+}
