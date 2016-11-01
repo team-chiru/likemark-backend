@@ -9,7 +9,6 @@ use std::path::Path;
 #[derive(Debug)]
 pub struct BookmarkDao {
     connection: rusqlite::Connection,
-
     read_sql: String,
     delete_sql: String,
     insert_sql: String,
@@ -20,7 +19,6 @@ pub struct BookmarkDao {
 
 impl BookmarkDao {
     pub fn new() -> BookmarkDao {
-
         BookmarkDao {
             connection: Connection::open(Path::new("res/BOOKMARKT.db")).unwrap(),
             read_sql: load_sql_file("res/sql/bookmark/read.sql"),
@@ -58,7 +56,7 @@ impl BookmarkDao {
         }
     }
 
-    pub fn update(&self, b: Bookmark ){
+    pub fn update(&self, b: Bookmark) {
         let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
 
         match self.connection.execute(update_query.as_str(), &[] ) {
