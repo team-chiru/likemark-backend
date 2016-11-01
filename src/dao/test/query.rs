@@ -20,12 +20,13 @@ fn init_bookmart_res() -> Bookmark {
 }
 
 #[test]
-#[should_panic]
-fn it_adds() {
+fn test_insert() {
     let read_sql = load_sql_file("res/sql/bookmark/read.sql");
     let now = Local::now();
     let dao = BookmarkDao::new();
 
     let b = init_bookmart_res();
-    dao.read(b);
+    let b2 = b.clone();
+
+    assert!(b2 == dao.read(b).unwrap());
 }

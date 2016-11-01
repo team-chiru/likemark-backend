@@ -4,7 +4,7 @@ extern crate yaml_rust;
 use self::chrono::*;
 use std::collections::BTreeMap;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Bookmark {
     pub id: i32,
     pub name: String,
@@ -69,7 +69,6 @@ impl Bookmark {
 
         btree
     }
-
 }
 
 impl PartialEq for Bookmark {
