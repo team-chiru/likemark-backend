@@ -33,8 +33,8 @@ impl BookmarkDao {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
         match self.connection.execute(insert_query.as_str(), &[] ) {
-            Ok(insert) => println!("{} rows were inserted", insert),
-            Err(err) => println!("insert failed: {}", err),
+            Ok(insert) => panic!("{} rows were inserted", insert),
+            Err(err) => panic!("insert failed: {}", err),
         }
     }
 
@@ -42,8 +42,8 @@ impl BookmarkDao {
         let delete_query = parse_query(&b.to_btree(), String::from(&*self.delete_sql));
 
         match self.connection.execute(delete_query.as_str(), &[] ) {
-            Ok(delete) => println!("{} row was deleted", delete),
-            Err(err) => println!("delete failed: {}", err),
+            Ok(delete) => panic!("{} row was deleted", delete),
+            Err(err) => panic!("delete failed: {}", err),
         }
     }
 
@@ -51,8 +51,8 @@ impl BookmarkDao {
         let read_query = parse_query(&b.to_btree(), String::from(&*self.read_sql));
 
         match self.connection.execute(read_query.as_str(), &[] ) {
-            Ok(read) => println!("{} rows were readed", read),
-            Err(err) => println!("reading failed: {}", err),
+            Ok(read) => panic!("{} rows were readed", read),
+            Err(err) => panic!("reading failed: {}", err),
         }
     }
 
@@ -60,8 +60,8 @@ impl BookmarkDao {
         let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
 
         match self.connection.execute(update_query.as_str(), &[] ) {
-            Ok(update) => println!("{} rows were listed", update),
-            Err(err) => println!("listed failed: {}", err),
+            Ok(update) => panic!("{} rows were listed", update),
+            Err(err) => panic!("listed failed: {}", err),
         }
     }
 
@@ -69,8 +69,8 @@ impl BookmarkDao {
         let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
 
         match self.connection.execute(list_query.as_str(), &[] ) {
-            Ok(list) => println!("{} rows were listed", list),
-            Err(err) => println!("listed failed: {}", err),
+            Ok(list) => panic!("{} rows were listed", list),
+            Err(err) => panic!("listed failed: {}", err),
         }
     }
 }
