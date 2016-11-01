@@ -69,4 +69,28 @@ impl Bookmark {
 
         btree
     }
+
+    pub fn equals(self, b: Bookmark) -> bool {
+
+        if self.id != b.id {
+            return false;
+        }
+        else if self.name != b.name {
+            return false;
+        }
+        else if self.url != b.url {
+            return false;
+        }
+        else if self.time_created != b.time_created {
+            return false;
+        }
+        else if self.stamp != b.stamp {
+            return false;
+        }
+        else if self.rev_no != b.rev_no {
+            return false;
+        }
+
+        return true;
+    }
 }
