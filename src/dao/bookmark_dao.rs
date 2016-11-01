@@ -84,16 +84,16 @@ impl BookmarkDao {
 
     }
 
-    pub fn list(&self, b: Bookmark) -> &[Bookmark] {
-        let list_bookmark = Vec::new();
+    pub fn list(&self, b: Bookmark) -> Vec<Bookmark> {
+        let mut list_bookmark = Vec::<Bookmark>::new();
         let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
 
-         let query_result = match self.connection.prepare(list_query.as_str()) {
+         let mut query_result = match self.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
             Err(err) => panic!("listed failed: {}", err),
         };
 
-        let mut bookmark_iter = query_result.query_map(&[], |row| {
+        let bookmark_iter = query_result.query_map(&[], |row| {
             let time_dump: String = row.get(3);
             let stamp_dump: String = row.get(4);
 
@@ -107,11 +107,14 @@ impl BookmarkDao {
             }
         }).unwrap();
 
-        for bookmark in bookmark_iter {
-            list_bookmark.push(bookmark);
+        for result in bookmark_iter {
+            match result {
+                Ok(b) => list_bookmark.push(b),
+                Err(_) => continue
+            }
         }
 
-        list_bookmark as &[Bookmark]
+        list_bookmark
     }
 }
 
