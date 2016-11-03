@@ -21,8 +21,6 @@ fn init_bookmart_res() -> Bookmark {
 
 #[test]
 fn test_insert() {
-    let read_sql = load_sql_file("res/sql/bookmark/read.sql");
-    let now = Local::now();
     let dao = BookmarkDao::new();
 
     let b = init_bookmart_res();
@@ -30,3 +28,41 @@ fn test_insert() {
 
     assert!(b2 == dao.read(b).unwrap());
 }
+
+
+#[test]
+fn test_delete() {
+    let dao = BookmarkDao::new();
+
+    let b = init_bookmart_res();
+    let b2 = b.clone();
+
+    dao.insert(b);
+    assert!(dao.delete(b2));
+}
+
+/*
+#[test]
+fn test_read() {
+    let dao = BookmarkDao::new();
+
+    let b = init_bookmart_res();
+    assert!(dao.read(b));
+}
+
+#[test]
+fn test_update() {
+    let dao = BookmarkDao::new();
+
+    let b = init_bookmart_res();
+    assert!(dao.update(b))
+}
+
+#[test]
+fn test_list() {
+    let dao = BookmarkDao::new();
+
+    let b = init_bookmart_res();
+    assert!(dao.list());
+}
+*/

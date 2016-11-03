@@ -35,18 +35,17 @@ impl BookmarkDao {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
         match self.connection.execute(insert_query.as_str(), &[] ) {
-            Ok(insert) => panic!("{} rows were inserted", insert),
+            Ok(insert) => println!("{} rows were inserted", insert),
             Err(err) => panic!("insert failed: {}", err),
         }
     }
 
+
     pub fn delete(&self, b: Bookmark) {
         let delete_query = parse_query(&b.to_btree(), String::from(&*self.delete_sql));
 
-        match self.connection.execute(delete_query.as_str(), &[] ) {
-            Ok(delete) => panic!("{} row was deleted", delete),
-            Err(err) => panic!("delete failed: {}", err),
-        }
+        self.connection.execute(delete_query.as_str(), &[] )
+            .expect("delete failed");
     }
 
     pub fn read(&self, b: Bookmark) -> Result<Bookmark, rusqlite::Error> {
