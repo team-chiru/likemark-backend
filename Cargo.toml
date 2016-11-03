@@ -7,4 +7,5 @@ authors = ["vlnk <dftvlnk@gmail.com>"]
 rusqlite = "0.7.3"
 chrono = "0.2.25"
 yaml-rust = "*"
+toml = "0.2"
 regex = "0.1"

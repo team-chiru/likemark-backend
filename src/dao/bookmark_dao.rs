@@ -8,6 +8,8 @@ use std::path::Path;
 use std::str::FromStr;
 use self::chrono::*;
 
+use common::global_macros::dump_file;
+
 #[derive(Debug)]
 pub struct BookmarkDao {
     connection: rusqlite::Connection,
@@ -18,12 +20,11 @@ pub struct BookmarkDao {
     list_sql: String
 }
 
-
 impl BookmarkDao {
     pub fn new() -> BookmarkDao {
         BookmarkDao {
             connection: Connection::open(Path::new("res/BOOKMARKT.db")).unwrap(),
-            read_sql: load_sql_file("res/sql/bookmark/read.sql"),
+            read_sql: dump_file("res/sql/bookmark/read.sql"),
             delete_sql: load_sql_file("res/sql/bookmark/delete.sql"),
             insert_sql: load_sql_file("res/sql/bookmark/insert.sql"),
             update_sql: load_sql_file("res/sql/bookmark/update.sql"),
