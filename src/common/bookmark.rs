@@ -9,8 +9,6 @@ pub struct Bookmark {
     pub id: i32,
     pub name: String,
     pub url: String,
-    pub time_created: DateTime<Local>,
-    pub stamp: DateTime<Local>,
     pub rev_no: i32
 }
 
@@ -37,8 +35,6 @@ impl Bookmark {
         btree.insert("id", QueryValue::Integer(self.id));
         btree.insert("name", QueryValue::String(self.name));
         btree.insert("url", QueryValue::String(self.url));
-        btree.insert("time_created", QueryValue::Date(self.time_created));
-        btree.insert("stamp", QueryValue::Date(self.stamp));
         btree.insert("rev_no", QueryValue::Integer(self.rev_no));
 
         let mut yaml = String::new();
@@ -63,8 +59,6 @@ impl Bookmark {
         btree.insert(String::from("id"), QueryValue::Integer(self.id));
         btree.insert(String::from("name"), QueryValue::String(self.name));
         btree.insert(String::from("url"), QueryValue::String(self.url));
-        btree.insert(String::from("time_created"), QueryValue::Date(self.time_created));
-        btree.insert(String::from("stamp"), QueryValue::Date(self.stamp));
         btree.insert(String::from("rev_no"), QueryValue::Integer(self.rev_no));
 
         btree
@@ -82,14 +76,6 @@ impl PartialEq for Bookmark {
         }
 
         if self.url != b.url {
-            return false;
-        }
-
-        if self.time_created != b.time_created {
-            return false;
-        }
-
-        if self.stamp != b.stamp {
             return false;
         }
 

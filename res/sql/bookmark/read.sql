@@ -5,7 +5,7 @@ SELECT
     b.url,
     b.stamp,
     b.rev_no
-FROM bookmarkt.bookmark b
+FROM bookmark b
 WHERE
     b.id = {{ id }}
 ;

@@ -7,14 +7,22 @@ extern crate rusqlite;
 extern crate bookmarkt;
 
 use bookmarkt::dao::bookmark_dao::BookmarkDao;
+use bookmarkt::common::bookmark::Bookmark;
 use rusqlite::Connection;
 use std::path::Path;
 
 fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
+    let base_bookmark = Bookmark {
+        id: 0,
+        name: String::from("test"),
+        url: String::from("test_url"),
+        rev_no: 0
+    };
+
     let dao = BookmarkDao {
-        connection: db,
+        connection: &db,
         read_sql: dump_file!("res/sql/bookmark/read.sql"),
         delete_sql: dump_file!("res/sql/bookmark/delete.sql"),
         insert_sql: dump_file!("res/sql/bookmark/insert.sql"),
@@ -22,5 +30,13 @@ fn main() {
         list_sql: dump_file!("res/sql/bookmark/list.sql")
     };
 
-    
+    //test read
+    match dao.read(base_bookmark) {
+        Ok(b) => println!("{}", b.name),
+        Err(_) => panic!("error")
+    }
+
+    // test delete
+    // test insert
+    // test list
 }

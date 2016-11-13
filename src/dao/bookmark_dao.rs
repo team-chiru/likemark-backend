@@ -7,8 +7,8 @@ use std::str::FromStr;
 use self::chrono::*;
 
 #[derive(Debug)]
-pub struct BookmarkDao {
-    pub connection: rusqlite::Connection,
+pub struct BookmarkDao<'a> {
+    pub connection: &'a rusqlite::Connection,
     pub read_sql: String,
     pub delete_sql: String,
     pub insert_sql: String,
@@ -16,7 +16,7 @@ pub struct BookmarkDao {
     pub list_sql: String
 }
 
-impl BookmarkDao {
+impl<'a> BookmarkDao<'a> {
     pub fn insert(&self, b: Bookmark) {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
@@ -39,19 +39,14 @@ impl BookmarkDao {
 
         let mut stmt = match self.connection.prepare(read_query.as_str()) {
             Ok(read) => read,
-            Err(err) => panic!("delete failed: {}", err),
+            Err(err) => panic!("read failed: {}", err),
         };
 
         let bookmark_iter = stmt.query_map(&[], |row| {
-            let time_dump: String = row.get(3);
-            let stamp_dump: String = row.get(4);
-
             Bookmark {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
-                time_created: DateTime::<Local>::from_str(time_dump.as_str()).unwrap(),
-                stamp: DateTime::<Local>::from_str(stamp_dump.as_str()).unwrap(),
                 rev_no: row.get(5)
             }
         }).unwrap();
@@ -86,8 +81,6 @@ impl BookmarkDao {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
-                time_created: DateTime::<Local>::from_str(time_dump.as_str()).unwrap(),
-                stamp: DateTime::<Local>::from_str(stamp_dump.as_str()).unwrap(),
                 rev_no: row.get(5)
             }
         }).unwrap();
