@@ -3,8 +3,6 @@ extern crate rusqlite;
 
 use common::bookmark::*;
 use dao::query_parser::*;
-use std::str::FromStr;
-use self::chrono::*;
 
 #[derive(Debug)]
 pub struct BookmarkDao<'a> {
@@ -74,14 +72,11 @@ impl<'a> BookmarkDao<'a> {
         };
 
         let bookmark_iter = query_result.query_map(&[], |row| {
-            let time_dump: String = row.get(3);
-            let stamp_dump: String = row.get(4);
-
             Bookmark {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
-                rev_no: row.get(5)
+                rev_no: row.get(3)
             }
         }).unwrap();
 
