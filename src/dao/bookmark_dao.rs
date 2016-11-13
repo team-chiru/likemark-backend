@@ -1,37 +1,22 @@
 extern crate chrono;
 extern crate rusqlite;
 
-use common::bookmark::Bookmark;
+use common::bookmark::*;
 use dao::query_parser::*;
-use self::rusqlite::Connection;
-use std::path::Path;
 use std::str::FromStr;
 use self::chrono::*;
 
-use common::global_macros::dump_file;
-
 #[derive(Debug)]
 pub struct BookmarkDao {
-    connection: rusqlite::Connection,
-    read_sql: String,
-    delete_sql: String,
-    insert_sql: String,
-    update_sql: String,
-    list_sql: String
+    pub connection: rusqlite::Connection,
+    pub read_sql: String,
+    pub delete_sql: String,
+    pub insert_sql: String,
+    pub update_sql: String,
+    pub list_sql: String
 }
 
 impl BookmarkDao {
-    pub fn new() -> BookmarkDao {
-        BookmarkDao {
-            connection: Connection::open(Path::new("res/BOOKMARKT.db")).unwrap(),
-            read_sql: dump_file("res/sql/bookmark/read.sql"),
-            delete_sql: dump_file("res/sql/bookmark/delete.sql"),
-            insert_sql: dump_file("res/sql/bookmark/insert.sql"),
-            update_sql: dump_file("res/sql/bookmark/update.sql"),
-            list_sql: dump_file("res/sql/bookmark/list.sql")
-        }
-    }
-
     pub fn insert(&self, b: Bookmark) {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
