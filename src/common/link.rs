@@ -5,7 +5,7 @@ use self::chrono::*;
 use std::collections::BTreeMap;
 
 #[derive(Debug, Clone)]
-pub struct Bookmark {
+pub struct Link {
     pub id: i32,
     pub name: String,
     pub url: String,
@@ -28,7 +28,7 @@ impl<'a> Into<String> for &'a QueryValue {
     }
 }
 
-impl Bookmark {
+impl Link {
     pub fn to_yaml(self) -> String {
         let mut btree = BTreeMap::new();
 
@@ -38,7 +38,7 @@ impl Bookmark {
         btree.insert("rev_no", QueryValue::Integer(self.rev_no));
 
         let mut yaml = String::new();
-        yaml.push_str("Bookmark: \n");
+        yaml.push_str("Link: \n");
 
         for (k, v) in btree {
             yaml.push_str("\t");
@@ -65,8 +65,8 @@ impl Bookmark {
     }
 }
 
-impl PartialEq for Bookmark {
-    fn eq(&self, b: &Bookmark) -> bool {
+impl PartialEq for Link {
+    fn eq(&self, b: &Link) -> bool {
         if self.id != b.id {
             return false;
         }

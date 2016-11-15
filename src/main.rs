@@ -30,13 +30,20 @@ fn main() {
         list_sql: dump_file!("res/sql/bookmark/list.sql")
     };
 
-    //test read
+    // TEST READ
+    println!("\nTEST READ");
     match dao.read(base_bookmark) {
         Ok(b) => println!("{}", b.name),
         Err(_) => panic!("error")
     }
 
-    // test delete
     // test insert
+    println!("\nTEST INSERT");
+
+    // test delete
+    println!("\nTEST DELETE");
+
     // test list
+    println!("\nTEST LIST");
+
 }
