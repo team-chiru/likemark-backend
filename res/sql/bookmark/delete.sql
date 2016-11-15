@@ -1,4 +1,4 @@
-DELETE FROM bookmarkt.bookmark
+DELETE FROM bookmark
 WHERE
 	id = {{ id }}
 ;

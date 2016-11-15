@@ -24,10 +24,10 @@ impl<'a> LinkDao<'a> {
         }
     }
 
-
     pub fn delete(&self, b: Link) {
         let delete_query = parse_query(&b.to_btree(), String::from(&*self.delete_sql));
 
+        println!("{}", delete_query);
         self.connection.execute(delete_query.as_str(), &[] )
             .expect("delete failed");
     }
@@ -45,7 +45,7 @@ impl<'a> LinkDao<'a> {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
-                rev_no: row.get(5)
+                rev_no: row.get(3)
             }
         }).unwrap();
 

@@ -16,7 +16,7 @@ fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
     let base_bookmark = Link {
-        id: 0,
+        id: 1,
         name: String::from("test"),
         url: String::from("test_url"),
         rev_no: 0
@@ -33,18 +33,28 @@ fn main() {
 
     // TEST READ
     println!("\nTEST READ");
-    match dao.read(base_bookmark) {
+    match dao.read(base_bookmark.clone()) {
         Ok(b) => println!("{}", b.name),
         Err(_) => panic!("error")
     }
 
-    // test insert
+    // TEST INSERT
     println!("\nTEST INSERT");
+    dao.insert(base_bookmark.clone());
 
-    // test delete
-    println!("\nTEST DELETE");
+    // TEST DELETE
+    // println!("\nTEST DELETE");
+    // dao.delete(base_bookmark.clone());
 
-    // test list
+    // TEST UPDATE
+    println!("\nTEST UPDATE");
+    dao.update(base_bookmark.clone());
+
+    // TEST LIST
     println!("\nTEST LIST");
+    let links = dao.list(base_bookmark.clone());
+    for link in links {
+        println!("{}", link.id);
+    }
 
 }
