@@ -1,5 +1,5 @@
-INSERT INTO bookmarkt.bookmark
-	(id, name, url, time_created, stamp, revNo )
+INSERT INTO bookmark
+	(name, url, rev_no )
 VALUES
-	( {{ id }}, {{ name }}, {{ url }}, {{ stamp }}, {{ rev_no }} )
+	( "{{ name }}", "{{ url }}", {{ rev_no }} )
 ;
