@@ -6,22 +6,23 @@ extern crate rusqlite;
 #[macro_use]
 extern crate bookmarkt;
 
-use bookmarkt::dao::bookmark_dao::BookmarkDao;
-use bookmarkt::common::bookmark::Bookmark;
+use bookmarkt::common::bookmark::Link;
+use bookmarkt::dao::bookmark_dao::LinkDao;
+
 use rusqlite::Connection;
 use std::path::Path;
 
 fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
-    let base_bookmark = Bookmark {
+    let base_bookmark = Link {
         id: 0,
         name: String::from("test"),
         url: String::from("test_url"),
         rev_no: 0
     };
 
-    let dao = BookmarkDao {
+    let dao = LinkDao {
         connection: &db,
         read_sql: dump_file!("res/sql/bookmark/read.sql"),
         delete_sql: dump_file!("res/sql/bookmark/delete.sql"),
