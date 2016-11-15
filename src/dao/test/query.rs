@@ -1,35 +1,42 @@
 extern crate chrono;
 
-use common::bookmark::Bookmark;
+
+use common::bookmark::Link;
 use self::chrono::offset::local::Local;
 use self::chrono::datetime::DateTime;
 
 use super::query_parser::*;
 use super::bookmark_dao::*;
 
-fn init_bookmart_res() -> Bookmark {
+fn init_link_res() -> Link {
     let now = Local::now();
-    Bookmark {
+
+    Link {
         id: 1,
         name: String::from("test"),
         url: String::from("test.com"),
-        time_created: now,
-        stamp: now,
         rev_no: 0
     }
 }
 
 #[test]
 fn test_insert() {
-    let dao = BookmarkDao::new();
+    let dao = LinkDao {
+        connection: &db,
+        read_sql: dump_file!("res/sql/bookmark/read.sql"),
+        delete_sql: dump_file!("res/sql/bookmark/delete.sql"),
+        insert_sql: dump_file!("res/sql/bookmark/insert.sql"),
+        update_sql: dump_file!("res/sql/bookmark/update.sql"),
+        list_sql: dump_file!("res/sql/bookmark/list.sql")
+    };
 
-    let b = init_bookmart_res();
-    let b2 = b.clone();
+    let link = init_link_res();
 
-    assert!(b2 == dao.read(b).unwrap());
+    assert!(dao.insert(link));
+
 }
 
-
+/*
 #[test]
 fn test_delete() {
     let dao = BookmarkDao::new();
@@ -41,7 +48,7 @@ fn test_delete() {
     assert!(dao.delete(b2));
 }
 
-/*
+
 #[test]
 fn test_read() {
     let dao = BookmarkDao::new();
