@@ -93,7 +93,7 @@ impl<'a> LinkDao<'a> {
     pub fn clear(&self){
         let clear_query = String::from("DELETE FROM BOOKMARK ;");
         let reset_increment = String::from("DELETE FROM sqlite_sequence WHERE name='bookmark';");
-        let insert_query = String::from("INSERT INTO bookmark (name, url, rev_no ) VALUES( 'test', 'test_url', 0 );");
+        let insert_query = String::from("INSERT INTO bookmark (name, url, rev_no ) VALUES('test', 'test_url', 0 );");
 
         println!("{}", clear_query);
         match self.connection.execute(clear_query.as_str(), &[]) {

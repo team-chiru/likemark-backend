@@ -16,6 +16,17 @@ fn init_link_res() -> Link {
     }
 }
 
+
+fn init_link_delete() -> Link{
+    Link {
+        id: 2,
+        name: String::from("test"),
+        url: String::from("test_url"),
+        rev_no: 0
+    }
+}
+
+
 #[test]
 fn test_insert() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
@@ -29,6 +40,7 @@ fn test_insert() {
         list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
 
+    print!("{:?}","sa clean dans test insert" );
     dao.clear();
     let link = init_link_res();
     dao.insert(link);
@@ -37,10 +49,8 @@ fn test_insert() {
     assert!(l == init_link_res())
 }
 
-
-
-/*
 #[test]
+#[should_panic]
 fn test_delete() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
@@ -53,16 +63,16 @@ fn test_delete() {
         list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
 
-    let b = init_link_res();
+    dao.clear();
 
-    let b2 = b.clone();
-    dao.insert(b);
-    dao.delete(b2);
+    let l = init_link_delete();
+    let l2 = l.clone();
+    dao.delete(l);
 
-    assert!(dao.read(init_link_res()).unwrap());
+    let l_read = dao.read(init_link_res()).unwrap();
+
+    assert!(l2 == l_read);
 }
-*/
-
 
 #[test]
 fn test_read() {

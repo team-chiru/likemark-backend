@@ -16,7 +16,7 @@ use std::path::Path;
 fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
-    let base_bookmark = Link {
+    let base_link = Link {
         id: 1,
         name: String::from("test"),
         url: String::from("test_url"),
@@ -35,29 +35,29 @@ fn main() {
     //TEST clear
     println!("\nTEST CLEAR");
     dao.clear();
-
+    /*
     // TEST INSERT
     //println!("\nTEST INSERT");
-    //dao.insert(base_bookmark.clone());
+    //dao.insert(base_link.clone());
 
     // TEST READ
     println!("\nTEST READ");
-    match dao.read(base_bookmark.clone()) {
+    match dao.read(base_link.clone()) {
         Ok(b) => println!("{}", b.name),
         Err(_) => panic!("error")
     }
 
     // TEST DELETE
     // println!("\nTEST DELETE");
-    // dao.delete(base_bookmark.clone());
+    // dao.delete(base_link.clone());
 
     // TEST UPDATE
     //println!("\nTEST UPDATE");
-    //dao.update(base_bookmark.clone());
-
-    // TEST LIST
+    //dao.update(base_link.clone());
+*/
+    //TEST LIST
     println!("\nTEST LIST");
-    let links = dao.list(base_bookmark.clone());
+    let links = dao.list(base_link.clone());
     for link in links {
         println!("{}", link.id);
     }
