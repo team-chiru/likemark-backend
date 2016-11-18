@@ -6,6 +6,7 @@ extern crate rusqlite;
 #[macro_use]
 extern crate bookmarkt;
 
+use bookmarkt::common::utils;
 use bookmarkt::common::bookmark::Link;
 use bookmarkt::dao::bookmark_dao::LinkDao;
 
@@ -24,11 +25,11 @@ fn main() {
 
     let dao = LinkDao {
         connection: &db,
-        read_sql: dump_file!("res/sql/bookmark/read.sql"),
-        delete_sql: dump_file!("res/sql/bookmark/delete.sql"),
-        insert_sql: dump_file!("res/sql/bookmark/insert.sql"),
-        update_sql: dump_file!("res/sql/bookmark/update.sql"),
-        list_sql: dump_file!("res/sql/bookmark/list.sql")
+        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
+        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
+        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
+        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
+        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
 
     // TEST READ

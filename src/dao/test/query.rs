@@ -1,16 +1,13 @@
-extern crate chrono;
-
+extern crate rusqlite;
 
 use common::bookmark::Link;
-use self::chrono::offset::local::Local;
-use self::chrono::datetime::DateTime;
-
-use super::query_parser::*;
+use common::utils;
 use super::bookmark_dao::*;
 
-fn init_link_res() -> Link {
-    let now = Local::now();
+use self::rusqlite::Connection;
+use std::path::Path;
 
+fn init_link_res() -> Link {
     Link {
         id: 1,
         name: String::from("test"),
@@ -21,20 +18,26 @@ fn init_link_res() -> Link {
 
 #[test]
 fn test_insert() {
+    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
+
     let dao = LinkDao {
         connection: &db,
-        read_sql: dump_file!("res/sql/bookmark/read.sql"),
-        delete_sql: dump_file!("res/sql/bookmark/delete.sql"),
-        insert_sql: dump_file!("res/sql/bookmark/insert.sql"),
-        update_sql: dump_file!("res/sql/bookmark/update.sql"),
-        list_sql: dump_file!("res/sql/bookmark/list.sql")
+        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
+        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
+        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
+        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
+        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
 
     let link = init_link_res();
 
-    assert!(dao.insert(link));
+    dao.insert(link);
 
+    let b = dao.read(init_link_res()).unwrap();
+    assert!(b == init_link_res())
 }
+
+
 
 /*
 #[test]
