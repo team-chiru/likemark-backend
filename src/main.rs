@@ -32,16 +32,20 @@ fn main() {
         list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
 
+    //TEST clear
+    println!("\nTEST CLEAR");
+    dao.clear();
+
+    // TEST INSERT
+    println!("\nTEST INSERT");
+    dao.insert(base_bookmark.clone());
+
     // TEST READ
     println!("\nTEST READ");
     match dao.read(base_bookmark.clone()) {
         Ok(b) => println!("{}", b.name),
         Err(_) => panic!("error")
     }
-
-    // TEST INSERT
-    println!("\nTEST INSERT");
-    dao.insert(base_bookmark.clone());
 
     // TEST DELETE
     // println!("\nTEST DELETE");
@@ -57,5 +61,7 @@ fn main() {
     for link in links {
         println!("{}", link.id);
     }
+
+
 
 }

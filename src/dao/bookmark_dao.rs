@@ -89,6 +89,25 @@ impl<'a> LinkDao<'a> {
 
         list_link
     }
+
+    pub fn clear(&self){
+        let clear_query = String::from("DELETE FROM BOOKMARK ;");
+        let reset_increment = String::from("delete from sqlite_sequence where name='bookmark';");
+
+        println!("{}", clear_query);
+
+        match self.connection.execute(clear_query.as_str(), &[]) {
+            Ok(clear) => clear,
+            Err(err) => panic!("clear failed: {}", err),
+        };
+
+        match self.connection.execute(reset_increment.as_str(), &[]) {
+            Ok(reset) => reset,
+            Err(err) => panic!("reset increment: {}", err),
+        };
+
+
+    }
 }
 
 
