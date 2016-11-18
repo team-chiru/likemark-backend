@@ -6,5 +6,5 @@ WHERE name='bookmark';
 INSERT INTO bookmark
 	(name, url, rev_no )
 VALUES
-	( "test", "test.com", 0 )
+	( "test", "test_url", 0 )
 ;

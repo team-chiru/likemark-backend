@@ -37,8 +37,8 @@ fn main() {
     dao.clear();
 
     // TEST INSERT
-    println!("\nTEST INSERT");
-    dao.insert(base_bookmark.clone());
+    //println!("\nTEST INSERT");
+    //dao.insert(base_bookmark.clone());
 
     // TEST READ
     println!("\nTEST READ");
@@ -52,8 +52,8 @@ fn main() {
     // dao.delete(base_bookmark.clone());
 
     // TEST UPDATE
-    println!("\nTEST UPDATE");
-    dao.update(base_bookmark.clone());
+    //println!("\nTEST UPDATE");
+    //dao.update(base_bookmark.clone());
 
     // TEST LIST
     println!("\nTEST LIST");
@@ -61,7 +61,6 @@ fn main() {
     for link in links {
         println!("{}", link.id);
     }
-
 
 
 }

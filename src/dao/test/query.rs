@@ -11,7 +11,7 @@ fn init_link_res() -> Link {
     Link {
         id: 1,
         name: String::from("test"),
-        url: String::from("test.com"),
+        url: String::from("test_url"),
         rev_no: 0
     }
 }
@@ -76,10 +76,9 @@ fn test_read() {
         update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
         list_sql: utils::dump_file("res/sql/bookmark/list.sql")
     };
-    
+
     dao.clear();
     let link = init_link_res();
-    dao.insert(link);
 
     let l = dao.read(init_link_res()).unwrap();
     assert!(l == init_link_res())
