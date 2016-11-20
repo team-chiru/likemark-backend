@@ -1,8 +1,7 @@
-extern crate chrono;
 extern crate yaml_rust;
 
-use self::chrono::*;
 use std::collections::BTreeMap;
+use common::utils::QueryValue;
 
 #[derive(Debug, Clone)]
 pub struct Link {
@@ -10,22 +9,6 @@ pub struct Link {
     pub name: String,
     pub url: String,
     pub rev_no: i32
-}
-
-pub enum QueryValue {
-    Integer(i32),
-    String(String),
-    Date(DateTime<Local>)
-}
-
-impl<'a> Into<String> for &'a QueryValue {
-    fn into(self) -> String {
-        match self {
-            &QueryValue::Integer(i) => format!("{}", i),
-            &QueryValue::String(ref s) => format!("{}", s),
-            &QueryValue::Date(t) => t.to_rfc2822()
-        }
-    }
 }
 
 impl Link {

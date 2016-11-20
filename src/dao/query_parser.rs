@@ -1,7 +1,7 @@
 extern crate regex;
 
 use std::collections::BTreeMap;
-use common::link::QueryValue;
+use common::utils::QueryValue;
 use self::regex::Regex;
 
 pub fn parse_query(btree: &BTreeMap<String, QueryValue>, query: String) -> String {

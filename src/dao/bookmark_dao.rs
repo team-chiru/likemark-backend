@@ -3,6 +3,7 @@ extern crate rusqlite;
 
 use common::bookmark::*;
 use dao::query_parser::*;
+//use self::rusqlite::types;
 
 #[derive(Debug)]
 pub struct LinkDao<'a> {
@@ -15,10 +16,11 @@ pub struct LinkDao<'a> {
 }
 
 impl<'a> LinkDao<'a> {
-    pub fn insert(&self, b: Link) {
-        let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
+    pub fn insert(&self, b: &Link) {
+        let btree = b.clone().to_btree();
+        let template = String::from(&*self.insert_sql);
 
-        match self.connection.execute(insert_query.as_str(), &[] ) {
+        match self.connection.execute(parse_query(&btree, template).as_str(), &[]) {
             Ok(insert) => println!("{} rows were inserted", insert),
             Err(err) => panic!("insert failed: {}", err),
         }
@@ -32,8 +34,8 @@ impl<'a> LinkDao<'a> {
             .expect("delete failed");
     }
 
-    pub fn read(&self, b: Link) -> Result<Link, rusqlite::Error> {
-        let read_query = parse_query(&b.to_btree(), String::from(&*self.read_sql));
+    pub fn read(&self, c: &LinkCriteria) -> Result<Link, rusqlite::Error> {
+        let read_query = parse_query(&c.to_btree(), String::from(&*self.read_sql));
 
         let mut stmt = match self.connection.prepare(read_query.as_str()) {
             Ok(read) => read,
@@ -52,8 +54,10 @@ impl<'a> LinkDao<'a> {
         link_iter.last().expect("read failed !")
     }
 
-    pub fn update(&self, b: Link) {
-        let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
+    pub fn update(&self, b: &Link) {
+        let btree = b.clone().to_btree();
+        let template = String::from(&*self.update_sql);
+        let update_query = parse_query(&btree, template);
 
         match self.connection.execute(update_query.as_str(), &[] ) {
             Ok(update) => update,
@@ -62,11 +66,15 @@ impl<'a> LinkDao<'a> {
 
     }
 
-    pub fn list(&self, b: Link) -> Vec<Link> {
+    pub fn list(&self, b: &LinkCriteria) -> Vec<Link> {
         let mut list_link = Vec::<Link>::new();
-        let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
+        let template = String::from(&*self.list_sql);
+        let btree = b.clone().to_btree();
 
-         let mut query_result = match self.connection.prepare(list_query.as_str()) {
+        let list_query = parse_query(&btree, template);
+        println!("{}", list_query);
+
+        let mut query_result = match self.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
             Err(err) => panic!("listed failed: {}", err),
         };

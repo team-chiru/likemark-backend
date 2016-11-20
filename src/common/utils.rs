@@ -1,3 +1,6 @@
+extern crate chrono;
+use self::chrono::*;
+
 pub fn dump_file(path: &str) -> String {
     use std::path::PathBuf;
     let absolute_path = PathBuf::from(path);
@@ -20,4 +23,22 @@ pub fn dump_file(path: &str) -> String {
     }
 
     dump
+}
+
+pub enum QueryValue {
+    Integer(i32),
+    String(String),
+    Date(DateTime<Local>),
+    Null
+}
+
+impl<'a> Into<String> for &'a QueryValue {
+    fn into(self) -> String {
+        match self {
+            &QueryValue::Integer(i) => format!("{}", i),
+            &QueryValue::String(ref s) => format!("\"{}\"", s),
+            &QueryValue::Date(t) => t.to_rfc2822(),
+            &QueryValue::Null => String::from("NULL")
+        }
+    }
 }

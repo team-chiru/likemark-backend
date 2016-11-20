@@ -8,6 +8,7 @@ extern crate bookmarkt;
 
 use bookmarkt::common::utils;
 use bookmarkt::common::bookmark::Link;
+use bookmarkt::common::bookmark::LinkCriteria;
 use bookmarkt::dao::bookmark_dao::LinkDao;
 
 use rusqlite::Connection;
@@ -16,7 +17,7 @@ use std::path::Path;
 fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
-    let base_bookmark = Link {
+    let bb = Link {
         id: 1,
         name: String::from("test"),
         url: String::from("test_url"),
@@ -34,26 +35,35 @@ fn main() {
 
     // TEST READ
     println!("\nTEST READ");
-    match dao.read(base_bookmark.clone()) {
+    let read_criteria = LinkCriteria::new().id(1);
+    match dao.read(&read_criteria) {
         Ok(b) => println!("{}", b.name),
         Err(_) => panic!("error")
     }
 
     // TEST INSERT
     println!("\nTEST INSERT");
-    dao.insert(base_bookmark.clone());
+    dao.insert(&bb);
 
     // TEST DELETE
     // println!("\nTEST DELETE");
-    // dao.delete(base_bookmark.clone());
+    // dao.delete(bb.clone());
 
     // TEST UPDATE
     println!("\nTEST UPDATE");
-    dao.update(base_bookmark.clone());
+
+    let updated = Link {
+        id: bb.id,
+        name: String::from("updated"),
+        url: bb.url,
+        rev_no: bb.id + 1
+    };
+    dao.update(&updated);
 
     // TEST LIST
     println!("\nTEST LIST");
-    let links = dao.list(base_bookmark.clone());
+    let list_criteria = LinkCriteria::new().name(String::from("test"));
+    let links = dao.list(&list_criteria);
     for link in links {
         println!("{}", link.id);
     }
