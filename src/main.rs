@@ -17,7 +17,7 @@ fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
     let base_link = Link {
-        id: 2,
+        id: 8,
         name: String::from("test"),
         url: String::from("test_url"),
         rev_no: 0
@@ -51,7 +51,7 @@ fn main() {
     // TEST DELETE
     println!("\nTEST DELETE");
     let delete_c = LinkCriteria::new();
-    match dao.delete(&delete_c.id(4)) {
+    match dao.delete(&delete_c.id(7)) {
         Ok(id) => println!("ROW WITH ID:{} HAS BEEN DELETED SUCCESSFULLY", id),
         Err(err) => println!("{}", err)
     };
