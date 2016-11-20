@@ -66,7 +66,7 @@ fn main() {
     //TEST LIST
     println!("\nTEST LIST");
     let list_c = LinkCriteria::new();
-    let links = dao.list(&list_c.url(String::from("url")));
+    let links = dao.list(&list_c.name(String::from("test")));
     for link in links.expect("list failed") {
         println!("{}", link.to_yaml());
     }

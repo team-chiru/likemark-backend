@@ -83,8 +83,6 @@ impl<'a> LinkDao<'a> {
         let mut list_link = Vec::<Link>::new();
         let list_query = parse_query(&c.to_btree(), String::from(&*self.list_sql));
 
-        println!("{}", list_query);
-
          let mut query_result = match self.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
             Err(err) => {
