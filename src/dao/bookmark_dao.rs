@@ -15,70 +15,96 @@ pub struct LinkDao<'a> {
 }
 
 impl<'a> LinkDao<'a> {
-    pub fn insert(&self, b: Link) {
+    pub fn insert(&self, b: Link) -> Result<i32, String> {
         let insert_query = parse_query(&b.to_btree(), String::from(&*self.insert_sql));
 
         match self.connection.execute(insert_query.as_str(), &[] ) {
-            Ok(insert) => println!("{} rows were inserted", insert),
-            Err(err) => panic!("insert failed: {}", err),
+            Ok(insert) => Ok(insert),
+            Err(err) => Err(format!("Insert failed: {}", err)),
         }
     }
 
-    pub fn delete(&self, b: Link) {
-        let delete_query = parse_query(&b.to_btree(), String::from(&*self.delete_sql));
+    pub fn delete(&self, c: &LinkCriteria) -> Result<i32, String> {
+        if c.id == None {
+            return Err(String::from("Invalid criteria: id must be set!"));
+        }
 
-        println!("{}", delete_query);
-        self.connection.execute(delete_query.as_str(), &[] )
-            .expect("delete failed");
+        let delete_query = parse_query(&c.to_btree(), String::from(&*self.delete_sql));
+        match self.connection.execute(delete_query.as_str(), &[] ) {
+            Ok(_) => Ok(c.id.unwrap()),
+            Err(err) => Err(format!("Delete failed: {}", err))
+        }
     }
 
-    pub fn read(&self, b: Link) -> Result<Link, rusqlite::Error> {
-        let read_query = parse_query(&b.to_btree(), String::from(&*self.read_sql));
+    pub fn read(&self, c: &LinkCriteria) -> Result<Link, String> {
+        if c.id == None {
+            return Err(String::from("Invalid criteria: id must be set!"));
+        }
 
+        let read_query = parse_query(&c.to_btree(), String::from(&*self.read_sql));
         let mut stmt = match self.connection.prepare(read_query.as_str()) {
             Ok(read) => read,
-            Err(err) => panic!("read failed: {}", err),
+            Err(err) => {
+                return Err(format!("Read failed: {}", err));
+            },
         };
 
-        let link_iter = stmt.query_map(&[], |row| {
+        let link_iter = match stmt.query_map(&[], |row| {
             Link {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
                 rev_no: row.get(3)
             }
-        }).unwrap();
+        }) {
+            Ok(l) => l,
+            Err(err) => {
+                return Err(format!("Read failed: {}", err));
+            }
+        };
 
-        link_iter.last().expect("read failed !")
+        match link_iter.last() {
+            Some(l) => Ok(l.unwrap()),
+            None => Err(format!("Nothing to read!"))
+        }
     }
 
-    pub fn update(&self, b: Link) {
+    pub fn update(&self, b: Link) -> Result<i32, String> {
+        let update_id = b.id;
         let update_query = parse_query(&b.to_btree(), String::from(&*self.update_sql));
 
         match self.connection.execute(update_query.as_str(), &[] ) {
-            Ok(update) => update,
-            Err(err) => panic!("listed failed: {}", err),
-        };
-
+            Ok(_) => Ok(update_id),
+            Err(err) => Err(format!("Update failed: {}", err)),
+        }
     }
 
-    pub fn list(&self, b: Link) -> Vec<Link> {
+    pub fn list(&self, c: &LinkCriteria) -> Result<Vec<Link>, String> {
         let mut list_link = Vec::<Link>::new();
-        let list_query = parse_query(&b.to_btree(), String::from(&*self.list_sql));
+        let list_query = parse_query(&c.to_btree(), String::from(&*self.list_sql));
+
+        println!("{}", list_query);
 
          let mut query_result = match self.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
-            Err(err) => panic!("listed failed: {}", err),
+            Err(err) => {
+                return Err(format!("List failed: {}", err));
+            }
         };
 
-        let link_iter = query_result.query_map(&[], |row| {
+        let link_iter = match query_result.query_map(&[], |row| {
             Link {
                 id: row.get(0),
                 name: row.get(1),
                 url: row.get(2),
                 rev_no: row.get(3)
             }
-        }).unwrap();
+        }) {
+            Ok(l) => l,
+            Err(err) => {
+                return Err(format!("List failed: {}", err));
+            }
+        };
 
         for result in link_iter {
             match result {
@@ -87,7 +113,7 @@ impl<'a> LinkDao<'a> {
             }
         }
 
-        list_link
+        Ok(list_link)
     }
 
     pub fn clear(&self){

@@ -7,7 +7,7 @@ extern crate rusqlite;
 extern crate bookmarkt;
 
 use bookmarkt::common::utils;
-use bookmarkt::common::bookmark::Link;
+use bookmarkt::common::bookmark::*;
 use bookmarkt::dao::bookmark_dao::LinkDao;
 
 use rusqlite::Connection;
@@ -17,7 +17,7 @@ fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
     let base_link = Link {
-        id: 1,
+        id: 2,
         name: String::from("test"),
         url: String::from("test_url"),
         rev_no: 0
@@ -34,33 +34,40 @@ fn main() {
 
     //TEST clear
     println!("\nTEST CLEAR");
-    dao.clear();
-    /*
+    //dao.clear();
+
     // TEST INSERT
     //println!("\nTEST INSERT");
     //dao.insert(base_link.clone());
 
     // TEST READ
     println!("\nTEST READ");
-    match dao.read(base_link.clone()) {
-        Ok(b) => println!("{}", b.name),
+    let read_c = LinkCriteria::new();
+    match dao.read(&read_c.id(1)) {
+        Ok(b) => println!("{}", b.to_yaml()),
         Err(_) => panic!("error")
     }
 
     // TEST DELETE
-    // println!("\nTEST DELETE");
-    // dao.delete(base_link.clone());
+    println!("\nTEST DELETE");
+    let delete_c = LinkCriteria::new();
+    match dao.delete(&delete_c.id(4)) {
+        Ok(id) => println!("ROW WITH ID:{} HAS BEEN DELETED SUCCESSFULLY", id),
+        Err(err) => println!("{}", err)
+    };
 
     // TEST UPDATE
-    //println!("\nTEST UPDATE");
-    //dao.update(base_link.clone());
-*/
+    println!("\nTEST UPDATE");
+    match dao.update(base_link.clone()) {
+        Ok(id) => println!("ROW WITH ID:{} HAS BEEN UPDATED SUCCESSFULLY", id),
+        Err(err) => println!("{}", err)
+    };
+
     //TEST LIST
     println!("\nTEST LIST");
-    let links = dao.list(base_link.clone());
-    for link in links {
-        println!("{}", link.id);
+    let list_c = LinkCriteria::new();
+    let links = dao.list(&list_c.url(String::from("url")));
+    for link in links.expect("list failed") {
+        println!("{}", link.to_yaml());
     }
-
-
 }
