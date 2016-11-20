@@ -17,11 +17,20 @@ fn init_link_res() -> Link {
 }
 
 
-fn init_link_delete() -> Link{
+fn init_link_delete() -> Link {
     Link {
         id: 2,
         name: String::from("test"),
         url: String::from("test_url"),
+        rev_no: 0
+    }
+}
+
+fn init_link_updated() -> Link {
+    Link {
+        id: 1,
+        name: String::from("updated_link"),
+        url: String::from("test_updated"),
         rev_no: 0
     }
 }
@@ -94,15 +103,33 @@ fn test_read() {
     assert!(l == init_link_res())
 }
 
-/*
-#[test]
-fn test_update() {
-    let dao = BookmarkDao::new();
 
-    let b = init_bookmart_res();
-    assert!(dao.update(b))
+#[test]
+#[should_panic]
+fn test_update() {
+    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
+
+    let dao = LinkDao {
+        connection: &db,
+        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
+        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
+        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
+        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
+        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
+    };
+
+    dao.clear();
+    let link =  init_link_res();
+    let update_link = init_link_updated();
+    dao.update(update_link);
+
+    let l = dao.read(init_link_updated()).unwrap();
+
+    assert!(link == l)
+
 }
 
+/*
 #[test]
 fn test_list() {
     let dao = BookmarkDao::new();
