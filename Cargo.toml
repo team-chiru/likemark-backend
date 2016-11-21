@@ -9,3 +9,4 @@ chrono = "0.2.25"
 yaml-rust = "*"
 toml = "0.2"
 regex = "0.1"
+clap = { version = "*", features = [ "yaml", "suggestions", "color" ] }
