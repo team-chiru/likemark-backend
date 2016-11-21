@@ -6,8 +6,8 @@ use dao::query_parser::*;
 //use self::rusqlite::types;
 
 #[derive(Debug)]
-pub struct LinkDao<'a> {
-    pub connection: &'a rusqlite::Connection,
+pub struct LinkDao {
+    pub connection: rusqlite::Connection,
     pub read_sql: String,
     pub delete_sql: String,
     pub insert_sql: String,
@@ -15,14 +15,14 @@ pub struct LinkDao<'a> {
     pub list_sql: String
 }
 
-impl<'a> LinkDao<'a> {
-    pub fn insert(&self, b: &Link) {
+impl LinkDao {
+    pub fn insert(&self, b: &Link) -> Result<i32, String> {
         let btree = b.clone().to_btree();
         let template = String::from(&*self.insert_sql);
 
         match self.connection.execute(parse_query(&btree, template).as_str(), &[]) {
-            Ok(insert) => println!("{} rows were inserted", insert),
-            Err(err) => panic!("insert failed: {}", err),
+            Ok(insert) => Ok(insert),
+            Err(err) => Err(format!("Insert failed: {}", err))
         }
     }
 
@@ -118,8 +118,12 @@ impl<'a> LinkDao<'a> {
 
     pub fn clear(&self){
         let clear_query = String::from("DELETE FROM BOOKMARK ;");
-        let reset_increment = String::from("DELETE FROM sqlite_sequence WHERE name='bookmark';");
-        let insert_query = String::from("INSERT INTO bookmark (name, url, rev_no ) VALUES('test', 'test_url', 0 );");
+        let reset_increment = String::from(
+            "DELETE FROM sqlite_sequence WHERE name='bookmark';"
+        );
+        let insert_query = String::from(
+            "INSERT INTO bookmark (name, url, rev_no ) VALUES('test', 'test_url', 0 );"
+        );
 
         println!("{}", clear_query);
         match self.connection.execute(clear_query.as_str(), &[]) {
@@ -141,8 +145,6 @@ impl<'a> LinkDao<'a> {
 
     }
 }
-
-
 
 pub fn hello_from_dao() -> String {
     "Hello, I am Link dao!".to_string()

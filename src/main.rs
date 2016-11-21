@@ -24,7 +24,7 @@ fn main() {
     };
 
     let dao = LinkDao {
-        connection: &db,
+        connection: db,
         read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
         delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
         insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),

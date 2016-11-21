@@ -1,140 +1,134 @@
 extern crate rusqlite;
 
-use common::bookmark::Link;
+use common::bookmark::*;
 use common::utils;
 use super::bookmark_dao::*;
 
 use self::rusqlite::Connection;
-use std::path::Path;
 
-fn init_link_res() -> Link {
-    Link {
-        id: 1,
-        name: String::from("test"),
-        url: String::from("test_url"),
-        rev_no: 0
-    }
-}
+fn init_test_db() -> LinkDao {
+    let db = match Connection::open_in_memory() {
+        Ok(c) => c,
+        Err(err) => panic!("OPEN TEST DB FAILED: {}", err)
+    };
 
+    let init_query = utils::dump_file("res/sql/bookmark/init.sql");
+    let init_test_query = utils::dump_file("res/sql/bookmark/init_test.sql");
 
-fn init_link_delete() -> Link {
-    Link {
-        id: 2,
-        name: String::from("test"),
-        url: String::from("test_url"),
-        rev_no: 0
-    }
-}
+    match db.execute(init_query.as_str(), &[]) {
+        Ok(_) => {},
+        Err(err) => panic!("CREATE TEST TABLE FAILED: {}", err),
+    };
 
-fn init_link_updated() -> Link {
-    Link {
-        id: 1,
-        name: String::from("updated_link"),
-        url: String::from("test_updated"),
-        rev_no: 0
-    }
-}
+    match db.execute(init_test_query.as_str(), &[]) {
+        Ok(_) => {},
+        Err(err) => panic!("INIT TEST DB FAILED: {}", err),
+    };
 
-
-#[test]
-fn test_insert() {
-    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
-
-    let dao = LinkDao {
-        connection: &db,
+    LinkDao {
+        connection: db,
         read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
         delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
         insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
         update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
         list_sql: utils::dump_file("res/sql/bookmark/list.sql")
+    }
+}
+
+#[test]
+fn read() {
+    let dao = init_test_db();
+    let link = Link {
+        id: 1,
+        name: String::from("test"),
+        url: String::from("test_url"),
+        rev_no: 0
     };
 
-    print!("{:?}","sa clean dans test insert" );
-    dao.clear();
-    let link = init_link_res();
-    dao.insert(link);
+    let read_c = LinkCriteria::new();
+    match dao.read(&read_c.id(1)) {
+        Ok(l) => assert!(l == link),
+        Err(err) => panic!("READ FAILED: {}", err)
+    }
+}
 
-    let l = dao.read(init_link_res()).unwrap();
-    assert!(l == init_link_res())
+#[test]
+fn insert() {
+    let dao = init_test_db();
+    let link = Link {
+        id: 2,
+        name: String::from("inserted"),
+        url: String::from("url"),
+        rev_no: 0
+    };
+
+    dao.insert(&link).unwrap();
+
+    let read_c = LinkCriteria::new();
+
+    match dao.read(&read_c.id(link.id)) {
+        Ok(l) => assert!(l == link),
+        Err(err) => panic!("INSERT FAILED: {}", err)
+    }
+
 }
 
 #[test]
 #[should_panic]
 fn test_delete() {
-    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
-
-    let dao = LinkDao {
-        connection: &db,
-        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
-        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
-        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
-        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
-        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
+    let dao = init_test_db();
+    let link = Link {
+        id: 1,
+        name: String::from("test"),
+        url: String::from("test_url"),
+        rev_no: 0
     };
 
-    dao.clear();
+    let crit = LinkCriteria::new().id(link.id);
 
-    let l = init_link_delete();
-    let l2 = l.clone();
-    dao.delete(l);
-
-    let l_read = dao.read(init_link_res()).unwrap();
-
-    assert!(l2 == l_read);
+    dao.delete(&crit).unwrap();
+    match dao.read(&crit) {
+        Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
+        Err(err) => panic!("{}", err)
+    }
 }
 
 #[test]
-fn test_read() {
-    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
-
-    let dao = LinkDao {
-        connection: &db,
-        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
-        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
-        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
-        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
-        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
-    };
-
-    dao.clear();
-    let link = init_link_res();
-
-    let l = dao.read(init_link_res()).unwrap();
-    assert!(l == init_link_res())
-}
-
-
-#[test]
-#[should_panic]
 fn test_update() {
-    let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
-
-    let dao = LinkDao {
-        connection: &db,
-        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
-        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
-        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
-        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
-        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
+    let dao = init_test_db();
+    let link = Link {
+        id: 1,
+        name: String::from("updated"),
+        url: String::from("test_url"),
+        rev_no: 0
     };
 
-    dao.clear();
-    let link =  init_link_res();
-    let update_link = init_link_updated();
-    dao.update(update_link);
+    dao.update(link.clone()).unwrap();
 
-    let l = dao.read(init_link_updated()).unwrap();
-
-    assert!(link == l)
-
+    let read_c = LinkCriteria::new();
+    match dao.read(&read_c.id(1)) {
+        Ok(l) => assert!(link == l),
+        Err(err) => panic!("UPDATE FAILED: {}", err)
+    }
 }
 
-/*
+
 #[test]
 fn test_list() {
-    let dao = BookmarkDao::new();
+    let dao = init_test_db();
+    let link = Link {
+        id: 1,
+        name: String::from("inseted"),
+        url: String::from("test_url"),
+        rev_no: 0
+    };
 
-    let b = init_bookmart_res();
-    assert!(dao.list());
+    dao.insert(&link).unwrap();
+    dao.insert(&link).unwrap();
+
+    let list_c = LinkCriteria::new();
+    match dao.list(&list_c.url(String::from("test_url"))) {
+        Ok(v) => assert!(v.len() == 3),
+        Err(err) => panic!("LIST FAILED: {}", err)
+    }
 }
-*/
