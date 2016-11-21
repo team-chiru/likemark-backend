@@ -7,8 +7,7 @@ extern crate rusqlite;
 extern crate bookmarkt;
 
 use bookmarkt::common::utils;
-use bookmarkt::common::bookmark::Link;
-use bookmarkt::common::bookmark::LinkCriteria;
+use bookmarkt::common::bookmark::*;
 use bookmarkt::dao::bookmark_dao::LinkDao;
 
 use rusqlite::Connection;
@@ -17,12 +16,8 @@ use std::path::Path;
 fn main() {
     let db = Connection::open(Path::new("res/BOOKMARKT.db")).unwrap();
 
-<<<<<<< HEAD
-    let bb = Link {
-=======
     let base_link = Link {
->>>>>>> 85cea06dcb94f4c586cc5a7c1a209e1321e527aa
-        id: 1,
+        id: 8,
         name: String::from("test"),
         url: String::from("test_url"),
         rev_no: 0
@@ -39,64 +34,40 @@ fn main() {
 
     //TEST clear
     println!("\nTEST CLEAR");
-    dao.clear();
-    /*
+    //dao.clear();
+
     // TEST INSERT
     //println!("\nTEST INSERT");
     //dao.insert(base_link.clone());
 
     // TEST READ
     println!("\nTEST READ");
-<<<<<<< HEAD
-    let read_criteria = LinkCriteria::new().id(1);
-    match dao.read(&read_criteria) {
-=======
-    match dao.read(base_link.clone()) {
->>>>>>> 85cea06dcb94f4c586cc5a7c1a209e1321e527aa
-        Ok(b) => println!("{}", b.name),
+    let read_c = LinkCriteria::new();
+    match dao.read(&read_c.id(1)) {
+        Ok(b) => println!("{}", b.to_yaml()),
         Err(_) => panic!("error")
     }
 
-<<<<<<< HEAD
-    // TEST INSERT
-    println!("\nTEST INSERT");
-    dao.insert(&bb);
-
     // TEST DELETE
-    // println!("\nTEST DELETE");
-    // dao.delete(bb.clone());
+    println!("\nTEST DELETE");
+    let delete_c = LinkCriteria::new();
+    match dao.delete(&delete_c.id(7)) {
+        Ok(id) => println!("ROW WITH ID:{} HAS BEEN DELETED SUCCESSFULLY", id),
+        Err(err) => println!("{}", err)
+    };
 
     // TEST UPDATE
     println!("\nTEST UPDATE");
-
-    let updated = Link {
-        id: bb.id,
-        name: String::from("updated"),
-        url: bb.url,
-        rev_no: bb.id + 1
+    match dao.update(base_link.clone()) {
+        Ok(id) => println!("ROW WITH ID:{} HAS BEEN UPDATED SUCCESSFULLY", id),
+        Err(err) => println!("{}", err)
     };
-    dao.update(&updated);
 
-    // TEST LIST
-    println!("\nTEST LIST");
-    let list_criteria = LinkCriteria::new().name(String::from("test"));
-    let links = dao.list(&list_criteria);
-=======
-    // TEST DELETE
-    // println!("\nTEST DELETE");
-    // dao.delete(base_link.clone());
-
-    // TEST UPDATE
-    //println!("\nTEST UPDATE");
-    //dao.update(base_link.clone());
-*/
     //TEST LIST
     println!("\nTEST LIST");
-    let links = dao.list(base_link.clone());
->>>>>>> 85cea06dcb94f4c586cc5a7c1a209e1321e527aa
-    for link in links {
-        println!("{}", link.id);
+    let list_c = LinkCriteria::new();
+    let links = dao.list(&list_c.name(String::from("test")));
+    for link in links.expect("list failed") {
+        println!("{}", link.to_yaml());
     }
-
-
 }

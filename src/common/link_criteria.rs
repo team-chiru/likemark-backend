@@ -1,5 +1,8 @@
+use common::utils::QueryValue;
+use std::collections::BTreeMap;
+
 pub struct LinkCriteria {
-    id: Option<i32>,
+    pub id: Option<i32>,
     name: Option<String>,
     url: Option<String>,
     rev_no: Option<i32>
@@ -73,6 +76,3 @@ impl<'a> LinkCriteria {
         btree
     }
 }
-
-use std::collections::BTreeMap;
-use common::utils::QueryValue;

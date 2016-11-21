@@ -26,19 +26,19 @@ pub fn dump_file(path: &str) -> String {
 }
 
 pub enum QueryValue {
+    Null,
     Integer(i32),
     String(String),
-    Date(DateTime<Local>),
-    Null
+    Date(DateTime<Local>)
 }
 
 impl<'a> Into<String> for &'a QueryValue {
     fn into(self) -> String {
         match self {
+            &QueryValue::Null => String::from("NULL"),
             &QueryValue::Integer(i) => format!("{}", i),
-            &QueryValue::String(ref s) => format!("\"{}\"", s),
-            &QueryValue::Date(t) => t.to_rfc2822(),
-            &QueryValue::Null => String::from("NULL")
+            &QueryValue::String(ref s) => format!("\'{}\'", s),
+            &QueryValue::Date(t) => t.to_rfc2822()
         }
     }
 }
