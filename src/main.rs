@@ -6,5 +6,7 @@
 use clap::App;
 
 fn main() {
-    App::new("fake").version("v1.0-beta").get_matches();
+    let yaml = load_yaml!("../res/yaml/cli.yaml");
+    let matches = App::from_yaml(yaml).get_matches();
+
 }
