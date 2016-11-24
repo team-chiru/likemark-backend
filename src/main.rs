@@ -18,4 +18,10 @@ fn main() {
             }
         }
     }
+
+    if let Some(submatches) = matches.subcommand_matches("export"){
+        if let Some(dest) = submatches.value_of("DEST"){
+            println!("{}", utils::dump_file(dest) );
+        }
+    }
 }

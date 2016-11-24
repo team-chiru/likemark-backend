@@ -7,13 +7,13 @@ subcommands:
         about: Import bookmarks from browser format file to the bookmarkt database
         args:
             - SRC:
-                help: Bookmarks source file
+                help: Bookmarks source file path
                 required: true
                 index: 1
     - export:
         about: Export bookmarks from the bookmarkt database to browser format file
         args:
             - DEST:
-                help: Bookmarks destination file
+                help: from bookmarks file to browser
                 required: true
                 index: 1
