@@ -15,4 +15,10 @@ fn main() {
             println!("{}", utils::dump_file(src));
         }
     }
+
+    if let Some(submatches) = matches.subcommand_matches("export"){
+        if let Some(dest) = submatches.value_of("DEST"){
+            println!("{}", utils::dump_file(dest) );
+        }
+    }
 }
