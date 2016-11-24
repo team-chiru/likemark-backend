@@ -12,7 +12,10 @@ fn main() {
 
     if let Some(submatches) = matches.subcommand_matches("import") {
         if let Some(src) = submatches.value_of("SRC") {
-            println!("{}", utils::dump_file(src));
+            match utils::dump_file(src) {
+                Ok(f) => println!("{}", f),
+                Err(msg) => println!("{}", msg)
+            }
         }
     }
 }
