@@ -4,8 +4,15 @@
 #[macro_use] extern crate clap;
 
 use clap::App;
+use bookmarkt::common::utils;
 
 fn main() {
     let yaml = load_yaml!("../res/yaml/cli.yaml");
     let matches = App::from_yaml(yaml).get_matches();
+
+    if let Some(submatches) = matches.subcommand_matches("import") {
+        if let Some(src) = submatches.value_of("SRC") {
+            println!("{}", utils::dump_file(src));
+        }
+    }
 }
