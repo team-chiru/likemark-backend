@@ -1,4 +1,4 @@
-UPDATE bookmark SET
+UPDATE link SET
     id = {{ id }},
     name = {{ name }},
     url = {{ url }},

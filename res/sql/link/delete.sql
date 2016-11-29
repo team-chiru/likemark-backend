@@ -1,4 +1,4 @@
-DELETE FROM bookmark
+DELETE FROM link
 WHERE
 	id = {{ id }}
 ;

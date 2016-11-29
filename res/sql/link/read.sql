@@ -1,9 +1,9 @@
 SELECT
-    b.id,
-    b.name,
-    b.url,
-    b.rev_no
-FROM bookmark b
+    l.id,
+    l.name,
+    l.url,
+    l.rev_no
+FROM link l
 WHERE
-    b.id = {{ id }}
+    l.id = {{ id }}
 ;

@@ -1,10 +1,10 @@
 SELECT
-    b.id,
-    b.name,
-    b.url,
-    b.rev_no
-FROM  bookmark b
+    l.id,
+    l.name,
+    l.url,
+    l.rev_no
+FROM  link l
 WHERE
-    ( {{ url }} IS NULL OR b.url = {{ url }}) AND
-    ( {{ name }} IS NULL OR b.name = {{ name }})
+    ( {{ url }} IS NULL OR l.url = {{ url }}) AND
+    ( {{ name }} IS NULL OR l.name = {{ name }})
 ;
