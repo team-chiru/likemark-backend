@@ -13,13 +13,13 @@ fn init_test_db() -> LinkDao {
         Err(err) => panic!("OPEN TEST DB FAILED: {}", err)
     };
 
-    let init_sql = String::from("res/sql/bookmark/init.sql");
-    let init_test_sql = String::from("res/sql/bookmark/init_test.sql");
-    let read_sql = String::from("res/sql/bookmark/read.sql");
-    let delete_sql = String::from("res/sql/bookmark/delete.sql");
-    let insert_sql = String::from("res/sql/bookmark/insert.sql");
-    let update_sql = String::from("res/sql/bookmark/update.sql");
-    let list_sql = String::from("res/sql/bookmark/list.sql");
+    let init_sql = String::from("res/sql/link/init.sql");
+    let init_test_sql = String::from("res/sql/link/init_test.sql");
+    let read_sql = String::from("res/sql/link/read.sql");
+    let delete_sql = String::from("res/sql/link/delete.sql");
+    let insert_sql = String::from("res/sql/link/insert.sql");
+    let update_sql = String::from("res/sql/link/update.sql");
+    let list_sql = String::from("res/sql/link/list.sql");
 
     let init_query = utils::dump_file(&init_sql).unwrap();
     let init_test_query = utils::dump_file(&init_test_sql).unwrap();
