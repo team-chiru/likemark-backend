@@ -4,15 +4,14 @@ version = "0.1.0"
 authors = ["team-chiru <team-chiru@protonmail.com>"]
 
 [dependencies]
-rusqlite = "0.7.3"
-chrono = "0.2.25"
+rusqlite = "*"
+chrono = "*"
 yaml-rust = "*"
-toml = "0.2"
-regex = "0.1"
+toml = "*"
+regex = "*"
 log="*"
 env_logger="*"
 dotenv = "*"
-dotenv_macros="*"
 
 [dependencies.clap]
 version = "*"

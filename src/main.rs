@@ -15,6 +15,7 @@ fn main() {
     dotenv().ok();
     env_logger::init().unwrap();
 
+    info!("COUCOU");
     let yaml = load_yaml!("../res/yaml/cli.yaml");
     let matches = App::from_yaml(yaml).get_matches();
 

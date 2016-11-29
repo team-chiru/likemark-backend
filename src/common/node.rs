@@ -2,7 +2,7 @@ use common::bookmark::Link;
 
 pub struct Node {
     pub links: Vec<Link>,
-    pub node: Box<FnMut() -> Node>
+    //pub node: Node
 }
 
 impl Node {

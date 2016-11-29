@@ -1,6 +1,3 @@
-#![feature(plugin)]
-#![plugin(dotenv_macros)]
-
 extern crate chrono;
 extern crate rusqlite;
 

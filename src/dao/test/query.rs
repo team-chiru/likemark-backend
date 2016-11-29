@@ -1,4 +1,5 @@
 extern crate rusqlite;
+use std::env;
 
 use common::bookmark::*;
 use common::utils;
@@ -12,8 +13,16 @@ fn init_test_db() -> LinkDao {
         Err(err) => panic!("OPEN TEST DB FAILED: {}", err)
     };
 
-    let init_query = utils::dump_file(dotenv!("INIT_SQL")).unwrap();
-    let init_test_query = utils::dump_file(dotenv!("INIT_TEST_SQL")).unwrap();
+    let init_sql = String::from("res/sql/bookmark/init.sql");
+    let init_test_sql = String::from("res/sql/bookmark/init_test.sql");
+    let read_sql = String::from("res/sql/bookmark/read.sql");
+    let delete_sql = String::from("res/sql/bookmark/delete.sql");
+    let insert_sql = String::from("res/sql/bookmark/insert.sql");
+    let update_sql = String::from("res/sql/bookmark/update.sql");
+    let list_sql = String::from("res/sql/bookmark/list.sql");
+
+    let init_query = utils::dump_file(&init_sql).unwrap();
+    let init_test_query = utils::dump_file(&init_test_sql).unwrap();
 
     match db.execute(init_query.as_str(), &[]) {
         Ok(_) => {},
@@ -27,11 +36,11 @@ fn init_test_db() -> LinkDao {
 
     LinkDao {
         connection: db,
-        read_sql: utils::dump_file(dotenv!("READ_SQL")).unwrap(),
-        delete_sql: utils::dump_file(dotenv!("DELETE_SQL")).unwrap(),
-        insert_sql: utils::dump_file(dotenv!("INSERT_SQL")).unwrap(),
-        update_sql: utils::dump_file(dotenv!("UPDATE_SQL")).unwrap(),
-        list_sql: utils::dump_file(dotenv!("LIST_SQL")).unwrap()
+        read_sql: utils::dump_file(&read_sql).unwrap(),
+        delete_sql: utils::dump_file(&delete_sql).unwrap(),
+        insert_sql: utils::dump_file(&insert_sql).unwrap(),
+        update_sql: utils::dump_file(&update_sql).unwrap(),
+        list_sql: utils::dump_file(&list_sql).unwrap()
     }
 }
 
