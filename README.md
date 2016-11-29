@@ -1,5 +1,6 @@
-# bookmarkt created by
-# Valentin Laurent and Jonathan Tourangeau
+# bookmarkt 
+
+created by Valentin Laurent and Jonathan Tourangeau
 
 Copyright (c) 2016 team-chiru
 
