@@ -1,9 +1,11 @@
 SELECT
-    n.id,
-    n.name,
-    n.node_id
-    n.rev_no
+   l.id,
+   l.name,
+   l.node_id,
+   l.rev_no
 FROM node n
+INNER JOIN link l
+ON l.node_id = n.id
 WHERE
-    n.id = {{ id }}
+ n.node_id = {{ id }}
 ;
