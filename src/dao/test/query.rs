@@ -12,8 +12,8 @@ fn init_test_db() -> LinkDao {
         Err(err) => panic!("OPEN TEST DB FAILED: {}", err)
     };
 
-    let init_query = utils::dump_file("res/sql/bookmark/init.sql");
-    let init_test_query = utils::dump_file("res/sql/bookmark/init_test.sql");
+    let init_query = utils::dump_file(dotenv!("INIT_SQL")).unwrap();
+    let init_test_query = utils::dump_file(dotenv!("INIT_TEST_SQL")).unwrap();
 
     match db.execute(init_query.as_str(), &[]) {
         Ok(_) => {},
@@ -27,11 +27,11 @@ fn init_test_db() -> LinkDao {
 
     LinkDao {
         connection: db,
-        read_sql: utils::dump_file("res/sql/bookmark/read.sql"),
-        delete_sql: utils::dump_file("res/sql/bookmark/delete.sql"),
-        insert_sql: utils::dump_file("res/sql/bookmark/insert.sql"),
-        update_sql: utils::dump_file("res/sql/bookmark/update.sql"),
-        list_sql: utils::dump_file("res/sql/bookmark/list.sql")
+        read_sql: utils::dump_file(dotenv!("READ_SQL")).unwrap(),
+        delete_sql: utils::dump_file(dotenv!("DELETE_SQL")).unwrap(),
+        insert_sql: utils::dump_file(dotenv!("INSERT_SQL")).unwrap(),
+        update_sql: utils::dump_file(dotenv!("UPDATE_SQL")).unwrap(),
+        list_sql: utils::dump_file(dotenv!("LIST_SQL")).unwrap()
     }
 }
 

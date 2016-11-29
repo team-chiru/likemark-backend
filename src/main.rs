@@ -1,12 +1,20 @@
 #![feature(field_init_shorthand)]
 
-#[macro_use] extern crate bookmarkt;
 #[macro_use] extern crate clap;
+#[macro_use] extern crate log;
+extern crate dotenv;
+
+extern crate bookmarkt;
+extern crate env_logger;
 
 use clap::App;
+use dotenv::dotenv;
 use bookmarkt::core::services::bookmark_services;
 
 fn main() {
+    dotenv().ok();
+    env_logger::init().unwrap();
+
     let yaml = load_yaml!("../res/yaml/cli.yaml");
     let matches = App::from_yaml(yaml).get_matches();
 

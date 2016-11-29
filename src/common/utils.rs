@@ -1,4 +1,5 @@
 extern crate chrono;
+
 use self::chrono::*;
 
 pub fn dump_file(path: &str) -> Result<String, String> {
@@ -22,7 +23,10 @@ pub fn dump_file(path: &str) -> Result<String, String> {
 
     use std::io::Read;
     match file.read_to_string(&mut dump) {
-        Ok(_) => Ok(dump),
+        Ok(_) => {
+            info!("Dump the file: {} successfully", path);
+            Ok(dump)
+        },
         Err(_) => Err(format!("Unable to find file: {}", path))
     }
 }

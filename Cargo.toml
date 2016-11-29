@@ -1,7 +1,7 @@
 [package]
 name = "bookmarkt"
 version = "0.1.0"
-authors = ["vlnk <dftvlnk@gmail.com>"]
+authors = ["team-chiru <team-chiru@protonmail.com>"]
 
 [dependencies]
 rusqlite = "0.7.3"
@@ -9,4 +9,11 @@ chrono = "0.2.25"
 yaml-rust = "*"
 toml = "0.2"
 regex = "0.1"
-clap = { version = "*", features = [ "yaml", "suggestions", "color" ] }
+log="*"
+env_logger="*"
+dotenv = "*"
+dotenv_macros="*"
+
+[dependencies.clap]
+version = "*"
+features = [ "yaml", "suggestions", "color" ]
