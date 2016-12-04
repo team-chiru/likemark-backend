@@ -6,6 +6,7 @@ use common::utils::QueryValue;
 pub struct Node {
     pub id: i32,
     pub links: Vec<Link>,
+    pub node_type: String,
     pub node: Option<Vec<Box<Node>>>
 }
 
