@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS link (
     url TEXT NOT NULL,
     rev_no INTEGER NOT NULL,
 
-    FOREIGN KEY(node_id) REFERENCES node(id)
+    FOREIGN KEY(node_id) REFERENCES node(id) ON DELETE CASCADE
 );

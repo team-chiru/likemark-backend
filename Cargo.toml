@@ -12,7 +12,3 @@ regex = "*"
 log="*"
 env_logger="*"
 dotenv = "*"
-
-[dependencies.clap]
-version = "*"
-features = [ "yaml", "suggestions", "color" ]
