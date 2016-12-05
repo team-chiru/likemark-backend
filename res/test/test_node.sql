@@ -49,7 +49,7 @@ WHERE
 /*
 NOTES/SPECS:
 tout les ids marchent, on peut faire varier la taille des id générés
-(exemple: 1b3&)
-CONDITIONS HYPER MEGA IMPORTANTE:
+(exemple: 1b3& ce qui donne 4*[0-9a-zA-Z!@#$%&^*...] possibilités)
+CONDITION HYPER MEGA IMPORTANTE:
 chaque id d'un niveau doit contenir l'id parent!
 */
