@@ -38,7 +38,6 @@ SELECT l.name, n.id, n.node_id FROM link l
 LEFT JOIN node n ON l.node_id = n.id
 WHERE
 	SUBSTR(n.id, 1, LENGTH('21')) = '21';
-
 /* FINAL QUERY:
 SELECT l.name, n.id, n.node_id FROM link l
 LEFT JOIN node n ON l.node_id = n.id
