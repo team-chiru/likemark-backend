@@ -1,5 +1,3 @@
-#![feature(field_init_shorthand)]
-
 #[macro_use] extern crate log;
 extern crate dotenv;
 
