@@ -7,12 +7,14 @@ pub struct BookmarkServices {
 
 impl BookmarkServices {
     pub fn import(src_path: String) -> Result<String, String> {
-        match utils::dump_file(&src_path) {
-            Ok(p) => match parse_html(p) {
-                Ok(_) => Ok(String::from("Ok")),
-                Err(msg) => Err(msg)
-            },
-            Err(_) => Err(format!("{}", "Destination path doesn't exist!"))
+        match utils::load_file(&src_path) {
+            Ok(p) => {
+                match parse_html(p) {
+                    Ok(_) => Ok(String::from("Ok")),
+                    Err(msg) => Err(msg),
+                }
+            }
+            Err(_) => Err(format!("{}", "Destination path doesn't exist!")),
         }
     }
 }

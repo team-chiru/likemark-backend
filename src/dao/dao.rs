@@ -6,10 +6,10 @@ use common::Criteria;
 pub struct SqlConfig {
     pub connection: rusqlite::Connection,
     read_sql: String,
-    pub delete_sql: String,
-    pub insert_sql: String,
-    pub update_sql: String,
-    pub list_sql: String,
+    delete_sql: String,
+    insert_sql: String,
+    update_sql: String,
+    list_sql: String,
 }
 
 impl SqlConfig {

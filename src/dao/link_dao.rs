@@ -2,13 +2,15 @@ use dao::dao::Dao;
 use dao::dao::SqlConfig;
 use dao::query_parser::*;
 
-use common::Entity;
+use common::Link;
 use common::Criteria;
+use common::types::FnType;
+use common::types::StructType;
 
-struct EntityDao;
+struct LinkDao;
 
-impl Dao for EntityDao {
-    fn read(c: &Criteria, config: &SqlConfig) -> Result<Entity, String> {
+impl Dao for LinkDao {
+    fn read(c: &Criteria, config: &SqlConfig) -> Result<Link, String> {
         let template = config.get_read_sql();
         if c.id == None {
             return Err(String::from("Invalid criteria: id must be set!"));
@@ -22,14 +24,17 @@ impl Dao for EntityDao {
             }
         };
 
-        let entity_iter = match stmt.query_map(&[], |row| {
-            Entity {
+        let link_iter = match stmt.query_map(&[], |row| {
+            let struct_type: String = row.get(4);
+            let fn_type: String = row.get(5);
+
+            Link {
                 id: row.get(0),
                 parent_id: row.get(1),
                 name: row.get(2),
                 url: row.get(3),
-                struct_type: row.get(4),
-                fn_type: row.get(5),
+                struct_type: StructType::from(struct_type),
+                fn_type: FnType::from(fn_type),
                 rev_no: row.get(6),
             }
         }) {
@@ -39,13 +44,13 @@ impl Dao for EntityDao {
             }
         };
 
-        match entity_iter.last() {
+        match link_iter.last() {
             Some(l) => Ok(l.unwrap()),
             None => Err(format!("Nothing to read!")),
         }
     }
 
-    fn insert(e: &Entity, config: &SqlConfig) -> Result<i32, String> {
+    fn insert(e: &Link, config: &SqlConfig) -> Result<i32, String> {
         let btree = e.clone().to_btree();
         let template = config.get_insert_sql();
 
@@ -67,7 +72,7 @@ impl Dao for EntityDao {
         }
     }
 
-    fn update(e: Entity, config: &SqlConfig) -> Result<i32, String> {
+    fn update(e: Link, config: &SqlConfig) -> Result<i32, String> {
         let update_id = e.id;
         let update_query = parse_query(&e.to_btree(), config.get_update_sql());
 
@@ -77,8 +82,8 @@ impl Dao for EntityDao {
         }
     }
 
-    fn list(c: &Criteria, config: &SqlConfig) -> Result<Vec<Entity>, String> {
-        let mut list_entity = Vec::<Entity>::new();
+    fn list(c: &Criteria, config: &SqlConfig) -> Result<Vec<Link>, String> {
+        let mut list_link = Vec::<Link>::new();
         let list_query = parse_query(&c.to_btree(), config.get_list_sql());
 
         let mut query_result = match config.connection.prepare(list_query.as_str()) {
@@ -88,14 +93,17 @@ impl Dao for EntityDao {
             }
         };
 
-        let entity_iter = match query_result.query_map(&[], |row| {
-            Entity {
+        let link_iter = match query_result.query_map(&[], |row| {
+            let struct_type: String = row.get(4);
+            let fn_type: String = row.get(5);
+
+            Link {
                 id: row.get(0),
                 parent_id: row.get(1),
                 name: row.get(2),
                 url: row.get(3),
-                struct_type: row.get(4),
-                fn_type: row.get(5),
+                struct_type: StructType::from(struct_type),
+                fn_type: FnType::from(fn_type),
                 rev_no: row.get(6),
             }
         }) {
@@ -105,14 +113,14 @@ impl Dao for EntityDao {
             }
         };
 
-        for result in entity_iter {
+        for result in link_iter {
             match result {
-                Ok(b) => list_entity.push(b),
+                Ok(b) => list_link.push(b),
                 Err(_) => continue,
             }
         }
 
-        Ok(list_entity)
+        Ok(list_link)
     }
 }
 

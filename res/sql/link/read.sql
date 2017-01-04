@@ -1,9 +1,12 @@
 SELECT
-    l.id,
-    l.name,
-    l.url,
-    l.rev_no
-FROM link l
+    e.id,
+    e.parent_id,
+    e.name,
+    e.url,
+    e.struct_type,
+    e.fn_type,
+    e.rev_no
+FROM entity e
 WHERE
-    l.id = {{ id }}
+    e.id = {{ id }} AND e.struct_type = "LINK"
 ;

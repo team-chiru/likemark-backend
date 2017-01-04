@@ -1,14 +1,17 @@
 use std::collections::BTreeMap;
 use common::utils::QueryValue;
 
+use common::types::StructType;
+use common::types::FnType;
+
 #[derive(Debug, Clone)]
 pub struct Entity {
     pub id: i32,
     pub parent_id: i32,
     pub name: String,
     pub url: String,
-    pub struct_type: String,
-    pub fn_type: String,
+    pub struct_type: StructType,
+    pub fn_type: FnType,
     pub rev_no: i32,
 }
 
@@ -40,8 +43,9 @@ impl Entity {
         btree.insert(String::from("name"), QueryValue::String(self.name));
         btree.insert(String::from("url"), QueryValue::String(self.url));
         btree.insert(String::from("struct_type"),
-                     QueryValue::String(self.struct_type));
-        btree.insert(String::from("fn_type"), QueryValue::String(self.fn_type));
+                     QueryValue::String(self.struct_type.into()));
+        btree.insert(String::from("fn_type"),
+                     QueryValue::String(self.fn_type.into()));
         btree.insert(String::from("rev_no"), QueryValue::Integer(self.rev_no));
 
         btree
