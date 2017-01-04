@@ -20,7 +20,7 @@ trait SqliteDao: Dao {
 }
 
 #[derive(Debug)]
-pub struct LinkDao {
+pub struct EntityDao {
     pub connection: rusqlite::Connection,
     pub read_sql: String,
     pub delete_sql: String,
