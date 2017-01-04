@@ -1,12 +1,9 @@
 pub mod utils;
 
-pub mod entity;
-pub mod criteria;
+mod entity;
+mod criteria;
 
-pub mod bookmark {
-    type Link = Entity;
-    type Folder = Entity;
-
-    pub use common::entity::Entity;
-    pub use common::criteria::Criteria;
-}
+pub type Entity = entity::Entity;
+pub type Criteria = criteria::Criteria;
+pub type Link = entity::Entity;
+pub type Folder = entity::Entity;

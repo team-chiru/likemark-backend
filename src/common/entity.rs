@@ -3,13 +3,13 @@ use common::utils::QueryValue;
 
 #[derive(Debug, Clone)]
 pub struct Entity {
-    id: i32,
-    parent_id: i32,
-    name: String,
-    url: String,
-    struct_type: String,
-    fn_type: String,
-    rev_no: i32,
+    pub id: i32,
+    pub parent_id: i32,
+    pub name: String,
+    pub url: String,
+    pub struct_type: String,
+    pub fn_type: String,
+    pub rev_no: i32,
 }
 
 impl Entity {

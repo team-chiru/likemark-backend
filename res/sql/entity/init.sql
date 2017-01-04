@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS entity (
     function_type TEXT, -- Music, Playlist, Video, NULL
     rev_no INTEGER NOT NULL,
 
-    FOREIGN KEY(parent_id) REFERENCES node(id) ON DELETE CASCADE
+    FOREIGN KEY(parent_id) REFERENCES entity(id) ON DELETE CASCADE
 );

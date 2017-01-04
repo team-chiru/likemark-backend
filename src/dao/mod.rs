@@ -1,6 +1,9 @@
 // pub mod bookmark_dao;
 pub mod query_parser;
+pub mod dao;
 
-pub use super::common::bookmark::*;
+pub mod entity_dao;
+
+pub use super::common::*;
 
 mod test;

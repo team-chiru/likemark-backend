@@ -2,13 +2,13 @@ use common::utils::QueryValue;
 use std::collections::BTreeMap;
 
 pub struct Criteria {
-    id: Option<i32>,
-    parent_id: Option<i32>,
-    name: Option<String>,
-    url: Option<String>,
-    struct_type: Option<String>,
-    fn_type: Option<String>,
-    rev_no: Option<i32>,
+    pub id: Option<i32>,
+    pub parent_id: Option<i32>,
+    pub name: Option<String>,
+    pub url: Option<String>,
+    pub struct_type: Option<String>,
+    pub fn_type: Option<String>,
+    pub rev_no: Option<i32>,
 }
 
 impl Criteria {
