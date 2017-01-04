@@ -1,10 +1,13 @@
 SELECT
-    l.id,
-    l.name,
-    l.url,
-    l.rev_no
-FROM  link l
+    e.id,
+    e.parent_id,
+    e.name,
+    e.url,
+    e.struct_type,
+    e.fn_type,
+    e.rev_no
+FROM  entity e
 WHERE
-    ( {{ url }} IS NULL OR l.url = {{ url }}) AND
-    ( {{ name }} IS NULL OR l.name = {{ name }})
+    ( {{ url }} IS NULL OR e.url = {{ url }}) AND
+    ( {{ name }} IS NULL OR e.name = {{ name }})
 ;
