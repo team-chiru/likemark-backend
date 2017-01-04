@@ -39,7 +39,8 @@ impl Entity {
         btree.insert(String::from("parent_id"), QueryValue::Integer(self.id));
         btree.insert(String::from("name"), QueryValue::String(self.name));
         btree.insert(String::from("url"), QueryValue::String(self.url));
-        btree.insert(String::from("struct_type"), QueryValue::String(self.struct_type));
+        btree.insert(String::from("struct_type"),
+                     QueryValue::String(self.struct_type));
         btree.insert(String::from("fn_type"), QueryValue::String(self.fn_type));
         btree.insert(String::from("rev_no"), QueryValue::Integer(self.rev_no));
 
