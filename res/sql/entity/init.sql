@@ -1,8 +1,8 @@
 DROP TABLE entity;
 
 CREATE TABLE IF NOT EXISTS entity (
-    id TEXT NOT NULL PRIMARY KEY,
-    parent_id INTEGER NOT NULL,
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    parent_id TEXT NOT NULL,
     name TEXT NOT NULL,
     url TEXT,
     structure_type TEXT NOT NULL, -- Link, Node, Folder, Tag, Groupe...
