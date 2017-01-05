@@ -1,4 +1,4 @@
 pub use super::*;
 
 #[cfg(test)]
-mod query;
+mod link_query;
