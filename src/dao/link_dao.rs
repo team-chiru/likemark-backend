@@ -15,7 +15,7 @@ pub struct LinkDao {
 
 impl Dao for LinkDao {
     fn read(&self, c: &Criteria) -> Result<Link, String> {
-        let template = self.config.get_read_sql();
+        let template = self.config.read_sql.clone();
         if c.id == None {
             return Err(String::from("Invalid criteria: id must be set!"));
         }
@@ -56,7 +56,7 @@ impl Dao for LinkDao {
 
     fn insert(&self, e: &Link) -> Result<i32, String> {
         let btree = e.clone().to_btree();
-        let template = self.config.get_insert_sql();
+        let template = self.config.insert_sql.clone();
 
         match self.config.connection.execute(parse_query(&btree, template).as_str(), &[]) {
             Ok(insert) => Ok(insert),
@@ -69,7 +69,7 @@ impl Dao for LinkDao {
             return Err(String::from("Invalid criteria: id must be set!"));
         }
 
-        let delete_query = parse_query(&c.to_btree(), self.config.get_delete_sql());
+        let delete_query = parse_query(&c.to_btree(), self.config.delete_sql.clone());
         match self.config.connection.execute(delete_query.as_str(), &[]) {
             Ok(_) => Ok(c.id.unwrap()),
             Err(err) => Err(format!("Delete failed: {}", err)),
@@ -78,7 +78,7 @@ impl Dao for LinkDao {
 
     fn update(&self, e: Link) -> Result<i32, String> {
         let update_id = e.id;
-        let update_query = parse_query(&e.to_btree(), self.config.get_update_sql());
+        let update_query = parse_query(&e.to_btree(), self.config.update_sql.clone());
 
         match self.config.connection.execute(update_query.as_str(), &[]) {
             Ok(_) => Ok(update_id),
@@ -88,7 +88,7 @@ impl Dao for LinkDao {
 
     fn list(&self, c: &Criteria) -> Result<Vec<Link>, String> {
         let mut list_link = Vec::<Link>::new();
-        let list_query = parse_query(&c.to_btree(), self.config.get_list_sql());
+        let list_query = parse_query(&c.to_btree(), self.config.list_sql.clone());
 
         let mut query_result = match self.config.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
@@ -129,7 +129,7 @@ impl Dao for LinkDao {
 }
 
 // trait SqliteDao: Dao {
-//    fn get_connection() -> rusqlite::Connection {
+//    fn connection() -> rusqlite::Connection {
 //        match Connection::open_in_memory() {
 //            Ok(c) => c,
 //            Err(err) => panic!("OPEN TEST DB FAILED: {}", err),
