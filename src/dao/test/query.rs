@@ -1,5 +1,4 @@
 extern crate rusqlite;
-use std::env;
 
 use common::Link;
 use common::types::StructType;
@@ -72,7 +71,7 @@ fn read() {
         rev_no: 0,
     };
 
-    let mut read_c = Criteria::new();
+    let read_c = Criteria::new();
     match dao.read(&read_c.id(id_test)) {
         Ok(l) => assert!(l == link),
         Err(err) => panic!("READ FAILED: {}", err),
@@ -82,11 +81,12 @@ fn read() {
 #[test]
 fn insert() {
     let dao = LinkDao { config: init_test_db() };
+    let id_test = 8;
     let link = Link {
-        id: -1,
+        id: id_test,
         parent_id: String::from("3"),
         name: String::from("inserted"),
-        url: String::from("url"),
+        url: String::from("test_url"),
         struct_type: StructType::Link,
         fn_type: FnType::None,
         rev_no: 0,
@@ -94,69 +94,80 @@ fn insert() {
 
     dao.insert(&link).unwrap();
     let read_c = Criteria::new();
-    match dao.read(&read_c.id(link.id)) {
+    match dao.read(&read_c.id(id_test)) {
         Ok(l) => assert!(l == link),
         Err(err) => panic!("INSERT FAILED: {}", err),
     }
 }
-// [test]
-// [should_panic]
-// fn test_delete() {
-// let dao = init_test_db();
-// let link = Link {
-// id: 1,
-// name: String::from("test"),
-// url: String::from("test_url"),
-// rev_no: 0,
-// };
-//
-// let crit = LinkCriteria::new().id(link.id);
-//
-// dao.delete(&crit).unwrap();
-// match dao.read(&crit) {
-// Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
-// Err(err) => panic!("{}", err),
-// }
-// }
-//
-// [test]
-// fn test_update() {
-// let dao = init_test_db();
-// let link = Link {
-// id: 1,
-// name: String::from("updated"),
-// url: String::from("test_url"),
-// rev_no: 0,
-// };
-//
-// dao.update(link.clone()).unwrap();
-//
-// let read_c = LinkCriteria::new();
-// match dao.read(&read_c.id(1)) {
-// Ok(l) => assert!(link == l),
-// Err(err) => panic!("UPDATE FAILED: {}", err),
-// }
-// }
-//
-//
-// [test]
-// fn test_list() {
-// let dao = init_test_db();
-// let link = Link {
-// id: 1,
-// name: String::from("inseted"),
-// url: String::from("test_url"),
-// rev_no: 0,
-// };
-//
-// dao.insert(&link).unwrap();
-// dao.insert(&link).unwrap();
-//
-// let list_c = LinkCriteria::new();
-// match dao.list(&list_c.url(String::from("test_url"))) {
-// Ok(v) => assert!(v.len() == 3),
-// Err(err) => panic!("LIST FAILED: {}", err),
-// }
-// }
-//
-//
+
+#[test]
+#[should_panic]
+fn test_delete() {
+    let dao = LinkDao { config: init_test_db() };
+    let id_test = 3;
+    let crit = Criteria::new().id(id_test);
+
+    dao.delete(&crit).unwrap();
+    match dao.read(&crit) {
+        Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
+        Err(err) => panic!("{}", err),
+    }
+}
+
+#[test]
+fn test_update() {
+    let dao = LinkDao { config: init_test_db() };
+    let id_test = 4;
+
+    let link = Link {
+        id: id_test,
+        parent_id: String::from("21"),
+        name: String::from("updated"),
+        url: String::from("test_url"),
+        struct_type: StructType::Link,
+        fn_type: FnType::None,
+        rev_no: 0,
+    };
+
+    dao.update(link.clone()).unwrap();
+
+    let read_c = Criteria::new();
+    match dao.read(&read_c.id(id_test)) {
+        Ok(l) => assert!(link == l),
+        Err(err) => panic!("UPDATE FAILED: {}", err),
+    }
+}
+
+#[test]
+fn test_list() {
+    let dao = LinkDao { config: init_test_db() };
+    let inserted_name = String::from("inseted");
+
+    let link1 = Link {
+        id: -1,
+        parent_id: String::from("3"),
+        name: inserted_name.clone(),
+        url: String::from("test_url1"),
+        struct_type: StructType::Link,
+        fn_type: FnType::None,
+        rev_no: 0,
+    };
+    let link2 = Link {
+        id: -1,
+        parent_id: String::from("4"),
+        name: inserted_name.clone(),
+        url: String::from("test_url2"),
+        struct_type: StructType::Node,
+        fn_type: FnType::None,
+        rev_no: 1,
+    };
+
+    dao.insert(&link1).unwrap();
+    dao.insert(&link2).unwrap();
+
+    let list_c = Criteria::new();
+    match dao.list(&list_c.name(inserted_name)) {
+        Ok(v) => assert!(v.len() == 2),
+        Err(err) => panic!("LIST FAILED: {}", err),
+    }
+}

@@ -119,7 +119,9 @@ impl Criteria {
             Some(rev_no) => {
                 btree.insert(String::from("rev_no"), QueryValue::Integer(rev_no));
             }
-            None => {}
+            None => {
+                btree.insert(String::from("rev_no"), QueryValue::Null);
+            }
         }
 
         btree

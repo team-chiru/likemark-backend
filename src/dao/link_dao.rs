@@ -9,18 +9,12 @@ use common::Criteria;
 use common::types::FnType;
 use common::types::StructType;
 
-use self::rusqlite::Connection;
-
 pub struct LinkDao {
     pub config: SqlConfig,
 }
 
 impl Dao for LinkDao {
-    fn get_config(&self) -> Option<&SqlConfig> {
-        Some(&self.config)
-    }
-
-    fn read(self, c: &Criteria) -> Result<Link, String> {
+    fn read(&self, c: &Criteria) -> Result<Link, String> {
         let template = self.config.get_read_sql();
         if c.id == None {
             return Err(String::from("Invalid criteria: id must be set!"));
@@ -60,7 +54,7 @@ impl Dao for LinkDao {
         }
     }
 
-    fn insert(self, e: &Link) -> Result<i32, String> {
+    fn insert(&self, e: &Link) -> Result<i32, String> {
         let btree = e.clone().to_btree();
         let template = self.config.get_insert_sql();
 
@@ -70,7 +64,7 @@ impl Dao for LinkDao {
         }
     }
 
-    fn delete(self, c: &Criteria) -> Result<i32, String> {
+    fn delete(&self, c: &Criteria) -> Result<i32, String> {
         if c.id == None {
             return Err(String::from("Invalid criteria: id must be set!"));
         }
@@ -82,7 +76,7 @@ impl Dao for LinkDao {
         }
     }
 
-    fn update(self, e: Link) -> Result<i32, String> {
+    fn update(&self, e: Link) -> Result<i32, String> {
         let update_id = e.id;
         let update_query = parse_query(&e.to_btree(), self.config.get_update_sql());
 
@@ -92,7 +86,7 @@ impl Dao for LinkDao {
         }
     }
 
-    fn list(self, c: &Criteria) -> Result<Vec<Link>, String> {
+    fn list(&self, c: &Criteria) -> Result<Vec<Link>, String> {
         let mut list_link = Vec::<Link>::new();
         let list_query = parse_query(&c.to_btree(), self.config.get_list_sql());
 
