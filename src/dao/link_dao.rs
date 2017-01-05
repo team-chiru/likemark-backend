@@ -9,6 +9,25 @@ use common::Criteria;
 use common::types::FnType;
 use common::types::StructType;
 
+macro_rules! create_link {
+    ($stmt:expr) => {{
+        $stmt.query_map(&[], |row| {
+            let struct_type: String = row.get(4);
+            let fn_type: String = row.get(5);
+
+            Link {
+                id: row.get(0),
+                parent_id: row.get(1),
+                name: row.get(2),
+                url: row.get(3),
+                struct_type: StructType::from(struct_type),
+                fn_type: FnType::from(fn_type),
+                rev_no: row.get(6),
+            }
+        })
+    }};
+}
+
 pub struct LinkDao {
     pub config: SqlConfig,
 }
@@ -28,23 +47,10 @@ impl Dao for LinkDao {
             }
         };
 
-        let link_iter = match stmt.query_map(&[], |row| {
-            let struct_type: String = row.get(4);
-            let fn_type: String = row.get(5);
-
-            Link {
-                id: row.get(0),
-                parent_id: row.get(1),
-                name: row.get(2),
-                url: row.get(3),
-                struct_type: StructType::from(struct_type),
-                fn_type: FnType::from(fn_type),
-                rev_no: row.get(6),
-            }
-        }) {
+        let link_iter = match create_link!(stmt) {
             Ok(l) => l,
             Err(err) => {
-                return Err(format!("Read failed: {}", err));
+                return Err(format!("List failed: {}", err));
             }
         };
 
@@ -90,27 +96,14 @@ impl Dao for LinkDao {
         let mut list_link = Vec::<Link>::new();
         let list_query = parse_query(&c.to_btree(), self.config.list_sql.clone());
 
-        let mut query_result = match self.config.connection.prepare(list_query.as_str()) {
+        let mut stmt = match self.config.connection.prepare(list_query.as_str()) {
             Ok(list) => list,
             Err(err) => {
                 return Err(format!("List failed: {}", err));
             }
         };
 
-        let link_iter = match query_result.query_map(&[], |row| {
-            let struct_type: String = row.get(4);
-            let fn_type: String = row.get(5);
-
-            Link {
-                id: row.get(0),
-                parent_id: row.get(1),
-                name: row.get(2),
-                url: row.get(3),
-                struct_type: StructType::from(struct_type),
-                fn_type: FnType::from(fn_type),
-                rev_no: row.get(6),
-            }
-        }) {
+        let link_iter = match create_link!(stmt) {
             Ok(l) => l,
             Err(err) => {
                 return Err(format!("List failed: {}", err));

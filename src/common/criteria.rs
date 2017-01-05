@@ -25,37 +25,37 @@ impl Criteria {
         }
     }
 
-    pub fn id(mut self, id: i32) -> Criteria {
+    pub fn id(&mut self, id: i32) -> &Criteria {
         self.id = Some(id);
         self
     }
 
-    pub fn parent_id(mut self, parent_id: String) -> Criteria {
+    pub fn parent_id(&mut self, parent_id: String) -> &Criteria {
         self.parent_id = Some(parent_id);
         self
     }
 
-    pub fn name(mut self, name: String) -> Criteria {
+    pub fn name(&mut self, name: String) -> &Criteria {
         self.name = Some(name);
         self
     }
 
-    pub fn url(mut self, url: String) -> Criteria {
+    pub fn url(&mut self, url: String) -> &Criteria {
         self.url = Some(url);
         self
     }
 
-    pub fn struct_type(mut self, struct_type: String) -> Criteria {
+    pub fn struct_type(&mut self, struct_type: String) -> &Criteria {
         self.struct_type = Some(struct_type);
         self
     }
 
-    pub fn fn_type(mut self, fn_type: String) -> Criteria {
+    pub fn fn_type(&mut self, fn_type: String) -> &Criteria {
         self.fn_type = Some(fn_type);
         self
     }
 
-    pub fn rev_no(mut self, rev_no: i32) -> Criteria {
+    pub fn rev_no(&mut self, rev_no: i32) -> &Criteria {
         self.rev_no = Some(rev_no);
         self
     }
