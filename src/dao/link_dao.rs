@@ -120,12 +120,3 @@ impl Dao for LinkDao {
         Ok(list_link)
     }
 }
-
-// trait SqliteDao: Dao {
-//    fn connection() -> rusqlite::Connection {
-//        match Connection::open_in_memory() {
-//            Ok(c) => c,
-//            Err(err) => panic!("OPEN TEST DB FAILED: {}", err),
-//        }
-//    }
-//
