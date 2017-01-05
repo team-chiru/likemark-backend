@@ -71,8 +71,8 @@ fn read() {
         rev_no: 0,
     };
 
-    let read_c = Criteria::new();
-    match dao.read(&read_c.id(id_test)) {
+    let mut read_c = Criteria::new();
+    match dao.read(read_c.id(id_test)) {
         Ok(l) => assert!(l == link),
         Err(err) => panic!("READ FAILED: {}", err),
     }
@@ -93,8 +93,9 @@ fn insert() {
     };
 
     dao.insert(&link).unwrap();
-    let read_c = Criteria::new();
-    match dao.read(&read_c.id(id_test)) {
+
+    let mut read_c = Criteria::new();
+    match dao.read(read_c.id(id_test)) {
         Ok(l) => assert!(l == link),
         Err(err) => panic!("INSERT FAILED: {}", err),
     }
@@ -105,7 +106,9 @@ fn insert() {
 fn test_delete() {
     let dao = LinkDao { config: init_test_db() };
     let id_test = 3;
-    let crit = Criteria::new().id(id_test);
+
+    let mut crit = Criteria::new();
+    crit.id(id_test);
 
     dao.delete(&crit).unwrap();
     match dao.read(&crit) {
@@ -119,21 +122,26 @@ fn test_update() {
     let dao = LinkDao { config: init_test_db() };
     let id_test = 4;
 
-    let link = Link {
-        id: id_test,
-        parent_id: String::from("21"),
-        name: String::from("updated"),
-        url: String::from("test_url"),
-        struct_type: StructType::Link,
-        fn_type: FnType::None,
-        rev_no: 0,
+    let mut read_c = Criteria::new();
+    let link = match dao.read(read_c.id(id_test)) {
+        Ok(l) => l,
+        Err(err) => panic!("UPDATE FAILED: {}", err),
     };
 
-    dao.update(link.clone()).unwrap();
+    let updated_link = Link {
+        id: link.id,
+        parent_id: link.parent_id.clone(),
+        name: String::from("updated"),
+        url: link.url.clone(),
+        struct_type: link.struct_type.clone(),
+        fn_type: link.fn_type.clone(),
+        rev_no: link.rev_no,
+    };
 
-    let read_c = Criteria::new();
-    match dao.read(&read_c.id(id_test)) {
-        Ok(l) => assert!(link == l),
+    dao.update(updated_link.clone()).unwrap();
+
+    match dao.read(read_c.id(id_test)) {
+        Ok(l) => assert!(updated_link == l),
         Err(err) => panic!("UPDATE FAILED: {}", err),
     }
 }
@@ -165,8 +173,8 @@ fn test_list() {
     dao.insert(&link1).unwrap();
     dao.insert(&link2).unwrap();
 
-    let list_c = Criteria::new();
-    match dao.list(&list_c.name(inserted_name)) {
+    let mut list_c = Criteria::new();
+    match dao.list(list_c.name(inserted_name)) {
         Ok(v) => assert!(v.len() == 2),
         Err(err) => panic!("LIST FAILED: {}", err),
     }
