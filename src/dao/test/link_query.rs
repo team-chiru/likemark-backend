@@ -141,7 +141,7 @@ fn test_update() {
 #[test]
 fn test_list() {
     let dao = LinkDao { config: init_test_db() };
-    let inserted_name = String::from("inseted");
+    let inserted_name = String::from("inserted");
 
     let link1 = Link {
         id: -1,
