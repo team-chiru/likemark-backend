@@ -7,5 +7,6 @@ UPDATE entity SET
     fn_type = {{ fn_type }}
     rev_no = {{ rev_no }}
 WHERE
-    id = {{ id }}
+  ( {{ e.id }} IS NULL OR e.id = {{ id }} ) AND
+  ( {{ e.parent_id }} IS NULL OR SUBSTR(e.parent_id, 1, LENGTH( {{ parent_id }} )) = {{ parent_id }} )
 ;
