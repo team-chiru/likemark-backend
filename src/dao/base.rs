@@ -35,9 +35,9 @@ impl SqlConfig {
 }
 
 pub trait Dao {
-    fn insert(e: &Entity, config: &SqlConfig) -> Result<i32, String>;
-    fn delete(c: &Criteria, config: &SqlConfig) -> Result<i32, String>;
-    fn read(c: &Criteria, config: &SqlConfig) -> Result<Entity, String>;
-    fn update(e: Entity, config: &SqlConfig) -> Result<i32, String>;
-    fn list(c: &Criteria, config: &SqlConfig) -> Result<Vec<Entity>, String>;
+    fn insert(self, e: &Entity) -> Result<i32, String>;
+    fn delete(self, c: &Criteria) -> Result<i32, String>;
+    fn read(self, c: &Criteria) -> Result<Entity, String>;
+    fn update(self, e: Entity) -> Result<i32, String>;
+    fn list(self, c: &Criteria) -> Result<Vec<Entity>, String>;
 }

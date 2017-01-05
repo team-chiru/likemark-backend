@@ -29,7 +29,7 @@ fn get_sql_config() -> SqlConfig {
     }
 }
 
-fn init_test_db() -> Link {
+fn init_test_db() -> SqlConfig {
     let init_sql = String::from("res/sql/entity/init.sql");
     let init_test_sql = String::from("res/sql/entity/init_test.sql");
 
@@ -46,20 +46,12 @@ fn init_test_db() -> Link {
         Err(err) => panic!("INIT TEST DB FAILED: {}", err),
     };
 
-    LinkDao {
-        connection: db,
-        read_sql: load_file(&read_sql).unwrap(),
-        delete_sql: load_file(&delete_sql).unwrap(),
-        insert_sql: load_file(&insert_sql).unwrap(),
-        update_sql: load_file(&update_sql).unwrap(),
-        list_sql: load_file(&list_sql).unwrap(),
-    }
+    get_sql_config()
 }
 
 #[test]
 fn read() {
     let id_test = 1;
-    let dao = init_test_db();
     let link = Link {
         id: id_test,
         parent_id: 0,
@@ -77,86 +69,85 @@ fn read() {
     }
 }
 
-/*
-//#[test]
-fn insert() {
-    let dao = init_test_db();
-    let link = Link {
-        id: 2,
-        name: String::from("inserted"),
-        url: String::from("url"),
-        rev_no: 0,
-    };
-
-    dao.insert(&link).unwrap();
-
-    let read_c = LinkCriteria::new();
-
-    match dao.read(&read_c.id(link.id)) {
-        Ok(l) => assert!(l == link),
-        Err(err) => panic!("INSERT FAILED: {}", err),
-    }
-
-}
-
-//#[test]
-//#[should_panic]
-fn test_delete() {
-    let dao = init_test_db();
-    let link = Link {
-        id: 1,
-        name: String::from("test"),
-        url: String::from("test_url"),
-        rev_no: 0,
-    };
-
-    let crit = LinkCriteria::new().id(link.id);
-
-    dao.delete(&crit).unwrap();
-    match dao.read(&crit) {
-        Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
-        Err(err) => panic!("{}", err),
-    }
-}
-
-//#[test]
-fn test_update() {
-    let dao = init_test_db();
-    let link = Link {
-        id: 1,
-        name: String::from("updated"),
-        url: String::from("test_url"),
-        rev_no: 0,
-    };
-
-    dao.update(link.clone()).unwrap();
-
-    let read_c = LinkCriteria::new();
-    match dao.read(&read_c.id(1)) {
-        Ok(l) => assert!(link == l),
-        Err(err) => panic!("UPDATE FAILED: {}", err),
-    }
-}
-
-
-//#[test]
-fn test_list() {
-    let dao = init_test_db();
-    let link = Link {
-        id: 1,
-        name: String::from("inseted"),
-        url: String::from("test_url"),
-        rev_no: 0,
-    };
-
-    dao.insert(&link).unwrap();
-    dao.insert(&link).unwrap();
-
-    let list_c = LinkCriteria::new();
-    match dao.list(&list_c.url(String::from("test_url"))) {
-        Ok(v) => assert!(v.len() == 3),
-        Err(err) => panic!("LIST FAILED: {}", err),
-    }
-}
-
-*/
+// [test]
+// fn insert() {
+// let dao = init_test_db();
+// let link = Link {
+// id: 2,
+// name: String::from("inserted"),
+// url: String::from("url"),
+// rev_no: 0,
+// };
+//
+// dao.insert(&link).unwrap();
+//
+// let read_c = LinkCriteria::new();
+//
+// match dao.read(&read_c.id(link.id)) {
+// Ok(l) => assert!(l == link),
+// Err(err) => panic!("INSERT FAILED: {}", err),
+// }
+//
+// }
+//
+// [test]
+// [should_panic]
+// fn test_delete() {
+// let dao = init_test_db();
+// let link = Link {
+// id: 1,
+// name: String::from("test"),
+// url: String::from("test_url"),
+// rev_no: 0,
+// };
+//
+// let crit = LinkCriteria::new().id(link.id);
+//
+// dao.delete(&crit).unwrap();
+// match dao.read(&crit) {
+// Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
+// Err(err) => panic!("{}", err),
+// }
+// }
+//
+// [test]
+// fn test_update() {
+// let dao = init_test_db();
+// let link = Link {
+// id: 1,
+// name: String::from("updated"),
+// url: String::from("test_url"),
+// rev_no: 0,
+// };
+//
+// dao.update(link.clone()).unwrap();
+//
+// let read_c = LinkCriteria::new();
+// match dao.read(&read_c.id(1)) {
+// Ok(l) => assert!(link == l),
+// Err(err) => panic!("UPDATE FAILED: {}", err),
+// }
+// }
+//
+//
+// [test]
+// fn test_list() {
+// let dao = init_test_db();
+// let link = Link {
+// id: 1,
+// name: String::from("inseted"),
+// url: String::from("test_url"),
+// rev_no: 0,
+// };
+//
+// dao.insert(&link).unwrap();
+// dao.insert(&link).unwrap();
+//
+// let list_c = LinkCriteria::new();
+// match dao.list(&list_c.url(String::from("test_url"))) {
+// Ok(v) => assert!(v.len() == 3),
+// Err(err) => panic!("LIST FAILED: {}", err),
+// }
+// }
+//
+//
