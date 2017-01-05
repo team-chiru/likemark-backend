@@ -3,13 +3,15 @@ extern crate rusqlite;
 use common::Entity;
 use common::Criteria;
 
+use self::rusqlite::Connection;
+
 pub struct SqlConfig {
     pub connection: rusqlite::Connection,
-    read_sql: String,
-    delete_sql: String,
-    insert_sql: String,
-    update_sql: String,
-    list_sql: String,
+    pub read_sql: String,
+    pub delete_sql: String,
+    pub insert_sql: String,
+    pub update_sql: String,
+    pub list_sql: String,
 }
 
 impl SqlConfig {
@@ -35,6 +37,10 @@ impl SqlConfig {
 }
 
 pub trait Dao {
+    fn get_config(&self) -> Option<Box<SqlConfig>> {
+        None
+    }
+
     fn insert(self, e: &Entity) -> Result<i32, String>;
     fn delete(self, c: &Criteria) -> Result<i32, String>;
     fn read(self, c: &Criteria) -> Result<Entity, String>;

@@ -1,9 +1,16 @@
 extern crate rusqlite;
 use std::env;
 
-use common::*;
+use common::Link;
+use common::types::StructType;
+use common::types::FnType;
+use common::Criteria;
+
 use common::utils::load_file;
-use super::bookmark_dao::*;
+
+use super::base::Dao;
+use super::base::SqlConfig;
+use super::link_dao::LinkDao;
 
 use self::rusqlite::Connection;
 
@@ -30,66 +37,68 @@ fn get_sql_config() -> SqlConfig {
 }
 
 fn init_test_db() -> SqlConfig {
+    let config = get_sql_config();
+
     let init_sql = String::from("res/sql/entity/init.sql");
     let init_test_sql = String::from("res/sql/entity/init_test.sql");
 
     let init_query = load_file(&init_sql).unwrap();
     let init_test_query = load_file(&init_test_sql).unwrap();
 
-    match db.execute(init_query.as_str(), &[]) {
+    match config.connection.execute(init_query.as_str(), &[]) {
         Ok(_) => {}
         Err(err) => panic!("CREATE TEST TABLE FAILED: {}", err),
     };
 
-    match db.execute(init_test_query.as_str(), &[]) {
+    match config.connection.execute(init_test_query.as_str(), &[]) {
         Ok(_) => {}
         Err(err) => panic!("INIT TEST DB FAILED: {}", err),
     };
 
-    get_sql_config()
+    config
 }
 
 #[test]
 fn read() {
+    let dao = LinkDao { config: init_test_db() };
     let id_test = 1;
     let link = Link {
         id: id_test,
-        parent_id: 0,
-        name: String::from("test"),
+        parent_id: String::from("1"),
+        name: String::from("test_read"),
         url: String::from("test_url"),
-        struct_type: types::StructType::Link,
-        fn_type: types::FnType::Simple,
+        struct_type: StructType::Link,
+        fn_type: FnType::None,
         rev_no: 0,
     };
 
-    let read_c = Criteria::new();
+    let mut read_c = Criteria::new();
     match dao.read(&read_c.id(id_test)) {
         Ok(l) => assert!(l == link),
         Err(err) => panic!("READ FAILED: {}", err),
     }
 }
 
-// [test]
-// fn insert() {
-// let dao = init_test_db();
-// let link = Link {
-// id: 2,
-// name: String::from("inserted"),
-// url: String::from("url"),
-// rev_no: 0,
-// };
-//
-// dao.insert(&link).unwrap();
-//
-// let read_c = LinkCriteria::new();
-//
-// match dao.read(&read_c.id(link.id)) {
-// Ok(l) => assert!(l == link),
-// Err(err) => panic!("INSERT FAILED: {}", err),
-// }
-//
-// }
-//
+#[test]
+fn insert() {
+    let dao = LinkDao { config: init_test_db() };
+    let link = Link {
+        id: -1,
+        parent_id: String::from("3"),
+        name: String::from("inserted"),
+        url: String::from("url"),
+        struct_type: StructType::Link,
+        fn_type: FnType::None,
+        rev_no: 0,
+    };
+
+    dao.insert(&link).unwrap();
+    let read_c = Criteria::new();
+    match dao.read(&read_c.id(link.id)) {
+        Ok(l) => assert!(l == link),
+        Err(err) => panic!("INSERT FAILED: {}", err),
+    }
+}
 // [test]
 // [should_panic]
 // fn test_delete() {

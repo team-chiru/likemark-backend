@@ -1,3 +1,5 @@
+extern crate rusqlite;
+
 use dao::base::Dao;
 use dao::base::SqlConfig;
 use dao::query_parser::*;
@@ -7,11 +9,17 @@ use common::Criteria;
 use common::types::FnType;
 use common::types::StructType;
 
-struct LinkDao {
-    config: SqlConfig,
+use self::rusqlite::Connection;
+
+pub struct LinkDao {
+    pub config: SqlConfig,
 }
 
 impl Dao for LinkDao {
+    fn get_config(&self) -> Option<&SqlConfig> {
+        Some(&self.config)
+    }
+
     fn read(self, c: &Criteria) -> Result<Link, String> {
         let template = self.config.get_read_sql();
         if c.id == None {

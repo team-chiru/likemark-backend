@@ -1,12 +1,14 @@
 #[derive(Debug, Clone)]
 pub enum FnType {
     Simple,
+    None,
 }
 
 impl<'a> Into<String> for &'a FnType {
     fn into(self) -> String {
         match self {
             &FnType::Simple => String::from("SIMPLE"),
+            _ => String::from(""),
         }
     }
 }
@@ -21,7 +23,7 @@ impl From<String> for FnType {
     fn from(s: String) -> FnType {
         match s.as_ref() {
             "SIMPLE" => FnType::Simple,
-            _ => panic!("Type not found!"),
+            _ => FnType::None,
         }
     }
 }

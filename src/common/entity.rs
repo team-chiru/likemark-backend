@@ -7,7 +7,7 @@ use common::types::FnType;
 #[derive(Debug, Clone)]
 pub struct Entity {
     pub id: i32,
-    pub parent_id: i32,
+    pub parent_id: String,
     pub name: String,
     pub url: String,
     pub struct_type: StructType,
@@ -39,7 +39,8 @@ impl Entity {
         let mut btree: BTreeMap<String, QueryValue> = BTreeMap::new();
 
         btree.insert(String::from("id"), QueryValue::Integer(self.id));
-        btree.insert(String::from("parent_id"), QueryValue::Integer(self.id));
+        btree.insert(String::from("parent_id"),
+                     QueryValue::String(self.parent_id));
         btree.insert(String::from("name"), QueryValue::String(self.name));
         btree.insert(String::from("url"), QueryValue::String(self.url));
         btree.insert(String::from("struct_type"),

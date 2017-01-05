@@ -1,9 +1,10 @@
 use common::utils::QueryValue;
 use std::collections::BTreeMap;
 
+#[derive(Debug, Clone)]
 pub struct Criteria {
     pub id: Option<i32>,
-    pub parent_id: Option<i32>,
+    pub parent_id: Option<String>,
     pub name: Option<String>,
     pub url: Option<String>,
     pub struct_type: Option<String>,
@@ -29,7 +30,7 @@ impl Criteria {
         self
     }
 
-    pub fn parent_id(mut self, parent_id: i32) -> Criteria {
+    pub fn parent_id(mut self, parent_id: String) -> Criteria {
         self.parent_id = Some(parent_id);
         self
     }
@@ -69,11 +70,13 @@ impl Criteria {
             None => {}
         }
 
-        match self.parent_id {
+        match self.parent_id.clone() {
             Some(parent_id) => {
-                btree.insert(String::from("parent_id"), QueryValue::Integer(parent_id));
+                btree.insert(String::from("parent_id"), QueryValue::String(parent_id));
             }
-            None => {}
+            None => {
+                btree.insert(String::from("parent_id"), QueryValue::Null);
+            }
         }
 
         match self.name.clone() {
