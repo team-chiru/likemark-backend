@@ -1,6 +1,6 @@
 UPDATE entity SET
     id = {{ id }},
-    -- parent_id = {{ parent_id }} MISS GLOBAL CHANGEMENT
+    parent_id = {{ parent_id }}
     name = {{ name }},
     url = {{ url }},
     struct_type = {{ struct_type }},
