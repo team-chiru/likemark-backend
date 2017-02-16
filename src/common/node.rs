@@ -39,7 +39,7 @@ impl FromEntity for Node {
     //TODO entity matcher for nodes
     fn from_entities(mut entites: Vec<Entity>) -> Vec<Self> {
         let mut node_vec: Vec<Node> = Vec::new();
-        let mut link_vec = Vec::new();
+        let mut link_vec: Vec<Link> = Vec::new();
 
         //let base_length = 2;
         entites.sort_by(|e1, e2| {
