@@ -52,6 +52,16 @@ impl FromEntity for Node {
             }
         });
 
+        //remplir les tableau node_vec et link_vec
+        for entity in entites{
+            if entity.struct_type.into() == "Node"{
+                node_vec.push(entity as Node);
+            }
+            else if entity.struct_type.into() == "Link"{
+                link_vec.push(entity as Link);
+            }
+        }
+
         println!("{:?}", node_vec);
         node_vec
     }
