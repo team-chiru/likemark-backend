@@ -2,6 +2,7 @@ use common::types::StructType;
 use common::types::FnType;
 use std::marker;
 
+#[derive(Debug, Clone)]
 pub struct Entity {
     pub id: i32,
     pub tree_id: String,

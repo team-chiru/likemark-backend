@@ -22,6 +22,5 @@ pub fn parse_query(btree: &BTreeMap<String, QueryValue>, query: String) -> Strin
         replaced_query = replaced_query.replace(query_tag, dump.as_str());
     }
 
-    println!("{}", replaced_query);
     replaced_query
 }

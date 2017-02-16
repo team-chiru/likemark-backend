@@ -14,7 +14,7 @@ use bookmarkt::common::criteria::*;
 use bookmarkt::common::utils::load_file;
 
 fn main() {
-    let db = match Connection::open_in_memory() {
+    let db = match Connection::open("res/bookmarkt.db") {
         Ok(c) => c,
         Err(err) => panic!("OPEN TEST DB FAILED: {}", err),
     };
@@ -52,6 +52,4 @@ fn main() {
 
     let mut c = Criteria::new();
     let link = EntityDao::read::<Node>(config, &c.tree_id(String::from("1")));
-
-    println!("{:?}", link);
 }

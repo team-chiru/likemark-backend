@@ -47,25 +47,28 @@ impl Dao for EntityDao {
             }
         };
 
-        let entity_iter = match create_entity!(stmt) {
+        let mut entity_iter = match create_entity!(stmt) {
             Ok(l) => l,
             Err(err) => {
-                return Err(format!("List failed: {}", err));
+                return Err(format!("Read failed: {}", err));
             }
         };
 
-        let mut entities: Vec<Entity> = Vec::new();
-        for entity in entity_iter {
-            match entity {
+        let mut matches = Vec::new();
+        for row in entity_iter {
+            match row {
                 Ok(e) => {
-                    entities.push(e);
+                    matches.push(e);
                 },
-                Err(_) => {
-                    panic!("error");
+                Err(err) => {
+                    return Err(format!("Read failed: {}", err));
                 }
             }
         }
 
-        Ok(T::from_entities(entities).pop().unwrap())
+        match T::from_entities(matches).pop() {
+            Some(e) => Ok(e),
+            None => Err(String::from("Any entity was found"))
+        }
     }
 }

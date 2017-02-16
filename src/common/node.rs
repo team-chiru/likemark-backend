@@ -6,6 +6,8 @@ use common::entity::FromEntity;
 use common::entity::Entity;
 use std::cmp::Ordering;
 
+use std::ops::Deref;
+
 #[derive(Debug, Clone)]
 pub struct Node {
     id: i32,
@@ -14,6 +16,12 @@ pub struct Node {
     fn_type: FnType,
     link: Vec<Link>,
     nodes: Vec<Node>,
+}
+
+impl Node {
+    fn set_children(&self, children: &[Entity]) {
+
+    }
 }
 
 impl FromEntity for Node {
@@ -30,7 +38,7 @@ impl FromEntity for Node {
 
     //TODO entity matcher for nodes
     fn from_entities(mut entites: Vec<Entity>) -> Vec<Self> {
-        let mut node_vec = Vec::new();
+        let mut node_vec: Vec<Node> = Vec::new();
         let mut link_vec = Vec::new();
 
         //let base_length = 2;
@@ -44,17 +52,7 @@ impl FromEntity for Node {
             }
         });
 
-        for entity in entites {
-            match entity.struct_type {
-                StructType::Link => {
-                    link_vec.push(Link::from_entity(entity));
-                },
-                StructType::Node => {
-                    node_vec.push(Node::from_entity(entity));
-                }
-            }
-        }
-
+        println!("{:?}", node_vec);
         node_vec
     }
 }
