@@ -39,10 +39,10 @@ LEFT JOIN node n ON l.node_id = n.id
 WHERE
 	SUBSTR(n.id, 1, LENGTH('21')) = '21';
 /* FINAL QUERY:
-SELECT l.name, n.id, n.node_id FROM link l
-LEFT JOIN node n ON l.node_id = n.id
+SELECT l.name, n.entity_id FROM link l
+LEFT JOIN node n ON l.entity_id = n.entity_id
 WHERE
-	SUBSTR(n.id, 1, LENGTH({{ node_id }})) = {{ node_id }};
+	SUBSTR(n.id, 1, LENGTH({{ entity_id }})) = {{ entity_id }};
 */
 
 /*

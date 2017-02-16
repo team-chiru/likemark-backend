@@ -3,13 +3,17 @@ use std::collections::BTreeMap;
 
 #[derive(Debug, Clone)]
 pub struct Criteria {
-    pub id: Option<i32>,
-    pub parent_id: Option<String>,
-    pub name: Option<String>,
-    pub url: Option<String>,
-    pub struct_type: Option<String>,
-    pub fn_type: Option<String>,
-    pub rev_no: Option<i32>,
+    id: Option<i32>,
+    parent_id: Option<String>,
+    name: Option<String>,
+    url: Option<String>,
+    struct_type: Option<String>,
+    fn_type: Option<String>,
+    rev_no: Option<i32>
+}
+
+pub trait CriteriaBuilder {
+    fn criteria(&self) -> Criteria;
 }
 
 impl Criteria {
@@ -25,42 +29,46 @@ impl Criteria {
         }
     }
 
-    pub fn id(&mut self, id: i32) -> &Criteria {
+    pub fn id(&mut self, id: i32) -> &mut Criteria {
         self.id = Some(id);
         self
     }
 
-    pub fn parent_id(&mut self, parent_id: String) -> &Criteria {
+    pub fn parent_id(&mut self, parent_id: String) -> &mut Criteria {
         self.parent_id = Some(parent_id);
         self
     }
 
-    pub fn name(&mut self, name: String) -> &Criteria {
+    pub fn name(&mut self, name: String) -> &mut Criteria {
         self.name = Some(name);
         self
     }
 
-    pub fn url(&mut self, url: String) -> &Criteria {
+    pub fn url(&mut self, url: String) -> &mut Criteria {
         self.url = Some(url);
         self
     }
 
-    pub fn struct_type(&mut self, struct_type: String) -> &Criteria {
+    pub fn struct_type(&mut self, struct_type: String) -> &mut Criteria {
         self.struct_type = Some(struct_type);
         self
     }
 
-    pub fn fn_type(&mut self, fn_type: String) -> &Criteria {
+    pub fn fn_type(&mut self, fn_type: String) -> &mut Criteria {
         self.fn_type = Some(fn_type);
         self
     }
 
-    pub fn rev_no(&mut self, rev_no: i32) -> &Criteria {
+    pub fn rev_no(&mut self, rev_no: i32) -> &mut Criteria {
         self.rev_no = Some(rev_no);
         self
     }
 
-    pub fn to_btree(&self) -> BTreeMap<String, QueryValue> {
+    pub fn build(&mut self) -> Criteria {
+        self.clone()
+    }
+
+    pub fn map(&self) -> BTreeMap<String, QueryValue> {
         let mut btree: BTreeMap<String, QueryValue> = BTreeMap::new();
 
         match self.id {

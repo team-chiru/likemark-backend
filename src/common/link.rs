@@ -1,44 +1,45 @@
-use common::entity_t::Entity;
-use common::types::StructType;
 use common::types::FnType;
+use common::types::StructType;
+
+use common::entity::FromEntity;
+use common::entity::Entity;
+
+use common::criteria::CriteriaBuilder;
+use common::criteria::Criteria;
 
 #[derive(Debug, Clone)]
 pub struct Link {
-    pub id: i32,
-    pub parent_id: String,
-    pub name: String,
-    pub url: String,
-    pub struct_type: StructType,
-    pub fn_type: FnType,
-    pub rev_no: i32,
+    id: i32,
+    name: String,
+    url: String,
+    fn_type: FnType,
 }
 
-impl Entity for Link {
-    fn id(&self) -> i32 {
-        self.id
+impl FromEntity for Link {
+    fn from_entity(entity: Entity) -> Self {
+        Link {
+            id: entity.id,
+            name: entity.name,
+            url: entity.url,
+            fn_type: entity.fn_type,
+        }
     }
 
-    fn parent_id(&self) -> String {
-        self.parent_id.clone()
-    }
+    fn from_entities(entites: Vec<Entity>) -> Vec<Self> {
+        let mut vec = Vec::new();
+        for entity in entites {
+            vec.push(Link::from_entity(entity));
+        }
 
-    fn name(&self) -> String {
-        self.name.clone()
+        vec
     }
+}
 
-    fn url(&self) -> String {
-        self.url.clone()
-    }
-
-    fn struct_type(&self) -> StructType {
-        self.struct_type.clone()
-    }
-
-    fn fn_type(&self) -> FnType {
-        self.fn_type.clone()
-    }
-
-    fn rev_no(&self) -> i32 {
-        self.rev_no.clone()
+impl CriteriaBuilder for Link {
+    fn criteria(&self) -> Criteria {
+        let struct_type = StructType::Link;
+        Criteria::new()
+            .struct_type(struct_type.into())
+            .build()
     }
 }

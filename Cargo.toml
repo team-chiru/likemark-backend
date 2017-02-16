@@ -12,3 +12,6 @@ regex = "*"
 log="*"
 env_logger="*"
 dotenv = "*"
+
+custom_derive="*"
+derive_builder="*"
