@@ -9,5 +9,5 @@ pub mod criteria;
 // pub type Link = entity::Entity;
 // pub type Node = entity::Entity;
 
-mod link;
-mod node;
+pub mod link;
+pub mod node;

@@ -9,7 +9,6 @@ pub fn parse_query(btree: &BTreeMap<String, QueryValue>, query: String) -> Strin
     let mut replaced_query = String::from(query.clone());
 
     for capture in re.captures_iter(query.as_str()) {
-
         let query_tag = capture.at(0).unwrap_or("");
         let query_key = capture.at(1).unwrap_or("");
 
@@ -19,8 +18,10 @@ pub fn parse_query(btree: &BTreeMap<String, QueryValue>, query: String) -> Strin
         };
 
         let dump: String = value.into();
+
         replaced_query = replaced_query.replace(query_tag, dump.as_str());
     }
 
+    println!("{}", replaced_query);
     replaced_query
 }

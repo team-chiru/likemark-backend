@@ -4,7 +4,7 @@ use std::marker;
 
 pub struct Entity {
     pub id: i32,
-    pub parent_id: String,
+    pub tree_id: String,
     pub name: String,
     pub url: String,
     pub struct_type: StructType,

@@ -45,7 +45,7 @@ impl<'a> Into<String> for &'a QueryValue {
         match self {
             &QueryValue::Null => String::from("NULL"),
             &QueryValue::Integer(i) => format!("{}", i),
-            &QueryValue::String(ref s) => format!("\'{}\'", s),
+            &QueryValue::String(ref s) => format!(r"'{}'", s),
             &QueryValue::Date(t) => t.to_rfc2822(),
         }
     }

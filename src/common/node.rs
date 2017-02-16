@@ -4,6 +4,7 @@ use common::link::*;
 
 use common::entity::FromEntity;
 use common::entity::Entity;
+use std::cmp::Ordering;
 
 #[derive(Debug, Clone)]
 pub struct Node {
@@ -28,9 +29,20 @@ impl FromEntity for Node {
     }
 
     //TODO entity matcher for nodes
-    fn from_entities(entites: Vec<Entity>) -> Vec<Self> {
+    fn from_entities(mut entites: Vec<Entity>) -> Vec<Self> {
         let mut node_vec = Vec::new();
         let mut link_vec = Vec::new();
+
+        //let base_length = 2;
+        entites.sort_by(|e1, e2| {
+            if e1.tree_id.len() < e2.tree_id.len() {
+                Ordering::Less
+            } else if e1.tree_id.len() > e2.tree_id.len() {
+                Ordering::Greater
+            } else {
+                Ordering::Equal
+            }
+        });
 
         for entity in entites {
             match entity.struct_type {

@@ -1,6 +1,6 @@
 SELECT
     e.id,
-    e.parent_id,
+    e.tree_id,
     e.name,
     e.url,
     e.struct_type,

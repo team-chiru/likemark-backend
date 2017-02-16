@@ -1,6 +1,6 @@
 extern crate rusqlite;
 use common::entity::FromEntity;
-//use common::criteria::CriteriaBuilder;
+use common::criteria::Criteria;
 
 pub struct SqlConfig {
     pub connection: rusqlite::Connection,
@@ -16,7 +16,7 @@ pub trait Query {}
 pub trait Dao {
     // fn insert(&self, e: &Entity) -> Result<i32, String>;
     // fn delete(&self, c: &Criteria) -> Result<i32, String>;
-    fn read<T>(s: SqlConfig, c: &T) -> Result<T, String>
+    fn read<T>(s: SqlConfig, c: &Criteria) -> Result<T, String>
         where T: FromEntity;
     // fn update(&self, e: Entity) -> Result<i32, String>;
     // fn list(&self, c: &Criteria) -> Result<Vec<Entity>, String>;

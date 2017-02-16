@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 #[derive(Debug, Clone)]
 pub struct Criteria {
     id: Option<i32>,
-    parent_id: Option<String>,
+    tree_id: Option<String>,
     name: Option<String>,
     url: Option<String>,
     struct_type: Option<String>,
@@ -20,7 +20,7 @@ impl Criteria {
     pub fn new() -> Criteria {
         Criteria {
             id: None,
-            parent_id: None,
+            tree_id: None,
             name: None,
             url: None,
             struct_type: None,
@@ -34,8 +34,8 @@ impl Criteria {
         self
     }
 
-    pub fn parent_id(&mut self, parent_id: String) -> &mut Criteria {
-        self.parent_id = Some(parent_id);
+    pub fn tree_id(&mut self, tree_id: String) -> &mut Criteria {
+        self.tree_id = Some(tree_id);
         self
     }
 
@@ -75,15 +75,17 @@ impl Criteria {
             Some(id) => {
                 btree.insert(String::from("id"), QueryValue::Integer(id));
             }
-            None => {}
+            None => {
+                btree.insert(String::from("id"), QueryValue::Null);
+            }
         }
 
-        match self.parent_id.clone() {
-            Some(parent_id) => {
-                btree.insert(String::from("parent_id"), QueryValue::String(parent_id));
+        match self.tree_id.clone() {
+            Some(tree_id) => {
+                btree.insert(String::from("tree_id"), QueryValue::String(tree_id));
             }
             None => {
-                btree.insert(String::from("parent_id"), QueryValue::Null);
+                btree.insert(String::from("tree_id"), QueryValue::Null);
             }
         }
 
