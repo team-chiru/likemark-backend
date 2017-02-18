@@ -38,8 +38,9 @@ impl FromEntity for Node {
 
     //TODO entity matcher for nodes
     fn from_entities(mut entites: Vec<Entity>) -> Vec<Self> {
-        let mut node_vec: Vec<Node> = Vec::new();
-        let mut link_vec: Vec<Link> = Vec::new();
+        let mut node_vec: Vec<Entity> = Vec::new();
+        let mut link_vec: Vec<Entity> = Vec::new();
+        let mut node_filled_vec: Vec<Node> = Vec::new();
 
         //let base_length = 2;
         entites.sort_by(|e1, e2| {
@@ -55,24 +56,28 @@ impl FromEntity for Node {
         //remplir les tableau node_vec et link_vec
         for entity in entites{
             if entity.struct_type == StructType::Node{
-                node_vec.push(Node::from_entity(entity));
+                node_vec.push(entity);
             }
             else if entity.struct_type == StructType::Link{
-                link_vec.push(Link::from_entity(entity));
+                link_vec.push(entity);
             }
         }
 
         //ajoute les liens associer au noeud correspondant
         // manque l'attribut link.tree_id et manque condition du prefix de tree_id
-        for node in node_vec{
-            for link in link_vec{
+        for entity in node_vec {
+            for link in link_vec {
                 if link.tree_id.len() == entity.tree_id.len() + 1 {
-                    node.link.push(link);
+                    let node = Node::from_entity(entity);
+                    node.link.push(Link::from_entity(link));
+                    node_filled_vec.push(node);
                 }
             }
         }
 
-        println!("{:?}", node_vec);
-        node_vec
+        //tout remettre les entity_node en node
+
+        println!("{:?}", node_filled_vec);
+        node_filled_vec
     }
 }
