@@ -6,21 +6,26 @@ use common::entity::FromEntity;
 use common::entity::Entity;
 use std::cmp::Ordering;
 
-use std::ops::Deref;
-
 #[derive(Debug, Clone)]
 pub struct Node {
     id: i32,
     name: String,
     url: String,
     fn_type: FnType,
-    link: Vec<Link>,
+    links: Vec<Link>,
     nodes: Vec<Node>,
 }
 
 impl Node {
-    fn set_children(&self, children: &[Entity]) {
-
+    fn push(&mut self, entity: Entity) {
+        match entity.struct_type {
+            StructType::Link => {
+                self.links.push(Link::from_entity(entity));
+            },
+            StructType::Node => {
+                self.nodes.push(Node::from_entity(entity));
+            }
+        }
     }
 }
 
@@ -31,7 +36,7 @@ impl FromEntity for Node {
             name: entity.name,
             url: entity.url,
             fn_type: entity.fn_type,
-            link: Vec::new(),
+            links: Vec::new(),
             nodes: Vec::new()
         }
     }
@@ -54,7 +59,7 @@ impl FromEntity for Node {
         });
 
         //remplir les tableau node_vec et link_vec
-        for entity in entites{
+        for entity in entites {
             if entity.struct_type == StructType::Node{
                 node_vec.push(entity);
             }
@@ -66,10 +71,10 @@ impl FromEntity for Node {
         //ajoute les liens associer au noeud correspondant
         // manque l'attribut link.tree_id et manque condition du prefix de tree_id
         for entity in node_vec {
-            for link in link_vec {
+            for link in link_vec.clone() {
                 if link.tree_id.len() == entity.tree_id.len() + 1 {
-                    let node = Node::from_entity(entity);
-                    node.link.push(Link::from_entity(link));
+                    let mut node = Node::from_entity(entity.clone());
+                    node.push(link);
                     node_filled_vec.push(node);
                 }
             }

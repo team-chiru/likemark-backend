@@ -34,7 +34,7 @@ pub struct EntityDao {
 }
 
 impl Dao for EntityDao {
-    fn read<T>(s: SqlConfig, c: &Criteria) -> Result<T, String>
+    fn read<T>(s: &SqlConfig, c: &Criteria) -> Result<T, String>
         where T: FromEntity
     {
         let template = s.read_sql.clone();
@@ -47,7 +47,7 @@ impl Dao for EntityDao {
             }
         };
 
-        let mut entity_iter = match create_entity!(stmt) {
+        let entity_iter = match create_entity!(stmt) {
             Ok(l) => l,
             Err(err) => {
                 return Err(format!("Read failed: {}", err));
