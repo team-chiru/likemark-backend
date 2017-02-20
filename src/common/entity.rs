@@ -1,11 +1,12 @@
 use common::types::StructType;
 use common::types::FnType;
+use common::tree_id::*;
 use std::marker;
 
 #[derive(Debug, Clone)]
 pub struct Entity {
     pub id: i32,
-    pub tree_id: String,
+    pub tree_id: TreeId,
     pub name: String,
     pub url: String,
     pub struct_type: StructType,

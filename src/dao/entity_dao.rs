@@ -5,6 +5,7 @@ use dao::base::SqlConfig;
 use dao::query_parser::*;
 
 use common::criteria::*;
+use common::tree_id::*;
 use common::types::FnType;
 use common::types::StructType;
 
@@ -15,10 +16,11 @@ macro_rules! create_entity {
         $stmt.query_map(&[], |row| {
             let struct_type: String = row.get(4);
             let fn_type: String = row.get(5);
+            let tree_id: String = row.get(1);
 
             Entity {
                 id: row.get(0),
-                tree_id: row.get(1),
+                tree_id: TreeId::new(tree_id),
                 name: row.get(2),
                 url: row.get(3),
                 struct_type: StructType::from(struct_type),

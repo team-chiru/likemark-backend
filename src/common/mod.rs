@@ -1,6 +1,7 @@
 pub mod utils;
 pub mod types;
 
+pub mod tree_id;
 pub mod entity;
 pub mod criteria;
 

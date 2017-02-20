@@ -4,14 +4,10 @@ version = "0.1.0"
 authors = ["team-chiru <team-chiru@protonmail.com>"]
 
 [dependencies]
-rusqlite = "*"
+rusqlite = "0.6"
 chrono = "*"
 yaml-rust = "*"
 toml = "*"
 regex = "*"
 log="*"
 env_logger="*"
-dotenv = "*"
-
-custom_derive="*"
-derive_builder="*"

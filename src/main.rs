@@ -1,5 +1,3 @@
-extern crate dotenv;
-
 extern crate bookmarkt;
 extern crate env_logger;
 
@@ -10,6 +8,7 @@ use bookmarkt::dao::base::*;
 use bookmarkt::dao::entity_dao::*;
 use bookmarkt::common::link::*;
 use bookmarkt::common::node::*;
+use bookmarkt::common::tree_id::*;
 use bookmarkt::common::criteria::*;
 use bookmarkt::common::utils::load_file;
 
@@ -52,9 +51,11 @@ fn main() {
     };
 
     let mut c = Criteria::new();
-    let node = EntityDao::read::<Node>(&config, &c.tree_id(String::from("1")));
+    let id_test = TreeId::new("1".to_string());
+
+    let node = EntityDao::read::<Node>(&config, &c.tree_id(&id_test));
     println!("{:?}", node);
 
-    let link = EntityDao::read::<Link>(&config, &c.tree_id(String::from("1")));
+    let link = EntityDao::read::<Link>(&config, &c.tree_id(&id_test));
     println!("{:?}", link);
 }

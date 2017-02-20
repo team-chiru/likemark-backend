@@ -60,6 +60,9 @@ impl FromEntity for Node {
 
         //remplir les tableau node_vec et link_vec
         for entity in entites {
+            println!("{:?}", entity.tree_id.value());
+            //println!("{:?}", entity.tree_id.key(1));
+
             if entity.struct_type == StructType::Node{
                 node_vec.push(entity);
             }
@@ -72,7 +75,10 @@ impl FromEntity for Node {
         // manque l'attribut link.tree_id et manque condition du prefix de tree_id
         for entity in node_vec {
             for link in link_vec.clone() {
-                if link.tree_id.len() == entity.tree_id.len() + 1 {
+                let treated_link = link.clone();
+                let treated_entity = entity.clone();
+
+                if treated_link.tree_id.len() == treated_entity.tree_id.len() + 1 {
                     let mut node = Node::from_entity(entity.clone());
                     node.push(link);
                     node_filled_vec.push(node);

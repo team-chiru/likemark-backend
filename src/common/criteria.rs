@@ -1,14 +1,18 @@
 use common::utils::QueryValue;
 use std::collections::BTreeMap;
 
+use common::tree_id::*;
+use common::types::FnType;
+use common::types::StructType;
+
 #[derive(Debug, Clone)]
 pub struct Criteria {
     id: Option<i32>,
-    tree_id: Option<String>,
+    tree_id: Option<TreeId>,
     name: Option<String>,
     url: Option<String>,
-    struct_type: Option<String>,
-    fn_type: Option<String>,
+    struct_type: Option<StructType>,
+    fn_type: Option<FnType>,
     rev_no: Option<i32>
 }
 
@@ -34,8 +38,8 @@ impl Criteria {
         self
     }
 
-    pub fn tree_id(&mut self, tree_id: String) -> &mut Criteria {
-        self.tree_id = Some(tree_id);
+    pub fn tree_id(&mut self, tree_id: &TreeId) -> &mut Criteria {
+        self.tree_id = Some(TreeId::new(tree_id.value()));
         self
     }
 
@@ -49,12 +53,12 @@ impl Criteria {
         self
     }
 
-    pub fn struct_type(&mut self, struct_type: String) -> &mut Criteria {
+    pub fn struct_type(&mut self, struct_type: StructType) -> &mut Criteria {
         self.struct_type = Some(struct_type);
         self
     }
 
-    pub fn fn_type(&mut self, fn_type: String) -> &mut Criteria {
+    pub fn fn_type(&mut self, fn_type: FnType) -> &mut Criteria {
         self.fn_type = Some(fn_type);
         self
     }
@@ -82,7 +86,7 @@ impl Criteria {
 
         match self.tree_id.clone() {
             Some(tree_id) => {
-                btree.insert(String::from("tree_id"), QueryValue::String(tree_id));
+                btree.insert(String::from("tree_id"), QueryValue::String(tree_id.value()));
             }
             None => {
                 btree.insert(String::from("tree_id"), QueryValue::Null);
@@ -109,7 +113,8 @@ impl Criteria {
 
         match self.struct_type.clone() {
             Some(struct_type) => {
-                btree.insert(String::from("struct_type"), QueryValue::String(struct_type));
+                let value = struct_type.into();
+                btree.insert(String::from("struct_type"), QueryValue::String(value));
             }
             None => {
                 btree.insert(String::from("struct_type"), QueryValue::Null);
@@ -118,7 +123,8 @@ impl Criteria {
 
         match self.fn_type.clone() {
             Some(fn_type) => {
-                btree.insert(String::from("fn_type"), QueryValue::String(fn_type));
+                let value = fn_type.into();
+                btree.insert(String::from("fn_type"), QueryValue::String(value));
             }
             None => {
                 btree.insert(String::from("fn_type"), QueryValue::Null);
