@@ -51,11 +51,11 @@ fn main() {
     };
 
     let mut c = Criteria::new();
-    let id_test = TreeId::new("1".to_string());
+    let id_test = TreeId::new("00".to_string());
 
     let node = EntityDao::read::<Node>(&config, &c.tree_id(&id_test));
-    println!("{:?}", node);
+    println!("{:?}\n", node);
 
     let link = EntityDao::read::<Link>(&config, &c.tree_id(&id_test));
-    println!("{:?}", link);
+    println!("{:?}\n", link);
 }

@@ -4,7 +4,9 @@ use common::link::*;
 
 use common::entity::FromEntity;
 use common::entity::Entity;
-use std::cmp::Ordering;
+
+use std::collections::BTreeMap;
+use common::tree_id::*;
 
 #[derive(Debug, Clone)]
 pub struct Node {
@@ -17,78 +19,74 @@ pub struct Node {
 }
 
 impl Node {
-    fn push(&mut self, entity: Entity) {
+    fn push(&mut self, entity: &Entity) {
         match entity.struct_type {
             StructType::Link => {
-                self.links.push(Link::from_entity(entity));
+                self.links.push(Link::from_entity(&entity));
             },
             StructType::Node => {
-                self.nodes.push(Node::from_entity(entity));
+                self.nodes.push(Node::from_entity(&entity));
             }
         }
     }
 }
 
 impl FromEntity for Node {
-    fn from_entity(entity: Entity) -> Self {
+    fn from_entity(entity: &Entity) -> Self {
+        let clone = entity.clone();
+
         Node {
-            id: entity.id,
-            name: entity.name,
-            url: entity.url,
-            fn_type: entity.fn_type,
+            id: clone.id,
+            name: clone.name,
+            url: clone.url,
+            fn_type: clone.fn_type,
             links: Vec::new(),
             nodes: Vec::new()
         }
     }
 
     //TODO entity matcher for nodes
-    fn from_entities(mut entites: Vec<Entity>) -> Vec<Self> {
-        let mut node_vec: Vec<Entity> = Vec::new();
-        let mut link_vec: Vec<Entity> = Vec::new();
-        let mut node_filled_vec: Vec<Node> = Vec::new();
+    fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
+        let mut node_map: BTreeMap<String, &Node> = BTreeMap::new();
+        let mut roots: Vec<Node> = Vec::new();
+        let mut lower = usize::max_value();
 
-        //let base_length = 2;
-        entites.sort_by(|e1, e2| {
-            if e1.tree_id.len() < e2.tree_id.len() {
-                Ordering::Less
-            } else if e1.tree_id.len() > e2.tree_id.len() {
-                Ordering::Greater
-            } else {
-                Ordering::Equal
-            }
-        });
+        for e in entities.iter() {
+            let ref path = e.tree_id;
 
-        //remplir les tableau node_vec et link_vec
-        for entity in entites {
-            println!("{:?}", entity.tree_id.value());
-            //println!("{:?}", entity.tree_id.key(1));
+            if e.struct_type == StructType::Node {
+                if path.level() < lower {
+                    lower = path.level();
+                }
 
-            if entity.struct_type == StructType::Node{
-                node_vec.push(entity);
-            }
-            else if entity.struct_type == StructType::Link{
-                link_vec.push(entity);
+                roots.push(Node::from_entity(e));
+                node_map.insert(path.id(), roots.last());
             }
         }
 
-        //ajoute les liens associer au noeud correspondant
-        // manque l'attribut link.tree_id et manque condition du prefix de tree_id
-        for entity in node_vec {
-            for link in link_vec.clone() {
-                let treated_link = link.clone();
-                let treated_entity = entity.clone();
+        for e in entities.iter() {
+            let inner = e.tree_id.level();
 
-                if treated_link.tree_id.len() == treated_entity.tree_id.len() + 1 {
-                    let mut node = Node::from_entity(entity.clone());
-                    node.push(link);
-                    node_filled_vec.push(node);
+            let parent = match e.tree_id.key(inner - 1) {
+                Some(p) => p,
+                None => panic!("{:?}", e),
+            };
+
+            if let Some(node) = node_map.get_mut(&parent) {
+                if e.struct_type == StructType::Link {
+                    node.push(e);
                 }
             }
         }
 
-        //tout remettre les entity_node en node
+        let mut roots = Vec::new();
+        for (key, node) in node_map.into_iter() {
+            if level(&key) == lower {
+                roots.push(node);
+            }
+        }
 
-        println!("{:?}", node_filled_vec);
-        node_filled_vec
+        roots;
+        unimplemented!()
     }
 }

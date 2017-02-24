@@ -15,7 +15,7 @@ pub struct Entity {
 }
 
 pub trait FromEntity {
-    fn from_entity(Entity) -> Self;
+    fn from_entity(&Entity) -> Self;
     fn from_entities(Vec<Entity>) -> Vec<Self>
         where Self: marker::Sized;
 }

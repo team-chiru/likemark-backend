@@ -39,7 +39,7 @@ impl Criteria {
     }
 
     pub fn tree_id(&mut self, tree_id: &TreeId) -> &mut Criteria {
-        self.tree_id = Some(TreeId::new(tree_id.value()));
+        self.tree_id = Some(TreeId::new(tree_id.id()));
         self
     }
 
@@ -86,7 +86,7 @@ impl Criteria {
 
         match self.tree_id.clone() {
             Some(tree_id) => {
-                btree.insert(String::from("tree_id"), QueryValue::String(tree_id.value()));
+                btree.insert(String::from("tree_id"), QueryValue::String(tree_id.id()));
             }
             None => {
                 btree.insert(String::from("tree_id"), QueryValue::Null);
