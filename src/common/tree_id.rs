@@ -61,3 +61,14 @@ impl PartialEq for TreeId {
 pub fn level(s: &String) -> usize {
     s.len() / TREE_ID_STEP
 }
+
+pub fn key(s: &String, level: usize) -> Option<String> {
+    let sub_index = level*TREE_ID_STEP;
+    if sub_index == s.len() {
+        Some(s.clone())
+    } else if sub_index < s.len() {
+        Some(String::from(&s[..sub_index]))
+    } else {
+        None
+    }
+}

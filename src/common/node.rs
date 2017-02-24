@@ -49,8 +49,9 @@ impl FromEntity for Node {
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
         let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
         let mut lower = usize::max_value();
+        let mut pre_links: Vec<Entity> = Vec::new();
 
-        for e in entities.iter() {
+        for e in entities {
             let ref path = e.tree_id;
 
             if e.struct_type == StructType::Node {
@@ -58,11 +59,13 @@ impl FromEntity for Node {
                     lower = path.level();
                 }
 
-                node_map.insert(path.id(), Node::from_entity(e));
+                node_map.insert(path.id(), Node::from_entity(&e));
+            } else {
+                pre_links.push(e.clone());
             }
         }
 
-        for e in entities.iter() {
+        for e in pre_links {
             let inner = e.tree_id.level();
 
             let parent = match e.tree_id.key(inner - 1) {
@@ -71,14 +74,24 @@ impl FromEntity for Node {
             };
 
             if let Some(node) = node_map.get_mut(&parent) {
-                node.push(e);
+                node.push(&e);
             }
         }
 
         let mut roots = Vec::new();
-        println!("{:?}\n", node_map);
-        for (key, node) in node_map.into_iter() {
-            if level(&key) == lower {
+        for (id, node) in node_map.clone().into_iter().rev() {
+            let parent = match key(&id, level(&id) - 1) {
+                Some(p) => p,
+                None => panic!("{:?}", node),
+            };
+
+            if let Some(root) = node_map.get_mut(&parent) {
+                root.nodes.push(node);
+            }
+        }
+
+        for (id, node) in node_map {
+            if level(&id) == lower {
                 roots.push(node);
             }
         }
