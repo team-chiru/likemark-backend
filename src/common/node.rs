@@ -47,8 +47,7 @@ impl FromEntity for Node {
 
     //TODO entity matcher for nodes
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
-        let mut node_map: BTreeMap<String, &Node> = BTreeMap::new();
-        let mut roots: Vec<Node> = Vec::new();
+        let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
         let mut lower = usize::max_value();
 
         for e in entities.iter() {
@@ -59,8 +58,7 @@ impl FromEntity for Node {
                     lower = path.level();
                 }
 
-                roots.push(Node::from_entity(e));
-                node_map.insert(path.id(), roots.last());
+                node_map.insert(path.id(), Node::from_entity(e));
             }
         }
 
@@ -73,20 +71,18 @@ impl FromEntity for Node {
             };
 
             if let Some(node) = node_map.get_mut(&parent) {
-                if e.struct_type == StructType::Link {
-                    node.push(e);
-                }
+                node.push(e);
             }
         }
 
         let mut roots = Vec::new();
+        println!("{:?}\n", node_map);
         for (key, node) in node_map.into_iter() {
             if level(&key) == lower {
                 roots.push(node);
             }
         }
 
-        roots;
-        unimplemented!()
+        roots
     }
 }
