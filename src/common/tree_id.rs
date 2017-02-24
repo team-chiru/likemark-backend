@@ -18,21 +18,6 @@ impl TreeId {
         self.id.clone()
     }
 
-    pub fn key(&self, level: usize) -> Option<String> {
-        let sub_index = level*TREE_ID_STEP;
-        if sub_index == self.len() {
-            Some(self.id())
-        } else if sub_index < self.len() {
-            Some(String::from(&self.id[..sub_index]))
-        } else {
-            None
-        }
-    }
-
-    pub fn level(&self) -> usize {
-        self.id.len() / TREE_ID_STEP
-    }
-
     pub fn len(&self) -> usize {
         self.id.len()
     }
@@ -58,12 +43,14 @@ impl PartialEq for TreeId {
     }
 }
 
-pub fn level(s: &String) -> usize {
-    s.len() / TREE_ID_STEP
+pub fn level(ti: &TreeId) -> usize {
+    ti.id.len() / TREE_ID_STEP
 }
 
-pub fn key(s: &String, level: usize) -> Option<String> {
+pub fn key(ti: &TreeId, level: usize) -> Option<String> {
     let sub_index = level*TREE_ID_STEP;
+    let ref s = ti.id;
+
     if sub_index == s.len() {
         Some(s.clone())
     } else if sub_index < s.len() {

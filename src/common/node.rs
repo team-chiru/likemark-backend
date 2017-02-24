@@ -55,8 +55,8 @@ impl FromEntity for Node {
             let ref path = e.tree_id;
 
             if e.struct_type == StructType::Node {
-                if path.level() < lower {
-                    lower = path.level();
+                if level(path) < lower {
+                    lower = level(path);
                 }
 
                 node_dir.insert(e.id, path.clone());
@@ -67,9 +67,9 @@ impl FromEntity for Node {
         }
 
         for e in pre_links {
-            let inner = e.tree_id.level();
+            let inner = level(&e.tree_id);
 
-            let parent = match e.tree_id.key(inner - 1) {
+            let parent = match key(&e.tree_id, inner - 1) {
                 Some(p) => p,
                 None => panic!("{:?}", e),
             };
@@ -94,11 +94,11 @@ fn push_node<'a>(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search: usiz
         None => panic!("{:?}", node)
     };
 
-    if path.level() == search {
+    if level(path) == search {
         roots.push(node.clone());
     } else {
         for root in roots {
-            let parent = match path.key(search) {
+            let parent = match key(path, search) {
                 Some(key) => key,
                 None => panic!("{:?}", path)
             };
