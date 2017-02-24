@@ -3,6 +3,7 @@
 INSERT INTO entity (tree_id, name, url, struct_type, fn_type, rev_no) VALUES
    ('00','00', 'none', 'NODE', 'music', 1),
    ('01','01', 'none', 'NODE','music', 1),
+   ('02','02', 'none', 'NODE','music', 1),
    ('0000','0000','www.test.com','NODE','music',1),
    ('00001','00001','www.test.com','LINK','music',1),
    ('0002','0002','www.test.com','NODE','music',1),

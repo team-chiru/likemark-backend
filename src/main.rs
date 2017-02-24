@@ -51,7 +51,7 @@ fn main() {
     };
 
     let mut c = Criteria::new();
-    let id_test = TreeId::new("00".to_string());
+    let id_test = TreeId::new("02".to_string());
 
     let node = EntityDao::read::<Node>(&config, &c.tree_id(&id_test));
     println!("{:?}\n", node);

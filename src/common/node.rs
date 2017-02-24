@@ -11,6 +11,7 @@ use common::tree_id::*;
 #[derive(Debug, Clone)]
 pub struct Node {
     id: i32,
+    tree_id: TreeId,
     name: String,
     url: String,
     fn_type: FnType,
@@ -29,6 +30,10 @@ impl Node {
             }
         }
     }
+
+    fn nodes_mut(&mut self) -> &mut Vec<Node> {
+        &mut self.nodes
+    }
 }
 
 impl FromEntity for Node {
@@ -37,6 +42,7 @@ impl FromEntity for Node {
 
         Node {
             id: clone.id,
+            tree_id: clone.tree_id,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
@@ -47,6 +53,8 @@ impl FromEntity for Node {
 
     //TODO entity matcher for nodes
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
+        println!("{:?}\n", entities);
+
         let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
         let mut lower = usize::max_value();
         let mut pre_links: Vec<Entity> = Vec::new();
@@ -79,23 +87,28 @@ impl FromEntity for Node {
         }
 
         let mut roots = Vec::new();
-        for (id, node) in node_map.clone().into_iter().rev() {
-            let parent = match key(&id, level(&id) - 1) {
-                Some(p) => p,
-                None => panic!("{:?}", node),
-            };
-
-            if let Some(root) = node_map.get_mut(&parent) {
-                root.nodes.push(node);
-            }
-        }
-
         for (id, node) in node_map {
-            if level(&id) == lower {
-                roots.push(node);
-            }
+            push_node(&mut roots, lower, node);
         }
 
         roots
+    }
+}
+
+fn push_node<'a>(roots: &mut Vec<Node>, base: usize, node: Node) {
+    let mut search = base;
+    let ref path = node.tree_id;
+
+    if path.level() == base {
+        roots.push(node.clone());
+    } else {
+        for root in roots {
+            if let Some(parent) = path.key(base) {
+                if parent == root.tree_id.id() {
+                    push_node(&mut root.nodes, base + 1, node.clone());
+                    break;
+                }
+            }
+        }
     }
 }
