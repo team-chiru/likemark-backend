@@ -5,13 +5,12 @@ use common::link::*;
 use common::entity::FromEntity;
 use common::entity::Entity;
 
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 use common::tree_id::*;
 
 #[derive(Debug, Clone)]
 pub struct Node {
     id: i32,
-    tree_id: TreeId,
     name: String,
     url: String,
     fn_type: FnType,
@@ -30,10 +29,6 @@ impl Node {
             }
         }
     }
-
-    fn nodes_mut(&mut self) -> &mut Vec<Node> {
-        &mut self.nodes
-    }
 }
 
 impl FromEntity for Node {
@@ -42,7 +37,6 @@ impl FromEntity for Node {
 
         Node {
             id: clone.id,
-            tree_id: clone.tree_id,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
@@ -51,11 +45,9 @@ impl FromEntity for Node {
         }
     }
 
-    //TODO entity matcher for nodes
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
-        println!("{:?}\n", entities);
-
-        let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
+        let mut node_map: HashMap<String, Node> = HashMap::new();
+        let mut node_dir: HashMap<i32, TreeId> = HashMap::new();
         let mut lower = usize::max_value();
         let mut pre_links: Vec<Entity> = Vec::new();
 
@@ -67,6 +59,7 @@ impl FromEntity for Node {
                     lower = path.level();
                 }
 
+                node_dir.insert(e.id, path.clone());
                 node_map.insert(path.id(), Node::from_entity(&e));
             } else {
                 pre_links.push(e.clone());
@@ -87,27 +80,37 @@ impl FromEntity for Node {
         }
 
         let mut roots = Vec::new();
-        for (id, node) in node_map {
-            push_node(&mut roots, lower, node);
+        for (_, node) in node_map {
+            push_node(&node_dir, &mut roots, lower, node);
         }
 
         roots
     }
 }
 
-fn push_node<'a>(roots: &mut Vec<Node>, base: usize, node: Node) {
-    let mut search = base;
-    let ref path = node.tree_id;
+fn push_node<'a>(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search: usize, node: Node) {
+    let path = match dir.get(&node.id) {
+        Some(tree_id) => tree_id,
+        None => panic!("{:?}", node)
+    };
 
-    if path.level() == base {
+    if path.level() == search {
         roots.push(node.clone());
     } else {
         for root in roots {
-            if let Some(parent) = path.key(base) {
-                if parent == root.tree_id.id() {
-                    push_node(&mut root.nodes, base + 1, node.clone());
-                    break;
-                }
+            let parent = match path.key(search) {
+                Some(key) => key,
+                None => panic!("{:?}", path)
+            };
+
+            let root_key = match dir.get(&root.id) {
+                Some(key) => key,
+                None => panic!("{:?}", root)
+            };
+
+            if parent == root_key.id() {
+                push_node(dir, &mut root.nodes, search + 1, node.clone());
+                break;
             }
         }
     }
