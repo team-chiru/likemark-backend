@@ -11,6 +11,7 @@ use common::tree_id::*;
 #[derive(Debug, Clone)]
 pub struct Node {
     id: i32,
+    path: TreeId,
     name: String,
     url: String,
     fn_type: FnType,
@@ -37,6 +38,7 @@ impl FromEntity for Node {
 
         Node {
             id: clone.id,
+            path: clone.tree_id,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
