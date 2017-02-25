@@ -53,7 +53,6 @@ impl FromEntity for Node {
 
         for e in entities {
             let ref path = e.tree_id;
-
             if e.struct_type == StructType::Node {
                 if level(path) < lower {
                     lower = level(path);
@@ -67,9 +66,8 @@ impl FromEntity for Node {
         }
 
         for e in pre_links {
-            let inner = level(&e.tree_id);
-
-            let parent = match key(&e.tree_id, inner - 1) {
+            let ref path = e.tree_id;
+            let parent = match key(&path, level(&path) - 1) {
                 Some(p) => p,
                 None => panic!("{:?}", e),
             };
@@ -88,18 +86,18 @@ impl FromEntity for Node {
     }
 }
 
-fn push_node<'a>(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search: usize, node: Node) {
+fn push_node<'a>(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search_level: usize, node: Node) {
     let path = match dir.get(&node.id) {
         Some(tree_id) => tree_id,
         None => panic!("{:?}", node)
     };
 
-    if level(path) == search {
+    if level(path) == search_level {
         roots.push(node.clone());
     } else {
         for root in roots {
-            let parent = match key(path, search) {
-                Some(key) => key,
+            let parent_id = match key(path, search_level) {
+                Some(id) => id,
                 None => panic!("{:?}", path)
             };
 
@@ -108,8 +106,8 @@ fn push_node<'a>(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search: usiz
                 None => panic!("{:?}", root)
             };
 
-            if parent == root_key.id() {
-                push_node(dir, &mut root.nodes, search + 1, node.clone());
+            if parent_id == root_key.id() {
+                push_node(dir, &mut root.nodes, search_level + 1, node.clone());
                 break;
             }
         }
