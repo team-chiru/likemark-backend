@@ -3,6 +3,7 @@ use common::types::StructType;
 
 use common::entity::FromEntity;
 use common::entity::Entity;
+use common::tree_id::TreeId;
 
 use common::criteria::CriteriaBuilder;
 use common::criteria::Criteria;
@@ -10,6 +11,7 @@ use common::criteria::Criteria;
 #[derive(Debug, Clone)]
 pub struct Link {
     id: i32,
+    path: TreeId,
     name: String,
     url: String,
     fn_type: FnType,
@@ -21,6 +23,7 @@ impl FromEntity for Link {
 
         Link {
             id: clone.id,
+            path: clone.tree_id,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
