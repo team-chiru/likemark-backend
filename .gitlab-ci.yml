@@ -1,8 +1,15 @@
-Cargo build:
+before_script:
+    - curl https://sh.rustup.rs -sSf | sh
+    # install rust
+    - rustup default stable
+    - rustc --version
+    
+build:
     stage: build
     script:
         - cargo build
-Cargo test:
+
+test:
     stage: test
     script:
         - cargo test
