@@ -39,7 +39,7 @@ impl FromEntity for Node {
 
         Node {
             id: clone.id,
-            path: clone.tree_id,
+            path: clone.path,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
@@ -55,7 +55,7 @@ impl FromEntity for Node {
         let mut pre_links: Vec<Entity> = Vec::new();
 
         for e in entities {
-            let ref path = e.tree_id;
+            let ref path = e.path;
             if e.struct_type == StructType::Node {
                 if level(path) < lower {
                     lower = level(path);
@@ -69,7 +69,7 @@ impl FromEntity for Node {
         }
 
         for e in pre_links {
-            let ref path = e.tree_id;
+            let ref path = e.path;
             let parent = match key(&path, level(&path) - 1) {
                 Some(p) => p,
                 None => panic!("{:?}", e),
@@ -92,7 +92,7 @@ impl FromEntity for Node {
 
 fn push_node(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search_level: usize, node: Node) {
     let path = match dir.get(&node.id) {
-        Some(tree_id) => tree_id,
+        Some(path) => path,
         None => panic!("{:?}", node)
     };
 

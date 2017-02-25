@@ -6,7 +6,7 @@ use std::marker;
 #[derive(Debug, Clone)]
 pub struct Entity {
     pub id: i32,
-    pub tree_id: TreeId,
+    pub path: TreeId,
     pub name: String,
     pub url: String,
     pub struct_type: StructType,

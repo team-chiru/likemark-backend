@@ -23,7 +23,7 @@ impl FromEntity for Link {
 
         Link {
             id: clone.id,
-            path: clone.tree_id,
+            path: clone.path,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
