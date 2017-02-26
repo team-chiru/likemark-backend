@@ -1,7 +1,4 @@
 before_script:
-    - curl https://sh.rustup.rs -sSf | sh
-    # install rust
-    - rustup default stable
     - rustc --version
     
 build:
