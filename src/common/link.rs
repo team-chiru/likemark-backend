@@ -50,8 +50,10 @@ impl EntityComposite for Link {
 
     fn from_entities(entites: Vec<Entity>) -> Vec<Self> {
         let mut vec = Vec::new();
-        for entity in entites {
-            vec.push(Link::from_entity(&entity));
+        for e in entites {
+            if e.struct_type == StructType::Link {
+                vec.push(Link::from_entity(&e));
+            }
         }
 
         vec

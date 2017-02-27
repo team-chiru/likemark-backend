@@ -46,23 +46,57 @@ fn insert() {
     EntityDao::insert::<Link>(&db, &unit).unwrap();
     match EntityDao::read::<Link>(&db, &c.id(test)) {
         Ok(l) => assert!(l == unit),
-        Err(err) => panic!("INSERT FAILED: {}", err)
+        Err(err) => panic!("READ FAILED: {}", err)
     }
-
 }
 
 #[test]
 #[should_panic]
 fn delete() {
-    panic!("hello");
+    let db = db_wrapper::init();
+    let test = 3;
+    let mut c = Criteria::new();
+
+    EntityDao::delete::<Link>(&db, &c.id(test)).unwrap();
+    match EntityDao::read::<Link>(&db, &c.id(test)) {
+        Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
+        Err(err) => panic!("READ FAILED: {}", err),
+    }
 }
 
 #[test]
 fn update() {
-    println!("hello");
+    let db = db_wrapper::init();
+    let test = 5;
+    let mut c = Criteria::new();
+
+    let read = EntityDao::read::<Link>(&db, &c.id(test)).unwrap();
+    let unit = Link {
+        id: read.id,
+        path: read.path,
+        name: String::from("updated"),
+        url: read.url,
+        fn_type: read.fn_type
+    };
+
+    EntityDao::update::<Link>(&db, &unit).unwrap();
+    match EntityDao::read::<Link>(&db, &c.id(test)) {
+        Ok(l) => assert!(l == unit),
+        Err(err) => panic!("READ FAILED: {}", err)
+    }
 }
 
 #[test]
 fn list() {
-    println!("hello");
+    let db = db_wrapper::init();
+    let test = String::from("test");
+    let mut c = Criteria::new();
+
+    match EntityDao::list::<Link>(&db, &c.name(test)) {
+        Ok(v) => {
+            println!("{:?}", v);
+            assert!(v.len() == 8)
+        },
+        Err(err) => panic!("LIST FAILED: {}", err)
+    }
 }
