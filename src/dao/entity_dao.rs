@@ -54,6 +54,7 @@ impl Dao for EntityDao {
             Err(err) => {
                 return Err(format!("Read failed: {}", err));
             }
+
         };
 
         let mut matches = Vec::new();

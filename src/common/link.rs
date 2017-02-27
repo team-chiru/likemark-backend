@@ -6,18 +6,15 @@ use common::tree_id::TreeId;
 use common::entity::EntityComposite;
 use common::entity::Entity;
 
-use common::criteria::CriteriaBuilder;
-use common::criteria::Criteria;
-
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct Link {
-    id: i32,
-    path: TreeId,
-    name: String,
-    url: String,
-    fn_type: FnType,
+    pub id: i32,
+    pub path: TreeId,
+    pub name: String,
+    pub url: String,
+    pub fn_type: FnType,
 }
 
 impl EntityComposite for Link {
@@ -61,9 +58,12 @@ impl EntityComposite for Link {
     }
 }
 
-impl CriteriaBuilder for Link {
-    fn criteria(&self) -> Criteria {
-        let struct_type = StructType::Link;
-        Criteria::new().struct_type(struct_type.into()).build()
+impl PartialEq for Link {
+    fn eq(&self, other: &Link) -> bool {
+        self.id == other.id &&
+        self.name == other.name &&
+        self.path == other.path &&
+        self.url == other.url &&
+        self.fn_type == other.fn_type
     }
 }

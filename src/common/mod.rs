@@ -1,7 +1,6 @@
 pub mod utils;
 pub mod types;
 
-pub mod tree_id;
 pub mod entity;
 pub mod criteria;
 
@@ -12,3 +11,10 @@ pub mod criteria;
 
 pub mod link;
 pub mod node;
+pub mod tree_id;
+
+pub type Link = link::Link;
+pub type Node = node::Node;
+pub type Entity = entity::Entity;
+pub type TreeId = tree_id::TreeId;
+pub type Criteria = criteria::Criteria;
