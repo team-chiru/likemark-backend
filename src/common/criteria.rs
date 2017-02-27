@@ -72,7 +72,7 @@ impl Criteria {
         self.clone()
     }
 
-    pub fn map(&self) -> BTreeMap<String, QueryValue> {
+    pub fn map_query(&self) -> BTreeMap<String, QueryValue> {
         let mut btree: BTreeMap<String, QueryValue> = BTreeMap::new();
 
         match self.id {

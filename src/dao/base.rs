@@ -1,5 +1,5 @@
 extern crate rusqlite;
-use common::entity::FromEntity;
+use common::entity::EntityComposite;
 use common::criteria::Criteria;
 
 pub struct SqlConfig {
@@ -14,12 +14,16 @@ pub struct SqlConfig {
 pub trait Query {}
 
 pub trait Dao {
-    // fn insert(&self, e: &Entity) -> Result<i32, String>;
-    // fn delete(&self, c: &Criteria) -> Result<i32, String>;
+    fn insert<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+        where T: EntityComposite;
+    fn delete<T>(s: &SqlConfig, c: &Criteria) -> Result<i32, String>
+        where T: EntityComposite;
     fn read<T>(s: &SqlConfig, c: &Criteria) -> Result<T, String>
-        where T: FromEntity;
-    // fn update(&self, e: Entity) -> Result<i32, String>;
-    // fn list(&self, c: &Criteria) -> Result<Vec<Entity>, String>;
+        where T: EntityComposite;
+    fn update<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+        where T: EntityComposite;
+    fn list<T>(s: &SqlConfig, c: &Criteria) -> Result<Vec<T>, String>
+        where T: EntityComposite;
 }
 
 //pub struct EntityDao {}

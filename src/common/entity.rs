@@ -1,7 +1,9 @@
 use common::types::StructType;
 use common::types::FnType;
 use common::tree_id::*;
+use common::utils::QueryValue;
 use std::marker;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct Entity {
@@ -14,7 +16,8 @@ pub struct Entity {
     pub rev_no: i32,
 }
 
-pub trait FromEntity {
+pub trait EntityComposite {
+    fn map_query(&self) -> HashMap<String, QueryValue>;
     fn from_entity(&Entity) -> Self;
     fn from_entities(Vec<Entity>) -> Vec<Self>
         where Self: marker::Sized;

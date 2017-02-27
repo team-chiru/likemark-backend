@@ -1,11 +1,13 @@
 use common::types::FnType;
 use common::types::StructType;
 use common::link::*;
+use common::utils::*;
 
-use common::entity::FromEntity;
+use common::entity::EntityComposite;
 use common::entity::Entity;
 
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 use common::tree_id::*;
 
 #[derive(Debug, Clone)]
@@ -32,7 +34,7 @@ impl Node {
     }
 }
 
-impl FromEntity for Node {
+impl EntityComposite for Node {
     fn from_entity(entity: &Entity) -> Self {
         let clone = entity.clone();
 
@@ -45,6 +47,24 @@ impl FromEntity for Node {
             links: Vec::new(),
             nodes: Vec::new()
         }
+    }
+
+    fn map_query(&self) -> HashMap<String, QueryValue> {
+        let mut hash: HashMap<String, QueryValue> = HashMap::new();
+        let clone = self.clone();
+
+        hash.insert(String::from("id"), QueryValue::Integer(self.id));
+        hash.insert(String::from("tree_id"), QueryValue::String(self.path.id()));
+        hash.insert(String::from("name"), QueryValue::String(clone.name));
+        hash.insert(String::from("url"), QueryValue::String(clone.url));
+
+        let fn_type = clone.fn_type.into();
+        hash.insert(String::from("fn_type"), QueryValue::String(fn_type));
+
+        let struct_type = StructType::Node.into();
+        hash.insert(String::from("struct_type"), QueryValue::String(struct_type));
+
+        hash
     }
 
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
