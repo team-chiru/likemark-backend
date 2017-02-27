@@ -43,7 +43,6 @@ fn insert() {
         fn_type: FnType::None
     };
 
-    unimplemented!();
     EntityDao::insert::<Link>(&db, &unit).unwrap();
     match EntityDao::read::<Link>(&db, &c.id(test)) {
         Ok(l) => assert!(l == unit),
