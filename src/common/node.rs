@@ -12,13 +12,13 @@ use common::tree_id::*;
 
 #[derive(Debug, Clone)]
 pub struct Node {
-    id: i32,
-    path: TreeId,
-    name: String,
-    url: String,
-    fn_type: FnType,
-    links: Vec<Link>,
-    nodes: Vec<Node>,
+    pub id: i32,
+    pub path: TreeId,
+    pub name: String,
+    pub url: String,
+    pub fn_type: FnType,
+    pub links: Vec<Link>,
+    pub nodes: Vec<Node>,
 }
 
 impl Node {
@@ -31,6 +31,18 @@ impl Node {
                 self.nodes.push(Node::from_entity(&entity));
             }
         }
+    }
+}
+
+impl PartialEq for Node {
+    fn eq(&self, other: &Node) -> bool {
+        self.id == other.id &&
+        self.name == other.name &&
+        self.path == other.path &&
+        self.url == other.url &&
+        self.fn_type == other.fn_type &&
+        self.links == other.links &&
+        self.nodes == other.nodes
     }
 }
 
