@@ -11,6 +11,7 @@ use bookmarkt::common::node::*;
 use bookmarkt::common::tree_id::*;
 use bookmarkt::common::criteria::*;
 use bookmarkt::common::utils::load_file;
+use bookmarkt::core::logic::html_parser::Parser;
 
 fn main() {
     //let db = match Connection::open("res/bookmarkt.db") {
@@ -58,4 +59,8 @@ fn main() {
 
     let link = EntityDao::read::<Link>(&config, &c.tree_id(&id_test));
     println!("{:?}\n", link);
+
+    let bookmark_file_path = String::from("res/bookmark_file/bookmark_chrome.html");
+    let mut parser = Parser::new(bookmark_file_path);
+    parser.import();
 }

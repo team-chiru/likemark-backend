@@ -15,9 +15,16 @@ impl Parser {
     }
 
     pub fn import(&mut self){
-        let filepath = &self.bookmark_file_path;
-        let f = load_file(&filepath);
+        let file_path = &self.bookmark_file_path;
+        let f = load_file(&file_path);
 
+        println!("{:?}", f);
+
+        //let mut html_buffer = String::new();
+        //try!(f.read_to_string(&mut html_buffer));
+
+        //Chercher les liens et les mettres dans un tableau (btree etc...)
+        //Les insert dans la base de donnees
 
 
     }
