@@ -2,22 +2,21 @@ use common::types::FnType;
 use common::types::StructType;
 use common::link::*;
 
-use common::entity::FromEntity;
+use common::entity::EntityComposite;
 use common::entity::Entity;
 
-use std::collections::HashMap;
 use std::collections::BTreeMap;
 use common::tree_id::*;
 
 #[derive(Debug, Clone)]
 pub struct Node {
-    id: i32,
-    path: TreeId,
-    name: String,
-    url: String,
-    fn_type: FnType,
-    links: Vec<Link>,
-    nodes: Vec<Node>,
+    pub id: i32,
+    pub path: TreeId,
+    pub name: String,
+    pub url: String,
+    pub fn_type: FnType,
+    pub links: Vec<Link>,
+    pub nodes: Vec<Node>,
 }
 
 impl Node {
@@ -33,7 +32,48 @@ impl Node {
     }
 }
 
-impl FromEntity for Node {
+impl PartialEq for Node {
+    fn eq(&self, other: &Node) -> bool {
+        let mut link_eq = true;
+        let ref links = self.links;
+        let ref other_links = other.links;
+
+        if links.len() == other_links.len() {
+            for i in 0..links.len() {
+                if links[i] != other_links[i] {
+                    link_eq = false;
+                    break;
+                }
+            }
+        } else {
+            link_eq = false;
+        }
+
+        let mut node_eq = true;
+        let ref nodes = self.nodes;
+        let ref other_nodes = other.nodes;
+
+        if nodes.len() == other_nodes.len() {
+            for i in 0..nodes.len() {
+                if nodes[i] != other_nodes[i] {
+                    node_eq = false;
+                    break;
+                }
+            }
+        } else {
+            node_eq = false;
+        }
+
+        self.id == other.id &&
+        self.name == other.name &&
+        self.path == other.path &&
+        self.url == other.url &&
+        self.fn_type == other.fn_type &&
+        link_eq && node_eq
+    }
+}
+
+impl EntityComposite for Node {
     fn from_entity(entity: &Entity) -> Self {
         let clone = entity.clone();
 
@@ -48,9 +88,33 @@ impl FromEntity for Node {
         }
     }
 
+    fn into_entities(&self) -> Vec<Entity> {
+        let clone = self.clone();
+        let mut entities = vec!(
+            Entity {
+                id: clone.id,
+                path: clone.path,
+                name: clone.name,
+                url: clone.url,
+                struct_type: StructType::Node,
+                fn_type: clone.fn_type,
+                rev_no: 0
+            }
+        );
+
+        for link in clone.links {
+            entities.append(&mut link.into_entities());
+        }
+
+        for node in clone.nodes {
+            entities.append(&mut node.into_entities());
+        }
+
+        entities
+    }
+
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
         let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
-        let mut node_dir: HashMap<i32, TreeId> = HashMap::new();
         let mut lower = usize::max_value();
         let mut pre_links: Vec<Entity> = Vec::new();
 
@@ -61,7 +125,6 @@ impl FromEntity for Node {
                     lower = level(path);
                 }
 
-                node_dir.insert(e.id, path.clone());
                 node_map.insert(path.id(), Node::from_entity(&e));
             } else {
                 pre_links.push(e.clone());
@@ -82,19 +145,15 @@ impl FromEntity for Node {
 
         let mut roots = Vec::new();
         for (_, node) in node_map {
-            push_node(&node_dir, &mut roots, lower, node);
+            push_node(&mut roots, lower, node);
         }
 
-        println!("{:?}\n", roots);
         roots
     }
 }
 
-fn push_node(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search_level: usize, node: Node) {
-    let path = match dir.get(&node.id) {
-        Some(path) => path,
-        None => panic!("{:?}", node)
-    };
+fn push_node(roots: &mut Vec<Node>, search_level: usize, node: Node) {
+    let ref path = node.clone().path;
 
     if level(path) == search_level {
         roots.push(node);
@@ -105,14 +164,9 @@ fn push_node(dir: &HashMap<i32, TreeId>, roots: &mut Vec<Node>, search_level: us
                 None => panic!("{:?}", path)
             };
 
-            let root_key = match dir.get(&root.id) {
-                Some(key) => key,
-                None => panic!("{:?}", root)
-            };
-
-            println!("{:?} - {:?}\n", parent_id, root_key.id());
+            let root_key = &root.path;
             if parent_id == root_key.id() {
-                push_node(dir, &mut root.nodes, search_level + 1, node);
+                push_node(&mut root.nodes, search_level + 1, node);
                 break;
             }
         }

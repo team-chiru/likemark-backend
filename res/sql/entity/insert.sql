@@ -4,5 +4,5 @@ INSERT INTO entity (tree_id, name, url, struct_type, fn_type, rev_no) VALUES (
 	{{ url }},
 	{{ struct_type }},
 	{{ fn_type }},
-	{{ rev_no }}
+	1
 );

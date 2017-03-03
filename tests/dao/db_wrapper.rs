@@ -1,18 +1,11 @@
-extern crate rusqlite
+extern crate rusqlite;
+extern crate bookmarkt;
 
-use  common::Node;
+use bookmarkt::common::utils::load_file;
+use bookmarkt::dao::base::SqlConfig;
+use self::rusqlite::Connection;
 
-use common::types::StructType;
-use common::types::FnType;
-use common::Criteria;
-
-use common::utils::load_file;
-
-use super::base::Dao;
-use super::base::SqlConfig;
-use super::node_dao::NodeDao;
-
-fn get_sql_config() -> SqlConfig {
+fn connect() -> SqlConfig {
     let db = match Connection::open_in_memory() {
         Ok(c) => c,
         Err(err) => panic!("OPEN TEST DB FAILED: {}", err),
@@ -34,8 +27,8 @@ fn get_sql_config() -> SqlConfig {
     }
 }
 
-fn init_test_db() -> SqlConfig {
-    let config = get_sql_config();
+pub fn init() -> SqlConfig {
+    let config = connect();
 
     let init_sql = String::from("res/sql/entity/init.sql");
     let init_test_sql = String::from("res/sql/entity/init_test.sql");
@@ -54,21 +47,4 @@ fn init_test_db() -> SqlConfig {
     };
 
     config
-}
-
-
-#[test]
-fn read() {
-    let dao = NodeDao { config: init_test_db() };
-    let id_test = 1;
-    let node = Node {
-        id: id_test,
-        parent_id: String::from("1"),
-        name: String::from("test_read"),
-        url: String::from("test_url"),
-        struct_type: StructType::Node,
-        fn_type: FnType::None,
-        rev_no: 0,
-    };
-
 }
