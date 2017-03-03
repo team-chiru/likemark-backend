@@ -7,7 +7,6 @@ authors = ["team-chiru <team-chiru@protonmail.com>"]
 rusqlite = "0.6"
 chrono = "*"
 yaml-rust = "*"
-toml = "*"
 regex = "*"
 log="*"
 env_logger="*"
