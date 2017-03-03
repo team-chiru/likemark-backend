@@ -4,6 +4,7 @@ use common::tree_id::TreeId;
 
 use common::entity::EntityComposite;
 use common::entity::Entity;
+use common::tree_id::TreeId;
 
 #[derive(Debug, Clone)]
 pub struct Link {

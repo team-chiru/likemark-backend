@@ -16,11 +16,11 @@ macro_rules! create_entity {
         $stmt.query_map(&[], |row| {
             let struct_type: String = row.get(4);
             let fn_type: String = row.get(5);
-            let tree_id: String = row.get(1);
+            let path: String = row.get(1);
 
             Entity {
                 id: row.get(0),
-                path: TreeId::new(tree_id),
+                path: TreeId::new(path),
                 name: row.get(2),
                 url: row.get(3),
                 struct_type: StructType::from(struct_type),
