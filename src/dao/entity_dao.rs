@@ -20,7 +20,7 @@ macro_rules! create_entity {
 
             Entity {
                 id: row.get(0),
-                tree_id: TreeId::new(tree_id),
+                path: TreeId::new(tree_id),
                 name: row.get(2),
                 url: row.get(3),
                 struct_type: StructType::from(struct_type),
@@ -40,7 +40,7 @@ impl Dao for EntityDao {
         where T: EntityComposite {
         let template = s.read_sql.clone();
         let mapping = &c.map_query();
-        let read_query = mapping.fill_query(template);
+        let read_query = mapping.fill_query(&template);
 
         let mut stmt = match s.connection.prepare(read_query.as_str()) {
             Ok(read) => read,
@@ -75,23 +75,32 @@ impl Dao for EntityDao {
         }
     }
 
-    fn insert<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+    fn insert<T>(s: &SqlConfig, e: &T) -> Result<Vec<i32>, String>
         where T: EntityComposite {
         let template = s.insert_sql.clone();
-        let map = e.map_query();
-        let insert_query = map.fill_query(template);
+        let mut results = Vec::new();
 
-        match s.connection.execute(insert_query.as_str(), &[]) {
-            Ok(insert) => Ok(insert),
-            Err(err) => Err(format!("Insert failed: {}", err))
+        let entities = e.into_entities();
+        for entity in entities {
+            let map = entity.map_query();
+            let insert_query = map.fill_query(&template);
+
+            match s.connection.execute(insert_query.as_str(), &[]) {
+                Ok(insert) => results.push(insert),
+                Err(err) => {
+                    return Err(format!("Insert failed: {}", err));
+                }
+            }
         }
+
+        Ok(results)
     }
 
     fn delete<T>(s: &SqlConfig, c: &Criteria) -> Result<i32, String>
         where T: EntityComposite {
         let template = s.delete_sql.clone();
         let map = c.map_query();
-        let delete_query = map.fill_query(template);
+        let delete_query = map.fill_query(&template);
 
         match s.connection.execute(delete_query.as_str(), &[]) {
             Ok(delete) => Ok(delete),
@@ -99,24 +108,30 @@ impl Dao for EntityDao {
         }
     }
 
-    fn update<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+    fn update<T>(s: &SqlConfig, e: &T) -> Result<Vec<i32>, String>
         where T: EntityComposite {
         let template = s.update_sql.clone();
-        let map = e.map_query();
-        let update_query = map.fill_query(template);
+        let mut results = Vec::new();
 
-        match s.connection.execute(update_query.as_str(), &[]) {
-            Ok(update) => Ok(update),
-            Err(err) => Err(format!("Update failed: {}", err)),
+        let entities = e.into_entities();
+        for entity in entities {
+            let map = entity.map_query();
+            let update_query = map.fill_query(&template);
+
+            match s.connection.execute(update_query.as_str(), &[]) {
+                Ok(update) => results.push(update),
+                Err(err) => return Err(format!("Update failed: {}", err))
+            }
         }
+
+        Ok(results)
     }
 
     fn list<T>(s: &SqlConfig, c: &Criteria) -> Result<Vec<T>, String>
         where T: EntityComposite {
         let template = s.read_sql.clone();
         let mapping = &c.map_query();
-        let list_query = mapping.fill_query(template);
-
+        let list_query = mapping.fill_query(&template);
 
         let mut stmt = match s.connection.prepare(list_query.as_str()) {
             Ok(list) => list,

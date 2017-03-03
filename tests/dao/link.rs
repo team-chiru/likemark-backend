@@ -93,10 +93,7 @@ fn list() {
     let mut c = Criteria::new();
 
     match EntityDao::list::<Link>(&db, &c.name(test)) {
-        Ok(v) => {
-            println!("{:?}", v);
-            assert!(v.len() == 8)
-        },
+        Ok(v) => assert!(v.len() == 8),
         Err(err) => panic!("LIST FAILED: {}", err)
     }
 }

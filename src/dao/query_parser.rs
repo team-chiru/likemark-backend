@@ -5,11 +5,11 @@ use std::collections::HashMap;
 use common::utils::QueryValue;
 
 pub trait QueryParser {
-    fn fill_query(&self, query: String) -> String;
+    fn fill_query(&self, query: &String) -> String;
 }
 
 impl QueryParser for BTreeMap<String, QueryValue> {
-    fn fill_query(&self, query: String) -> String {
+    fn fill_query(&self, query: &String) -> String {
         let re = regex::Regex::new(r"\{\{ +(\w+) +\}\}").unwrap();
         let mut replaced_query = String::from(query.clone());
 
@@ -32,7 +32,7 @@ impl QueryParser for BTreeMap<String, QueryValue> {
 }
 
 impl QueryParser for HashMap<String, QueryValue> {
-    fn fill_query(&self, query: String) -> String {
+    fn fill_query(&self, query: &String) -> String {
         let re = regex::Regex::new(r"\{\{ +(\w+) +\}\}").unwrap();
         let mut replaced_query = String::from(query.clone());
 

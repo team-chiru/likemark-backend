@@ -1,13 +1,11 @@
 use common::types::FnType;
 use common::types::StructType;
 use common::link::*;
-use common::utils::*;
 
 use common::entity::EntityComposite;
 use common::entity::Entity;
 
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 use common::tree_id::*;
 
 #[derive(Debug, Clone)]
@@ -36,13 +34,42 @@ impl Node {
 
 impl PartialEq for Node {
     fn eq(&self, other: &Node) -> bool {
+        let mut link_eq = true;
+        let ref links = self.links;
+        let ref other_links = other.links;
+
+        if links.len() == other_links.len() {
+            for i in 0..links.len() {
+                if links[i] != other_links[i] {
+                    link_eq = false;
+                    break;
+                }
+            }
+        } else {
+            link_eq = false;
+        }
+
+        let mut node_eq = true;
+        let ref nodes = self.nodes;
+        let ref other_nodes = other.nodes;
+
+        if nodes.len() == other_nodes.len() {
+            for i in 0..nodes.len() {
+                if nodes[i] != other_nodes[i] {
+                    node_eq = false;
+                    break;
+                }
+            }
+        } else {
+            node_eq = false;
+        }
+
         self.id == other.id &&
         self.name == other.name &&
         self.path == other.path &&
         self.url == other.url &&
         self.fn_type == other.fn_type &&
-        self.links == other.links &&
-        self.nodes == other.nodes
+        link_eq && node_eq
     }
 }
 
@@ -52,7 +79,7 @@ impl EntityComposite for Node {
 
         Node {
             id: clone.id,
-            path: clone.tree_id,
+            path: clone.path,
             name: clone.name,
             url: clone.url,
             fn_type: clone.fn_type,
@@ -61,22 +88,29 @@ impl EntityComposite for Node {
         }
     }
 
-    fn map_query(&self) -> HashMap<String, QueryValue> {
-        let mut hash: HashMap<String, QueryValue> = HashMap::new();
+    fn into_entities(&self) -> Vec<Entity> {
         let clone = self.clone();
+        let mut entities = vec!(
+            Entity {
+                id: clone.id,
+                path: clone.path,
+                name: clone.name,
+                url: clone.url,
+                struct_type: StructType::Node,
+                fn_type: clone.fn_type,
+                rev_no: 0
+            }
+        );
 
-        hash.insert(String::from("id"), QueryValue::Integer(self.id));
-        hash.insert(String::from("tree_id"), QueryValue::String(self.path.id()));
-        hash.insert(String::from("name"), QueryValue::String(clone.name));
-        hash.insert(String::from("url"), QueryValue::String(clone.url));
+        for link in clone.links {
+            entities.append(&mut link.into_entities());
+        }
 
-        let fn_type = clone.fn_type.into();
-        hash.insert(String::from("fn_type"), QueryValue::String(fn_type));
+        for node in clone.nodes {
+            entities.append(&mut node.into_entities());
+        }
 
-        let struct_type = StructType::Node.into();
-        hash.insert(String::from("struct_type"), QueryValue::String(struct_type));
-
-        hash
+        entities
     }
 
     fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
@@ -85,7 +119,7 @@ impl EntityComposite for Node {
         let mut pre_links: Vec<Entity> = Vec::new();
 
         for e in entities {
-            let ref path = e.tree_id;
+            let ref path = e.path;
             if e.struct_type == StructType::Node {
                 if level(path) < lower {
                     lower = level(path);
@@ -98,7 +132,7 @@ impl EntityComposite for Node {
         }
 
         for e in pre_links {
-            let ref path = e.tree_id;
+            let ref path = e.path;
             let parent = match key(&path, level(&path) - 1) {
                 Some(p) => p,
                 None => panic!("{:?}", e),

@@ -14,24 +14,14 @@ pub struct SqlConfig {
 pub trait Query {}
 
 pub trait Dao {
-    fn insert<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+    fn insert<T>(s: &SqlConfig, e: &T) -> Result<Vec<i32>, String>
         where T: EntityComposite;
     fn delete<T>(s: &SqlConfig, c: &Criteria) -> Result<i32, String>
         where T: EntityComposite;
     fn read<T>(s: &SqlConfig, c: &Criteria) -> Result<T, String>
         where T: EntityComposite;
-    fn update<T>(s: &SqlConfig, e: &T) -> Result<i32, String>
+    fn update<T>(s: &SqlConfig, e: &T) -> Result<Vec<i32>, String>
         where T: EntityComposite;
     fn list<T>(s: &SqlConfig, c: &Criteria) -> Result<Vec<T>, String>
         where T: EntityComposite;
 }
-
-//pub struct EntityDao {}
-//impl Dao for EntityDao {
-//    fn read<T, C>(s: SqlConfig, c: &C) -> Result<T, String>
-//        where T: Entity,
-//              C: Criteria
-//    {
-//        Ok()
-//    }
-//}
