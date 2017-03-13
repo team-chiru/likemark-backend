@@ -24,7 +24,7 @@ impl Parser {
         let file_path = &self.bookmark_file_path;
         let f = load_file(&file_path);
 
-        println!("{:?}", f );
+        //println!("{:?}", f );
 
         let doc = Document::parse(f.unwrap().as_bytes()).unwrap();
         let root = doc.root.unwrap();

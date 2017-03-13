@@ -1,0 +1,10 @@
+{
+  "name": "netscape_parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "team-chiru",
+  "license": "yes",
+  "dependencies": {
+    "bookmarks-parser": "^0.0.3"
+  }
+}

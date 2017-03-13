@@ -2,6 +2,7 @@ extern crate bookmarkt;
 extern crate env_logger;
 
 extern crate rusqlite;
+
 use bookmarkt::core::logic::html_parser::Parser;
 
 fn main() {
