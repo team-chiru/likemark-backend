@@ -4,10 +4,8 @@ extern crate rusqlite;
 
 use bookmarkt::common::utils::load_file;
 use bookmarkt::core::external::netscape::Netscape;
-
 use bookmarkt::core::external::converter::Converter;
 
-use bookmarkt::core::external::base::Converter;
 
 //use bookmarkt::core::logic::html_parser::Parser;
 
