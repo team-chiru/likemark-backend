@@ -38,7 +38,6 @@ impl Netscape {
         }
 
         sanitized = bookmark_str;
-
         sanitized.to_string()
     }
 
