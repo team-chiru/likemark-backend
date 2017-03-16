@@ -21,13 +21,11 @@ impl Netscape {
         let mut bookmark_str: String = String::from(&sanitized[..]);
 
         let set = vec![
-            r"@<!--.*-->@mis",
-            r"@>(\s*?)<@mis",
-            r"@(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n@i",
-            r"@\n<br>@mis",
-            r"@\n<DD@i",
-            r"barfoo",
-            r"foobar",
+            "@<!--.*-->@mis",
+            "@>(\\s*?)<@mis",
+            "(?i)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n",
+            "@\n<br>@mis",
+            "@\n<DD@i",
         ];
 
 
