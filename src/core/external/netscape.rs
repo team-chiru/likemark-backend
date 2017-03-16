@@ -2,7 +2,7 @@ extern crate regex;
 
 use common::node::Node;
 
-use core::external::converter::Converter;
+use core::external::base::Converter;
 use self::regex::Regex;
 use self::regex::RegexSet;
 
@@ -18,7 +18,7 @@ impl Netscape {
         sanitized = sanitized.replace("\t"," ");
         sanitized = sanitized.replace("\r"," ");
 
-        let mut bookmark_str: &str = &sanitized[..];
+        let mut bookmark_str: String = String::from(&sanitized[..]);
 
         let set = vec![
             r"@<!--.*-->@mis",
@@ -33,8 +33,8 @@ impl Netscape {
 
         for regex in set {
             let re = Regex::new(regex).unwrap();
-            let result = re.replace_all( bookmark_str, "").to_string();
-            bookmark_str = &result;
+            let result = re.replace_all(&bookmark_str, "").to_string();
+            bookmark_str = result;
         }
 
         sanitized.to_string()
