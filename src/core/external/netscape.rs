@@ -4,8 +4,6 @@ use common::node::Node;
 
 use core::external::base::Converter;
 use self::regex::Regex;
-use self::regex::RegexSet;
-
 
 pub struct Netscape {}
 
@@ -21,9 +19,10 @@ impl Netscape {
         let mut bookmark_str: String = String::from(&sanitized[..]);
 
         let set = vec![
-            "@<!--.*-->@mis",
+            "(?si)<!--.*?-->\n",
+            "(?i)<!--.*?-->\n",
             "@>(\\s*?)<@mis",
-            "(?i)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n",
+            "(?mi)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n",
             "@\n<br>@mis",
             "@\n<DD@i",
         ];
@@ -43,17 +42,15 @@ impl Netscape {
 }
 
 impl Converter for Netscape {
-
     fn parse(bookmark_string: String) -> Vec<Node> {
         let bookmark_string = Netscape::sanitize(bookmark_string);
-        let lines: Vec<&str> = bookmark_string.split("\n").collect();
-        println!("{:?}",lines);
+        println!("{}",bookmark_string);
+        //bookmark_string.split("\n").collect();
+
         vec![]
     }
 
-    fn build(nodeVec: Vec<Node>) -> String {
-        unimplemented!();
+    fn build(nodes: Vec<Node>) -> String {
+        format!("{:?}", nodes)
     }
-
-
 }
