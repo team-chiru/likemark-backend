@@ -3,6 +3,7 @@ extern crate regex;
 use common::node::Node;
 use core::external::converter::Converter;
 use self::regex::Regex;
+use self::regex::RegexSet;
 
 pub struct Netscape {}
 
@@ -10,14 +11,33 @@ impl Netscape {
     pub fn sanitize(bookmark_string: String) -> String {
 
         let mut sanitized = bookmark_string;
+        sanitized.trim();
         sanitized = sanitized.replace("\t"," ");
         sanitized = sanitized.replace("\r"," ");
-        /*let re1 = Regex::new(r"@<!--.*-->@mis").unwrap();
-        sanitized = re1.replace_all(&sanitized, "");*/
-        sanitized.trim();
 
-        sanitized
+        let mut bookmark_str: &str = &sanitized[..];
+
+        let set = vec![
+            r"@<!--.*-->@mis",
+            r"@>(\s*?)<@mis",
+            r"@(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n@i",
+            r"@\n<br>@mis",
+            r"@\n<DD@i",
+            r"barfoo",
+            r"foobar",
+        ];
+
+
+        for regex in set {
+            let re = Regex::new(regex).unwrap();
+            let result = re.replace_all( bookmark_str, "").to_string();
+            bookmark_str = &result;
+        }
+
+        sanitized.to_string()
     }
+
+
 }
 
 impl Converter for Netscape {
