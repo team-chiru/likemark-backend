@@ -13,8 +13,6 @@ impl Netscape {
     pub fn sanitize(bookmark_string: String) -> String {
 
         let mut sanitized = bookmark_string;
-
-        sanitized.trim();
         sanitized = sanitized.replace("\t"," ");
         sanitized = sanitized.replace("\r"," ");
 
@@ -28,7 +26,6 @@ impl Netscape {
             "@\n<DD@i",
         ];
 
-
         for regex in set {
             let re = Regex::new(regex).unwrap();
             let result = re.replace_all(&bookmark_str, "").to_string();
@@ -36,7 +33,8 @@ impl Netscape {
         }
 
         sanitized = bookmark_str;
-        sanitized.to_string()
+        sanitized.trim();
+        sanitized
     }
 
 
