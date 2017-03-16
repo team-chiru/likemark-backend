@@ -17,12 +17,9 @@ impl Netscape {
         let mut bookmark_str: String = String::from(&sanitized[..]);
 
         let set = vec![
-            "(?si)<!--.*?-->\n",
-            "(?i)<!--.*?-->\n",
-            "@>(\\s*?)<@mis",
-            "(?mi)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\n",
-            "@\n<br>@mis",
-            "@\n<DD@i",
+            r"(?i)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\s?",
+            r"(?mis)<!--.*?-->\s?",
+            r"(?mis)\s?<.?br>",
         ];
 
         for regex in set {
@@ -30,6 +27,9 @@ impl Netscape {
             let result = re.replace_all(&bookmark_str, "").to_string();
             bookmark_str = result;
         }
+
+        let re = Regex::new(r"(?mis)>(\s*?)<").unwrap();
+        bookmark_str = re.replace_all(&bookmark_str, ">\n<").to_string();
 
         sanitized = bookmark_str;
         sanitized.trim();
