@@ -1,9 +1,11 @@
 extern crate regex;
 
 use common::node::Node;
+
 use core::external::converter::Converter;
 use self::regex::Regex;
 use self::regex::RegexSet;
+
 
 pub struct Netscape {}
 
@@ -11,6 +13,7 @@ impl Netscape {
     pub fn sanitize(bookmark_string: String) -> String {
 
         let mut sanitized = bookmark_string;
+
         sanitized.trim();
         sanitized = sanitized.replace("\t"," ");
         sanitized = sanitized.replace("\r"," ");
