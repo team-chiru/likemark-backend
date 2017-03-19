@@ -22,14 +22,37 @@ impl Netscape {
             r"(?mis)\s?<.?br>",
         ];
 
+        let set_unique = vec![
+            r"(?mis)>(\s*?)<",
+            r"@\n<br>@mis",
+            r"@\n<DD@i",
+        ];
+
         for regex in set {
             let re = Regex::new(regex).unwrap();
             let result = re.replace_all(&bookmark_str, "").to_string();
             bookmark_str = result;
         }
 
-        let re = Regex::new(r"(?mis)>(\s*?)<").unwrap();
-        bookmark_str = re.replace_all(&bookmark_str, ">\n<").to_string();
+        let mut re_unique: Regex;
+
+        for i in 0..3 {
+
+            re_unique = Regex::new(set_unique[i]).unwrap();
+
+            if i == 0{
+                re_unique.replace_all(&bookmark_str, ">\n<").to_string();
+            }
+
+            else if i == 1 {
+                re_unique.replace_all(&bookmark_str, "<br>").to_string();
+            }
+
+            else if i == 2 {
+                re_unique.replace_all(&bookmark_str, "<DD").to_string();
+            }
+
+        }
 
         sanitized = bookmark_str;
         sanitized.trim();
