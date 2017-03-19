@@ -15,3 +15,7 @@ env_logger="*"
 iron="*"
 unicase="*"
 params="*"
+
+serde = "*"
+serde_derive="*"
+serde_json="*"

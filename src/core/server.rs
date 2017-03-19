@@ -1,18 +1,35 @@
 use iron::prelude::*;
+use iron::method::Method;
+use iron::status::Status;
 
-use super::api::header;
+use serde_json;
+
+use super::api::{ header, body };
 use super::api::{ RequestRule, ResponseFormater };
 
-type HeaderManager = header::Manager;
+fn get_body() -> String {
+    let body = body::SuccessBody {
+        data: None,
+        meta: body::meta(),
+        jsonapi: body::jsonapi(),
+    };
+
+    serde_json::to_string(&body).unwrap()
+}
 
 pub fn serve() {
     Iron::new(|req: &mut Request| {
-        let mut resp = Response::with((
-            HeaderManager::check(req),
-            String::from("{ \"data\": \"Hello\" }\n")
-        ));
+        let mut resp = match req.method {
+            Method::Get =>
+                Response::with((
+                    header::Matcher::check(req),
+                    get_body()
+                )),
+            Method::Options => Response::with(Status::Ok),
+            _ => Response::with(Status::MethodNotAllowed),
+        };
 
-        HeaderManager::format(&mut resp);
+        header::Matcher::format(&mut resp);
         Ok(resp)
     }).http("localhost:3000").unwrap();
 }

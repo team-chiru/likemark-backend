@@ -9,55 +9,58 @@ use unicase::UniCase;
 use super::RequestRule;
 use super::ResponseFormater;
 
-pub struct Manager;
-impl Manager {
-    fn content_type() -> ContentType {
-        ContentType(
-            Mime(
-                TopLevel::Application,
-                SubLevel::Ext(String::from("vnd.api+json")),
-                vec![]
-            )
-        )
-    }
+fn mime() -> Mime {
+    Mime(
+        TopLevel::Application,
+        SubLevel::Ext(String::from("vnd.api+json")),
+        vec![]
+    )
+}
 
-    fn allow_headers() -> AccessControlAllowHeaders {
-        AccessControlAllowHeaders(vec![
+fn content_type() -> ContentType {
+    ContentType(
+        mime()
+    )
+}
+
+fn allow_headers() -> AccessControlAllowHeaders {
+    AccessControlAllowHeaders(
+        vec![
             UniCase("content-type".to_owned())
-        ])
-    }
-
-    fn allow_origin() -> AccessControlAllowOrigin {
-        AccessControlAllowOrigin::Any
-    }
+        ]
+    )
 }
 
-impl ResponseFormater for Manager {
+fn allow_origin() -> AccessControlAllowOrigin {
+    AccessControlAllowOrigin::Any
+}
+
+pub struct Matcher;
+
+impl ResponseFormater for Matcher {
     fn format(res: &mut Response) {
-        res.headers.set(Manager::allow_headers());
-        res.headers.set(Manager::allow_origin());
-        res.headers.set(Manager::content_type());
+        res.headers.set(allow_headers());
+        res.headers.set(allow_origin());
+        res.headers.set(content_type());
     }
 }
 
-impl RequestRule<Status> for Manager {
+impl RequestRule<Status> for Matcher {
     fn check(req: &Request) -> Status {
         if let Some(content) = req.headers.get::<ContentType>() {
-            if *content != Manager::content_type() {
-                Status::Ok
-            } else {
-                Status::UnsupportedMediaType
-            }
-        } else {
-            if let Some(accept) = req.headers.get::<Accept>() {
-                for quality in accept.iter() {
-                    println!("{:?}", quality.item);
-                }
-
-                Status::Ok
-            } else {
-                Status::Ok
+            if *content != content_type() {
+                return Status::UnsupportedMediaType;
             }
         }
+
+        if let Some(accepts) = req.headers.get::<Accept>() {
+            for quality in accepts.iter() {
+                if quality.item == mime() {
+                    return Status::Ok;
+                }
+            }
+        }
+
+        Status::NotAcceptable
     }
 }
