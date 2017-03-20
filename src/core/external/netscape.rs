@@ -65,19 +65,18 @@ impl Netscape {
 impl Converter for Netscape {
     fn parse(bookmark_string: String) -> Vec<Node> {
         let bookmark_string = Netscape::sanitize(bookmark_string);
-        //println!("{}\n",bookmark_string);
-
-        let href_regex = r#<a[^>]* href="([^"]*)#;
-        println!("{:?}\n", href_regex);
+        let href_regex = r#"(?i)([a-z]+)="([^"]*)""#;
+        println!("{}\n", href_regex);
 
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
-
         let re = Regex::new(href_regex).unwrap();
-        for capture in re.captures_iter(&bookmark_string) {
-            let href_tag = &capture[0];
-            println!("{}",href_tag);
+        for line in lines {
+            println!("link:");
+            for capture in re.captures_iter(&line) {
+                println!("{:?} = {:?}", &capture[1], &capture[2]);
+            }
+            println!("\n");
         }
-
 
         vec![]
     }
