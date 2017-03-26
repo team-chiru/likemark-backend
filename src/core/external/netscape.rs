@@ -68,12 +68,22 @@ impl Converter for Netscape {
         let href_regex = r#"(?i)([a-z]+)="([^"]*)""#;
         println!("{}\n", href_regex);
 
+        let content_regex = r#"<DT[^>]*>(.+?)</DT>"#;
+        println!("{}\n", content_regex);
+
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
-        let re = Regex::new(href_regex).unwrap();
+        let re_href = Regex::new(href_regex).unwrap();
+        let re_content = Regex::new(content_regex).unwrap();
         for line in lines {
             println!("link:");
-            for capture in re.captures_iter(&line) {
+            for capture in re_href.captures_iter(&line) {
                 println!("{:?} = {:?}", &capture[1], &capture[2]);
+            }
+            println!("\n");
+
+            println!("content:");
+            for capture in re_content.captures_iter(&line){
+                println!("{:?}", capture);
             }
             println!("\n");
         }
