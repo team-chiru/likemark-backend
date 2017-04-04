@@ -68,7 +68,7 @@ impl Converter for Netscape {
         let href_regex = r#"(?i)([a-z]+)="([^"]*)""#;
         println!("{}\n", href_regex);
 
-        let content_regex = r#"<a.*>(.*?)<\/a>"#;
+        let content_regex = r#"(?i)<a.*>(.*?)</a>"#;
         println!("{}\n", content_regex);
 
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
@@ -83,7 +83,7 @@ impl Converter for Netscape {
 
             println!("content:");
             for capture in re_content.captures_iter(&line){
-                println!("{:?}", &capture[0]);
+                println!("{:?}", &capture[1]);
             }
             println!("\n");
         }
