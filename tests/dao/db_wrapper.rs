@@ -2,7 +2,7 @@ extern crate rusqlite;
 extern crate bookmarkt;
 
 use bookmarkt::common::utils::load_file;
-use bookmarkt::dao::base::SqlConfig;
+use bookmarkt::dao::SqlConfig;
 use self::rusqlite::Connection;
 
 fn connect() -> SqlConfig {

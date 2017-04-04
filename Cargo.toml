@@ -11,10 +11,12 @@ toml = "*"
 regex = "*"
 log="*"
 env_logger="*"
+derive_builder="*"
 
 iron="*"
 unicase="*"
 params="*"
+uuid = { version = "*", features = ["serde", "v4"] }
 
 serde = "*"
 serde_derive="*"

@@ -1,6 +1,7 @@
 SELECT
     e.id,
-    e.tree_id,
+    e.uuid,
+    e.path,
     e.name,
     e.url,
     e.struct_type,

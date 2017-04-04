@@ -1,16 +1,20 @@
 use common::types::FnType;
 use common::types::StructType;
-use common::link::*;
 
-use common::entity::EntityComposite;
 use common::entity::Entity;
+use common::TreeId;
+use common::deep::tree_id::{ key, level };
 
 use std::collections::BTreeMap;
-use common::tree_id::*;
+use super::Link;
+use super::Composite;
+
+use uuid::Uuid;
+use std::str::FromStr;
 
 #[derive(Debug, Clone)]
 pub struct Node {
-    pub id: i32,
+    pub id: Uuid,
     pub path: TreeId,
     pub name: String,
     pub url: String,
@@ -20,13 +24,15 @@ pub struct Node {
 }
 
 impl Node {
-    fn push(&mut self, entity: &Entity) {
-        match entity.struct_type {
-            StructType::Link => {
-                self.links.push(Link::from_entity(&entity));
-            },
-            StructType::Node => {
-                self.nodes.push(Node::from_entity(&entity));
+    fn push_composition(&mut self, e: &Entity) {
+        if let Some(ref struct_type) = e.struct_type {
+            match *struct_type {
+                StructType::Link => {
+                    self.links.push(Link::compose(&e));
+                },
+                StructType::Node => {
+                    self.nodes.push(Node::compose(&e));
+                }
             }
         }
     }
@@ -73,86 +79,115 @@ impl PartialEq for Node {
     }
 }
 
-impl EntityComposite for Node {
-    fn from_entity(entity: &Entity) -> Self {
+impl Composite<Entity> for Node {
+    fn is_empty(&self) -> bool {
+        if self.id == Uuid::nil() {
+            true
+        } else {
+            false
+        }
+    }
+
+    fn compose(entity: &Entity) -> Self {
         let clone = entity.clone();
+        let empty = || String::from("");
 
         Node {
-            id: clone.id,
-            path: clone.path,
-            name: clone.name,
-            url: clone.url,
-            fn_type: clone.fn_type,
+            id: match clone.uuid {
+                Some(s) => match Uuid::from_str(&s) {
+                    Ok(u) => u,
+                    Err(msg) => panic!(msg)
+                },
+                None => Uuid::nil()
+            },
+            path: clone.path.unwrap_or(TreeId::new(empty())),
+            name: clone.name.unwrap_or(empty()),
+            url: clone.url.unwrap_or(empty()),
+            fn_type: clone.fn_type.unwrap_or(FnType::None),
             links: Vec::new(),
             nodes: Vec::new()
         }
     }
 
-    fn into_entities(&self) -> Vec<Entity> {
+    fn decompose(&self) -> Vec<Entity> {
         let clone = self.clone();
+        let uuid = match clone.id == Uuid::nil() {
+            true => Uuid::new_v4(),
+            false => clone.id
+        };
+
         let mut entities = vec!(
             Entity {
-                id: clone.id,
-                path: clone.path,
-                name: clone.name,
-                url: clone.url,
-                struct_type: StructType::Node,
-                fn_type: clone.fn_type,
-                rev_no: 0
+                id: None,
+                uuid: Some(uuid.hyphenated().to_string()),
+                path: Some(clone.path),
+                name: Some(clone.name),
+                url: Some(clone.url),
+                struct_type: Some(StructType::Node),
+                fn_type: Some(clone.fn_type),
+                rev_no: None
             }
         );
 
         for link in clone.links {
-            entities.append(&mut link.into_entities());
+            entities.append(&mut link.decompose());
         }
 
         for node in clone.nodes {
-            entities.append(&mut node.into_entities());
+            entities.append(&mut node.decompose());
         }
 
         entities
     }
 
-    fn from_entities(entities: Vec<Entity>) -> Vec<Self> {
+    fn compose_vec(entities: Vec<Entity>) -> Vec<Self> {
         let mut node_map: BTreeMap<String, Node> = BTreeMap::new();
         let mut lower = usize::max_value();
         let mut pre_links: Vec<Entity> = Vec::new();
 
         for e in entities {
-            let ref path = e.path;
-            if e.struct_type == StructType::Node {
-                if level(path) < lower {
-                    lower = level(path);
+            let ref path = match e.path {
+                Some(ref p) => p,
+                None => continue
+            };
+
+            if e.struct_type == Some(StructType::Node) {
+                if level(&path) < lower {
+                    lower = level(&path);
                 }
 
-                node_map.insert(path.id(), Node::from_entity(&e));
+                node_map.insert(path.id(), Node::compose(&e));
             } else {
                 pre_links.push(e.clone());
             }
         }
 
         for e in pre_links {
-            let ref path = e.path;
+            let ref path = match e.path {
+                Some(ref p) => p,
+                None => continue
+            };
+
             let parent = match key(&path, level(&path) - 1) {
                 Some(p) => p,
                 None => panic!("{:?}", e),
             };
 
             if let Some(node) = node_map.get_mut(&parent) {
-                node.push(&e);
+                node.push_composition(&e.clone());
             }
         }
 
         let mut roots = Vec::new();
         for (_, node) in node_map {
-            push_node(&mut roots, lower, node);
+            build_node_hierarchy(&mut roots, lower, node);
         }
 
         roots
     }
 }
 
-fn push_node(roots: &mut Vec<Node>, search_level: usize, node: Node) {
+fn build_node_hierarchy(roots: &mut Vec<Node>, search_level: usize, node: Node) {
     let ref path = node.clone().path;
 
     if level(path) == search_level {
@@ -166,7 +201,7 @@ fn push_node(roots: &mut Vec<Node>, search_level: usize, node: Node) {
 
             let root_key = &root.path;
             if parent_id == root_key.id() {
-                push_node(&mut root.nodes, search_level + 1, node);
+                build_node_hierarchy(&mut root.nodes, search_level + 1, node);
                 break;
             }
         }

@@ -1,7 +1,3 @@
-extern crate chrono;
-
-use self::chrono::*;
-
 pub fn load_file(path: &str) -> Result<String, String> {
     use std::path::PathBuf;
     let absolute_path = PathBuf::from(path);
@@ -30,23 +26,5 @@ pub fn load_file(path: &str) -> Result<String, String> {
             Ok(dump)
         }
         Err(_) => Err(format!("Unable to find file: {}", path)),
-    }
-}
-
-pub enum QueryValue {
-    Null,
-    Integer(i32),
-    String(String),
-    Date(DateTime<Local>),
-}
-
-impl<'a> Into<String> for &'a QueryValue {
-    fn into(self) -> String {
-        match self {
-            &QueryValue::Null => String::from("NULL"),
-            &QueryValue::Integer(i) => format!("{}", i),
-            &QueryValue::String(ref s) => format!(r"'{}'", s),
-            &QueryValue::Date(t) => t.to_rfc2822(),
-        }
     }
 }

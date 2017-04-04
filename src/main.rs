@@ -1,7 +1,8 @@
 extern crate bookmarkt;
 
-use bookmarkt::core::server;
+//use bookmarkt::core::server;
+//use bookmarkt::dao::{ Dao, EntityDao };
 
 fn main() {
-    server::serve();
+    //EntityDao::read();
 }

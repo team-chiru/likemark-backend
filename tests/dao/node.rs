@@ -5,9 +5,9 @@ use bookmarkt::common::Link;
 use bookmarkt::common::Node;
 use bookmarkt::common::TreeId;
 use bookmarkt::common::types::FnType;
-use bookmarkt::common::Criteria;
 
-use bookmarkt::dao::base::Dao;
+use bookmarkt::dao::Criteria;
+use bookmarkt::dao::Dao;
 use bookmarkt::dao::EntityDao;
 
 fn get_read_unit() -> Node {
@@ -132,7 +132,7 @@ fn read() {
     let unit = get_read_unit();
     let test = unit.clone().path;
 
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test)) {
+    match EntityDao::read(&db, c.tree_id(&test)) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -146,8 +146,8 @@ fn insert() {
     let unit = get_insert_unit();
     let path = unit.clone().path;
 
-    EntityDao::insert::<Node>(&db, &unit).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&path)) {
+    EntityDao::insert(&db, &unit).unwrap();
+    match EntityDao::read(&db, c.tree_id(&path)) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -160,8 +160,8 @@ fn delete() {
     let test = TreeId::new(String::from("01"));
     let mut c = Criteria::new();
 
-    EntityDao::delete::<Node>(&db, &c.tree_id(&test)).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test)) {
+    EntityDao::delete(&db, c.tree_id(&test)).unwrap();
+    match EntityDao::read(&db, c.tree_id(&test)) {
         Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
         Err(err) => panic!("READ FAILED: {}", err),
     }
@@ -189,11 +189,11 @@ fn update() {
     let test_str = String::from("test_update");
     let test_read = &unit.path;
 
-    let mut read = EntityDao::read::<Node>(&db, &c.tree_id(test_read)).unwrap();
+    let mut read = EntityDao::read(&db, c.tree_id(test_read)).unwrap();
     change_name(&test_str, &mut read);
 
-    EntityDao::update::<Node>(&db, &unit).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test_read)) {
+    EntityDao::update(&db, &unit).unwrap();
+    match EntityDao::read(&db, c.tree_id(&test_read)) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -205,7 +205,7 @@ fn list() {
     let test = String::from("test");
     let mut c = Criteria::new();
 
-    match EntityDao::list::<Node>(&db, &c.name(test)) {
+    match EntityDao::list(&db, c.name(test)) {
         Ok(v) => assert!(v.len() == 3),
         Err(err) => panic!("LIST FAILED: {}", err)
     }
