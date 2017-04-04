@@ -86,6 +86,7 @@ impl Converter for Netscape {
                 println!("{:?}", &capture[1]);
             }
             println!("\n");
+            println!("test auth");
         }
 
         vec![]
