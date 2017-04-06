@@ -1,10 +1,7 @@
 use common::types::StructType;
 use common::types::FnType;
 use common::TreeId;
-<<<<<<< Updated upstream
-=======
 use std::marker;
->>>>>>> Stashed changes
 
 #[derive(Debug, Default, Builder, Clone)]
 pub struct Entity {
@@ -16,8 +13,6 @@ pub struct Entity {
     pub struct_type: Option<StructType>,
     pub fn_type: Option<FnType>,
     pub rev_no: Option<i32>
-<<<<<<< Updated upstream
-=======
 }
 
 pub trait EntityComposite {
@@ -26,5 +21,4 @@ pub trait EntityComposite {
     fn from_entity(&Entity) -> Self;
     fn from_entities(Vec<Entity>) -> Vec<Self>
         where Self: marker::Sized;
->>>>>>> Stashed changes
 }
