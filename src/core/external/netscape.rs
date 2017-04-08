@@ -66,14 +66,14 @@ impl Netscape {
 impl Converter for Netscape {
     fn parse(bookmark_string: String) -> Vec<Node> {
         let bookmark_string = Netscape::sanitize(bookmark_string);
-        let href_regex = r#"(?i)([a-z]+)="([^"]*)""#;
-        println!("{}\n", href_regex);
+        let attribut_regex = r#"(?i)([a-z]+)="([^"]*)""#;
+        println!("{}\n", attribut_regex);
 
         let content_regex = r#"(?i)<a.*>(.*?)</a>"#;
         println!("{}\n", content_regex);
 
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
-        let re_href = Regex::new(href_regex).unwrap();
+        let re_href = Regex::new(attribut_regex).unwrap();
         let re_content = Regex::new(content_regex).unwrap();
 
         let netscape_entity: NetscapeEntity;
@@ -101,24 +101,4 @@ impl Converter for Netscape {
     fn build(nodes: Vec<Node>) -> String {
         format!("{:?}", nodes)
     }
-}
-
-
-enum BookmarkAttribut {
-    HREF,
-    DATE,
-    PRIVATE,
-    TAGS,
-    CONTENT
-}
-
-enum BookmarkTag {
-    P,
-    H3,
-    A,
-    TITLE,
-    BR,
-    DL,
-    DT,
-    DD
 }
