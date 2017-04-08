@@ -1,6 +1,7 @@
 extern crate regex;
 
 use common::node::Node;
+use core::external::netscape_entity::NetscapeEntity;
 
 use core::external::base::Converter;
 use self::regex::Regex;
@@ -74,6 +75,8 @@ impl Converter for Netscape {
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
         let re_href = Regex::new(href_regex).unwrap();
         let re_content = Regex::new(content_regex).unwrap();
+
+        let netscape_entity: NetscapeEntity;
 
         for line in lines {
             println!("link:");
