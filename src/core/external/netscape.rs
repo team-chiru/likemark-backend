@@ -65,29 +65,37 @@ impl Netscape {
 
 impl Converter for Netscape {
     fn parse(bookmark_string: String) -> Vec<Node> {
-        let bookmark_string = Netscape::sanitize(bookmark_string);
-        let attribut_regex = r#"(?i)([a-z]+)="([^"]*)""#;
-        println!("{}\n", attribut_regex);
+        let parse_set = vec![
+            r#"(?i)([a-z]+)="([^"]*)""#,
+            r#"(?i)<a.*>(.*?)</a>"#,
+            r#"<[\|/]?([TITLE|H1|DL|DD|H3]+)?>"#,
+        ];
 
-        let content_regex = r#"(?i)<a.*>(.*?)</a>"#;
-        println!("{}\n", content_regex);
+        let bookmark_string = Netscape::sanitize(bookmark_string);
 
         let lines: Vec<&str> = bookmark_string.split("\n").collect();
-        let re_href = Regex::new(attribut_regex).unwrap();
-        let re_content = Regex::new(content_regex).unwrap();
+        let attribut_regex = Regex::new(parse_set[0]).unwrap();
+        let content_regex = Regex::new(parse_set[1]).unwrap();
+        let tag_regex = Regex::new(parse_set[2]).unwrap();
 
         let netscape_entity: NetscapeEntity;
 
         for line in lines {
+            println!("tag:");
+            for capture in tag_regex.captures_iter(&line) {
+                println!("<{:?}>", &capture[1]);
+
+            }
+
             println!("link:");
-            for capture in re_href.captures_iter(&line) {
+            for capture in attribut_regex.captures_iter(&line) {
                 println!("{:?} = {:?}", &capture[1], &capture[2]);
 
             }
             println!("\n");
 
             println!("content:");
-            for capture in re_content.captures_iter(&line){
+            for capture in content_regex.captures_iter(&line){
                 println!("{:?}", &capture[1]);
             }
             println!("\n");

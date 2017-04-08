@@ -7,29 +7,30 @@ enum Attribut {
     None
 }
 
-impl<'a> Into<String> for &'a Attribut {
-    fn into(self) -> String {
+impl<'a> Into<(String, String)> for &'a Attribut {
+    fn into(self) -> (String, String) {
         match self {
-            &BookmarkAttribut::HREF => String::from("HREF"),
-            &BookmarkAttribut::DATE => String::from("DATE"),
-            &BookmarkAttribut::PRIVATE => String::from("PRIVATE"),
-            &BookmarkAttribut::TAGS => String::from("TAGS"),
-            &BookmarkAttribut::CONTENT => String::from("CONTENT"),
-            &BookmarkAttribut::None => String::from("")
+            &Attribut::Href(ref s) => (String::from("HREF"), s.clone()),
+            &Attribut::Date(ref s) => (String::from("DATE"), s.clone()),
+            &Attribut::Private(ref s) => (String::from("PRIVATE"), s.clone()),
+            &Attribut::Tags(ref s) => (String::from("TAGS"), s.clone()),
+            &Attribut::Content(ref s) => (String::from("CONTENT"), s.clone()),
+            &Attribut::None => (String::from(""), String::from(""))
         }
     }
 }
 
 
-impl From<String> for BookmarkAttribut {
-    fn from(s: String) -> BookmarkAttribut {
-        match s.to_uppercase().as_ref() {
-            "HREF" =>  BookmarkAttribut::HREF,
-            "DATE" => BookmarkAttribut::DATE,
-            "PRIVATE" => BookmarkAttribut::PRIVATE,
-            "TAGS" => BookmarkAttribut::TAGS,
-            "CONTENT" => BookmarkAttribut::CONTENT,
-            _ => BookmarkAttribut::None
+impl From<(String, String)> for Attribut {
+    fn from(t: (String, String)) -> Attribut {
+        let (ref key, ref value) = t;
+        match (key.as_str(), value.clone()) {
+            ("HREF", v) =>  Attribut::Href(v),
+            ("DATE", v) => Attribut::Date(v),
+            ("PRIVATE", v) => Attribut::Private(v),
+            ("TAGS", v) => Attribut::Tags(v),
+            ("CONTENT", v) => Attribut::Content(v),
+            (_, _) => Attribut::None
         }
     }
 }
