@@ -32,9 +32,9 @@ macro_rules! create_entity {
 
 pub struct EntityDao {}
 
-impl Dao<Entity> for EntityDao {
-    fn read<T, U>(s: &SqlConfig, c: &mut U) -> Result<T, String>
-        where T: Composite<Entity>, U: QueryMap {
+impl Dao<Entity, Entity> for EntityDao {
+    fn read<T>(s: &SqlConfig, c: &mut Entity) -> Result<T, String>
+        where T: Composite<Entity> {
         let template = s.read_sql.clone();
         let mapping = &c.map_query();
         let read_query = mapping.fill_query(&template);
@@ -93,8 +93,7 @@ impl Dao<Entity> for EntityDao {
         Ok(results)
     }
 
-    fn delete<U>(s: &SqlConfig, c: &mut U) -> Result<i32, String>
-        where U: QueryMap {
+    fn delete(s: &SqlConfig, c: &mut Entity) -> Result<i32, String> {
         let template = s.delete_sql.clone();
         let map = c.map_query();
         let delete_query = map.fill_query(&template);
@@ -124,8 +123,8 @@ impl Dao<Entity> for EntityDao {
         Ok(results)
     }
 
-    fn list<T, U>(s: &SqlConfig, c: &mut U) -> Result<Vec<T>, String>
-        where T: Composite<Entity>, U: QueryMap {
+    fn list<T>(s: &SqlConfig, c: &mut Entity) -> Result<Vec<T>, String>
+        where T: Composite<Entity> {
         let template = s.read_sql.clone();
         let mapping = &c.map_query();
         let list_query = mapping.fill_query(&template);

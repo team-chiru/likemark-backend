@@ -1,7 +1,5 @@
 /* need to update all children TOO! */
 UPDATE entity SET
-    id = {{ id }},
-    uuid = {{ uuid }},
     path = {{ path }},
     name = {{ name }},
     url = {{ url }},

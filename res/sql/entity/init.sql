@@ -11,5 +11,6 @@ CREATE TABLE IF NOT EXISTS entity (
     rev_no INTEGER NOT NULL,
 
     FOREIGN KEY(path) REFERENCES entity(id) ON DELETE CASCADE,
-    CONSTRAINT path_unique UNIQUE (path)
+    CONSTRAINT path_unique UNIQUE (path),
+    CONSTRAINT uuid_unique UNIQUE (uuid)
 );

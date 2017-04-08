@@ -5,6 +5,7 @@ use self::chrono::*;
 use std::collections::HashMap;
 use common::Entity;
 
+#[derive(Debug)]
 pub enum QueryValue {
     Null,
     Integer(i32),
@@ -60,28 +61,46 @@ impl QueryMap for Entity {
 
         if let Some(id) = self.id {
             hash.insert(String::from("id"), QueryValue::Integer(id));
+        } else {
+            hash.insert(String::from("id"), QueryValue::Null);
+        }
+
+        if let Some(uuid) = self.uuid.clone() {
+            hash.insert(String::from("uuid"), QueryValue::String(uuid));
+        } else {
+            hash.insert(String::from("uuid"), QueryValue::Null);
         }
 
         if let Some(ref path) = self.path {
             hash.insert(String::from("path"), QueryValue::String(path.id()));
+        } else {
+            hash.insert(String::from("path"), QueryValue::Null);
         }
 
         if let Some(name) = self.name.clone() {
             hash.insert(String::from("name"), QueryValue::String(name));
+        } else {
+            hash.insert(String::from("name"), QueryValue::Null);
         }
 
         if let Some(url) = self.url.clone() {
             hash.insert(String::from("url"), QueryValue::String(url));
+        } else {
+            hash.insert(String::from("url"), QueryValue::Null);
         }
 
         if let Some(ref fn_type) = self.fn_type {
             let fn_type_str = fn_type.into();
             hash.insert(String::from("fn_type"), QueryValue::String(fn_type_str));
+        } else {
+            hash.insert(String::from("fn_type"), QueryValue::Null);
         }
 
         if let Some(ref struct_type) = self.struct_type {
             let struct_type_str = struct_type.into();
             hash.insert(String::from("struct_type"), QueryValue::String(struct_type_str));
+        } else {
+            hash.insert(String::from("struct_type"), QueryValue::Null);
         }
 
         hash
