@@ -1,4 +1,4 @@
-use common::node::Node;
+use common::model::Node;
 
 pub trait Converter {
     fn parse(String) -> Vec<Node>;

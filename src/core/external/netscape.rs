@@ -1,6 +1,6 @@
 extern crate regex;
 
-use common::node::Node;
+use common::model::Node;
 use core::external::netscape_entity::NetscapeEntity;
 
 use core::external::base::Converter;

@@ -1,11 +1,11 @@
 use common::types::StructType;
 use common::types::FnType;
-use common::tree_id::*;
+use common::TreePath;
 
 #[derive(Debug, Clone)]
 pub struct NetscapeEntity {
     id: i32,
-    path: TreeId,
+    path: TreePath,
     name: String,
     url: String,
     struct_type: StructType,
@@ -21,7 +21,7 @@ impl NetscapeEntity {
         self.id
     }
 
-    pub fn get_path(&self) -> &TreeId{
+    pub fn get_path(&self) -> &TreePath{
         &self.path
     }
 
@@ -53,7 +53,7 @@ impl NetscapeEntity {
         self.id = id;
     }
 
-    pub fn set_path(&mut self, path: TreeId) {
+    pub fn set_path(&mut self, path: TreePath) {
         self.path = path;
     }
 
