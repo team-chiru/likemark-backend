@@ -1,4 +1,5 @@
 extern crate bookmarkt;
+<<<<<<< HEAD
 extern crate env_logger;
 extern crate rusqlite;
 

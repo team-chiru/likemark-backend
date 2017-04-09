@@ -11,5 +11,13 @@ yaml-rust = "*"
 regex = "*"
 log="*"
 env_logger="*"
-treexml = "0.2"
-serde_json = "0.9.9"
+derive_builder="*"
+
+iron="*"
+unicase="*"
+params="*"
+uuid = { version = "*", features = ["serde", "v4"] }
+
+serde = "*"
+serde_derive="*"
+serde_json="*"

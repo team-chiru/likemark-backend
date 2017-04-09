@@ -1,4 +1,5 @@
 DELETE FROM entity WHERE
 	( {{ id }} IS NULL OR e.id = {{ id }} ) AND
-	( {{ tree_id }} IS NULL OR SUBSTR(e.tree_id, 1, LENGTH( {{ tree_id }} )) = {{ tree_id }} )
+	( {{ uuid }} IS NULL OR e.uuid = {{ uuid }} ) AND
+	( {{ path }} IS NULL OR SUBSTR(e.path, 1, LENGTH( {{ path }} )) = {{ path }} )
 ;

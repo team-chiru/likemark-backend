@@ -1,26 +1,28 @@
 extern crate bookmarkt;
+extern crate uuid;
+
 use super::db_wrapper;
 
-use bookmarkt::common::Link;
-use bookmarkt::common::Node;
-use bookmarkt::common::TreeId;
+use bookmarkt::common::entity::{ Entity, EntityBuilder };
+use bookmarkt::common::model::{ Link, Node };
+use bookmarkt::common::TreePath;
 use bookmarkt::common::types::FnType;
-use bookmarkt::common::Criteria;
 
-use bookmarkt::dao::base::Dao;
-use bookmarkt::dao::EntityDao;
+use bookmarkt::dao::{ Dao, EntityDao };
+
+use self::uuid::Uuid;
 
 fn get_read_unit() -> Node {
     Node {
-        id: 2,
-        path: TreeId::new(String::from("01")),
+        id: Uuid::parse_str("00000000-0000-0000-0000-000000000002").unwrap(),
+        path: TreePath::new(String::from("01")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
-                id: 7,
-                path: TreeId::new(String::from("0100")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000007").unwrap(),
+                path: TreePath::new(String::from("0100")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -28,15 +30,15 @@ fn get_read_unit() -> Node {
         ),
         nodes: vec!(
             Node {
-                id: 8,
-                path: TreeId::new(String::from("0101")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000008").unwrap(),
+                path: TreePath::new(String::from("0101")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
-                        id: 13,
-                        path: TreeId::new(String::from("010100")),
+                        id: Uuid::parse_str("00000000-0000-0000-0000-000000000013").unwrap(),
+                        path: TreePath::new(String::from("010100")),
                         name: String::from("test"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -50,15 +52,15 @@ fn get_read_unit() -> Node {
 
 fn get_insert_unit() -> Node {
     Node {
-        id: 17,
-        path: TreeId::new(String::from("03")),
+        id: Uuid::parse_str("00000000-0000-0000-0000-000000000017").unwrap(),
+        path: TreePath::new(String::from("03")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
-                id: 18,
-                path: TreeId::new(String::from("0300")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000018").unwrap(),
+                path: TreePath::new(String::from("0300")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -66,15 +68,15 @@ fn get_insert_unit() -> Node {
         ),
         nodes: vec!(
             Node {
-                id: 19,
-                path: TreeId::new(String::from("0301")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000019").unwrap(),
+                path: TreePath::new(String::from("0301")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
-                        id: 20,
-                        path: TreeId::new(String::from("030100")),
+                        id: Uuid::parse_str("00000000-0000-0000-0000-000000000020").unwrap(),
+                        path: TreePath::new(String::from("030100")),
                         name: String::from("test"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -88,15 +90,15 @@ fn get_insert_unit() -> Node {
 
 fn get_update_unit() -> Node {
     Node {
-        id: 2,
-        path: TreeId::new(String::from("01")),
+        id: Uuid::parse_str("00000000-0000-0000-0000-000000000002").unwrap(),
+        path: TreePath::new(String::from("01")),
         name: String::from("test_update"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
-                id: 7,
-                path: TreeId::new(String::from("0100")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000007").unwrap(),
+                path: TreePath::new(String::from("0100")),
                 name: String::from("test_update"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -104,15 +106,15 @@ fn get_update_unit() -> Node {
         ),
         nodes: vec!(
             Node {
-                id: 8,
-                path: TreeId::new(String::from("0101")),
+                id: Uuid::parse_str("00000000-0000-0000-0000-000000000008").unwrap(),
+                path: TreePath::new(String::from("0101")),
                 name: String::from("test_update"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
-                        id: 13,
-                        path: TreeId::new(String::from("010100")),
+                        id: Uuid::parse_str("00000000-0000-0000-0000-000000000013").unwrap(),
+                        path: TreePath::new(String::from("010100")),
                         name: String::from("test_update"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -127,12 +129,15 @@ fn get_update_unit() -> Node {
 #[test]
 fn read() {
     let db = db_wrapper::init();
-    let mut c = Criteria::new();
 
     let unit = get_read_unit();
-    let test = unit.clone().path;
+    let test_path = unit.clone().path;
 
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test)) {
+    let mut entity_path: Entity = EntityBuilder::default()
+        .path(Some(test_path))
+        .build().unwrap();
+
+    match EntityDao::read::<Node>(&db, &mut entity_path) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -141,13 +146,15 @@ fn read() {
 #[test]
 fn insert() {
     let db = db_wrapper::init();
-    let mut c = Criteria::new();
-
     let unit = get_insert_unit();
-    let path = unit.clone().path;
+    let test_path = unit.clone().path;
 
-    EntityDao::insert::<Node>(&db, &unit).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&path)) {
+    let mut entity_path: Entity = EntityBuilder::default()
+        .path(Some(test_path))
+        .build().unwrap();
+
+    EntityDao::insert(&db, &unit).unwrap();
+    match EntityDao::read::<Node>(&db, &mut entity_path) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -157,11 +164,14 @@ fn insert() {
 #[should_panic]
 fn delete() {
     let db = db_wrapper::init();
-    let test = TreeId::new(String::from("01"));
-    let mut c = Criteria::new();
+    let test_path = TreePath::new(String::from("01"));
 
-    EntityDao::delete::<Node>(&db, &c.tree_id(&test)).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test)) {
+    let mut entity_path: Entity = EntityBuilder::default()
+        .path(Some(test_path))
+        .build().unwrap();
+
+    EntityDao::delete(&db, &mut entity_path).unwrap();
+    match EntityDao::read::<Node>(&db, &mut entity_path) {
         Ok(_) => println!("{}", "IT NEVER PRINTS THIS"),
         Err(err) => panic!("READ FAILED: {}", err),
     }
@@ -182,18 +192,21 @@ fn change_name(str: &String, base: &mut Node) {
 #[test]
 fn update() {
     let db = db_wrapper::init();
-    let mut c = Criteria::new();
 
     //TODO it assumes that the node is valid
     let unit = get_update_unit();
     let test_str = String::from("test_update");
-    let test_read = &unit.path;
+    let test_read = unit.clone().path;
 
-    let mut read = EntityDao::read::<Node>(&db, &c.tree_id(test_read)).unwrap();
+    let mut entity_path: Entity = EntityBuilder::default()
+        .path(Some(test_read))
+        .build().unwrap();
+
+    let mut read = EntityDao::read::<Node>(&db, &mut entity_path).unwrap();
     change_name(&test_str, &mut read);
 
     EntityDao::update::<Node>(&db, &unit).unwrap();
-    match EntityDao::read::<Node>(&db, &c.tree_id(&test_read)) {
+    match EntityDao::read::<Node>(&db, &mut entity_path) {
         Ok(n) => assert!(n == unit),
         Err(err) => panic!("READ FAILED: {}", err)
     }
@@ -202,10 +215,13 @@ fn update() {
 #[test]
 fn list() {
     let db = db_wrapper::init();
-    let test = String::from("test");
-    let mut c = Criteria::new();
+    let test_name = String::from("test");
 
-    match EntityDao::list::<Node>(&db, &c.name(test)) {
+    let mut entity_name: Entity = EntityBuilder::default()
+        .name(Some(test_name))
+        .build().unwrap();
+
+    match EntityDao::list::<Node>(&db, &mut entity_name) {
         Ok(v) => assert!(v.len() == 3),
         Err(err) => panic!("LIST FAILED: {}", err)
     }

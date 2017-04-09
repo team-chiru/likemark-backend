@@ -1,4 +1,5 @@
 use iron::prelude::*;
+<<<<<<< HEAD
 use iron::{ status };
 
 use iron::headers::{ Accept, qitem, AccessControlAllowOrigin, AccessControlAllowHeaders, ContentType };
@@ -11,10 +12,29 @@ fn media_type() -> Mime {
         SubLevel::Ext(String::from("vnd.api+json")),
         vec![]
     )
+=======
+use iron::method::Method;
+use iron::status::Status;
+
+use serde_json;
+
+use super::api::{ header, body };
+use super::api::{ RequestRule, ResponseFormater };
+
+fn get_body() -> String {
+    let body = body::SuccessBody {
+        data: None,
+        meta: body::meta(),
+        jsonapi: body::jsonapi(),
+    };
+
+    serde_json::to_string(&body).unwrap()
+>>>>>>> 4-optional-tree_id
 }
 
 pub fn serve() {
     Iron::new(|req: &mut Request| {
+<<<<<<< HEAD
         println!("{:?}", req.headers.get::<ContentType>());
 
         let mut resp = Response::with((status::Ok, String::from("{ \"data\": \"Hello\" }\n")));
@@ -40,6 +60,19 @@ pub fn serve() {
 
         println!("{:?}", resp);
 
+=======
+        let mut resp = match req.method {
+            Method::Get =>
+                Response::with((
+                    header::Matcher::check(req),
+                    get_body()
+                )),
+            Method::Options => Response::with(Status::Ok),
+            _ => Response::with(Status::MethodNotAllowed),
+        };
+
+        header::Matcher::format(&mut resp);
+>>>>>>> 4-optional-tree_id
         Ok(resp)
     }).http("localhost:3000").unwrap();
 }

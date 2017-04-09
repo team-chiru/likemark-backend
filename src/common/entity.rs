@@ -1,42 +1,39 @@
 use common::types::StructType;
 use common::types::FnType;
-use common::tree_id::*;
-use common::utils::QueryValue;
+use common::TreePath;
 use std::marker;
-use std::collections::HashMap;
 
-#[derive(Debug, Clone)]
+//struct EntityBuilder {}
+
+#[derive(Debug, Clone, Default, Builder)]
 pub struct Entity {
-    pub id: i32,
-    pub path: TreeId,
-    pub name: String,
-    pub url: String,
-    pub struct_type: StructType,
-    pub fn_type: FnType,
-    pub rev_no: i32,
-}
+    #[builder(default="None")]
+    pub id: Option<i32>,
 
-impl Entity {
-    pub fn map_query(&self) -> HashMap<String, QueryValue> {
-        let mut hash: HashMap<String, QueryValue> = HashMap::new();
-        let clone = self.clone();
+    #[builder(default="None")]
+    pub uuid: Option<String>,
 
-        hash.insert(String::from("id"), QueryValue::Integer(self.id));
-        hash.insert(String::from("tree_id"), QueryValue::String(self.path.id()));
-        hash.insert(String::from("name"), QueryValue::String(clone.name));
-        hash.insert(String::from("url"), QueryValue::String(clone.url));
+    #[builder(default="None")]
+    pub path: Option<TreePath>,
 
-        let fn_type = clone.fn_type.into();
-        hash.insert(String::from("fn_type"), QueryValue::String(fn_type));
+    #[builder(default="None")]
+    pub name: Option<String>,
 
-        let struct_type = clone.struct_type.into();
-        hash.insert(String::from("struct_type"), QueryValue::String(struct_type));
+    #[builder(default="None")]
+    pub url: Option<String>,
 
-        hash
-    }
+    #[builder(default="None")]
+    pub struct_type: Option<StructType>,
+
+    #[builder(default="None")]
+    pub fn_type: Option<FnType>,
+
+    #[builder(default="None")]
+    pub rev_no: Option<i32>
 }
 
 pub trait EntityComposite {
+    fn is_dead(&self) -> bool;
     fn into_entities(&self) -> Vec<Entity>;
     fn from_entity(&Entity) -> Self;
     fn from_entities(Vec<Entity>) -> Vec<Self>

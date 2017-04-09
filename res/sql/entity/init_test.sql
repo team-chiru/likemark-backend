@@ -1,20 +1,20 @@
 -- DELETE FROM entity;
 
-INSERT INTO entity (tree_id, name, url, struct_type, fn_type, rev_no) VALUES
-   ('00','test', 'test', 'NODE', 'music', 1),
-   ('01','test', 'test', 'NODE','music', 1),
-   ('02','test', 'test', 'NODE','music', 1),
-   ('0000','test','test','NODE','music',1),
-   ('00001','test','test','LINK','music',1),
-   ('0002','test','test','NODE','music',1),
-   ('0100','test','test','LINK','music',1),
-   ('0101','test','test','NODE','music',1),
-   ('0200','test','test','NODE','music',1),
-   ('000000','test','test','LINK','music',1),
-   ('000200','test','test','LINK','music',1),
-   ('000201','test','test','LINK','music',1),
-   ('010100','test','test','LINK','music',1),
-   ('020000','test','test','NODE','music',1),
-   ('02000000','test','test','LINK','music',1),
-   ('02000001','test','test','LINK','music',1)
+INSERT INTO entity (uuid, path, name, url, struct_type, fn_type, rev_no) VALUES
+   ('00000000-0000-0000-0000-000000000001','00','test', 'test', 'NODE', 'music', 1),
+   ('00000000-0000-0000-0000-000000000002','01','test', 'test', 'NODE','music', 1),
+   ('00000000-0000-0000-0000-000000000003','02','test', 'test', 'NODE','music', 1),
+   ('00000000-0000-0000-0000-000000000004','0000','test','test','NODE','music',1),
+   ('00000000-0000-0000-0000-000000000005','00001','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000006','0002','test','test','NODE','music',1),
+   ('00000000-0000-0000-0000-000000000007','0100','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000008','0101','test','test','NODE','music',1),
+   ('00000000-0000-0000-0000-000000000009','0200','test','test','NODE','music',1),
+   ('00000000-0000-0000-0000-000000000010','000000','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000011','000200','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000012','000201','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000013','010100','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000014','020000','test','test','NODE','music',1),
+   ('00000000-0000-0000-0000-000000000015','02000000','test','test','LINK','music',1),
+   ('00000000-0000-0000-0000-000000000016','02000001','test','test','LINK','music',1)
 ;
