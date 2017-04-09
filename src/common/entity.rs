@@ -1,6 +1,6 @@
 use common::types::StructType;
 use common::types::FnType;
-use common::TreeId;
+use common::TreePath;
 use std::marker;
 
 //struct EntityBuilder {}
@@ -14,7 +14,7 @@ pub struct Entity {
     pub uuid: Option<String>,
 
     #[builder(default="None")]
-    pub path: Option<TreeId>,
+    pub path: Option<TreePath>,
 
     #[builder(default="None")]
     pub name: Option<String>,

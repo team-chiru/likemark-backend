@@ -2,8 +2,8 @@ use common::types::FnType;
 use common::types::StructType;
 
 use common::entity::Entity;
-use common::TreeId;
-use common::deep::tree_id::{ key, level };
+use common::TreePath;
+use common::deep::tree_path::{ key, level };
 
 use std::collections::BTreeMap;
 use super::Link;
@@ -15,7 +15,7 @@ use std::str::FromStr;
 #[derive(Debug, Clone)]
 pub struct Node {
     pub id: Uuid,
-    pub path: TreeId,
+    pub path: TreePath,
     pub name: String,
     pub url: String,
     pub fn_type: FnType,
@@ -100,7 +100,7 @@ impl Composite<Entity> for Node {
                 },
                 None => Uuid::nil()
             },
-            path: clone.path.unwrap_or(TreeId::new(empty())),
+            path: clone.path.unwrap_or(TreePath::new(empty())),
             name: clone.name.unwrap_or(empty()),
             url: clone.url.unwrap_or(empty()),
             fn_type: clone.fn_type.unwrap_or(FnType::None),

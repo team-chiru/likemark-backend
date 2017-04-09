@@ -5,6 +5,6 @@ pub mod entity;
 pub mod deep;
 
 pub type Entity = entity::Entity;
-pub type TreeId = deep::tree_id::TreeId;
+pub type TreePath = deep::tree_path::TreePath;
 
 pub mod model;

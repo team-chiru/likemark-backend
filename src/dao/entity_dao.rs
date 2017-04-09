@@ -2,7 +2,7 @@ use dao::SqlConfig;
 use dao::query::{ QueryParser, QueryMap };
 use dao::dao::Dao;
 
-use common::TreeId;
+use common::TreePath;
 use common::types::FnType;
 use common::types::StructType;
 
@@ -19,7 +19,7 @@ macro_rules! create_entity {
             Entity {
                 id: Some(row.get(0)),
                 uuid: Some(row.get(1)),
-                path: Some(TreeId::new(path)),
+                path: Some(TreePath::new(path)),
                 name: Some(row.get(3)),
                 url: Some(row.get(4)),
                 struct_type: Some(StructType::from(struct_type)),

@@ -5,7 +5,7 @@ use super::db_wrapper;
 
 use bookmarkt::common::entity::{ Entity, EntityBuilder };
 use bookmarkt::common::model::{ Link };
-use bookmarkt::common::TreeId;
+use bookmarkt::common::TreePath;
 use bookmarkt::common::types::FnType;
 
 use bookmarkt::dao::{ Dao, EntityDao };
@@ -21,7 +21,7 @@ fn read() {
 
     let unit = Link {
         id: test_uuid,
-        path: TreeId::new(String::from("00001")),
+        path: TreePath::new(String::from("00001")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None
@@ -58,7 +58,7 @@ fn insert() {
 
     let unit = Link {
         id: test_uuid,
-        path: TreeId::new(String::from("03")),
+        path: TreePath::new(String::from("03")),
         name: String::from("inserted"),
         url: String::from("test"),
         fn_type: FnType::None

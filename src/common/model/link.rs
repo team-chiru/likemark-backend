@@ -1,6 +1,6 @@
 use common::types::FnType;
 use common::types::StructType;
-use common::TreeId;
+use common::TreePath;
 
 use common::entity::Entity;
 
@@ -12,7 +12,7 @@ use std::str::FromStr;
 #[derive(Debug, Clone)]
 pub struct Link {
     pub id: Uuid,
-    pub path: TreeId,
+    pub path: TreePath,
     pub name: String,
     pub url: String,
     pub fn_type: FnType,
@@ -39,7 +39,7 @@ impl Composite<Entity> for Link {
                 },
                 None => Uuid::nil()
             },
-            path: clone.path.unwrap_or(TreeId::new(empty())),
+            path: clone.path.unwrap_or(TreePath::new(empty())),
             name: clone.name.unwrap_or(empty()),
             url: clone.url.unwrap_or(empty()),
             fn_type: clone.fn_type.unwrap_or(FnType::None),

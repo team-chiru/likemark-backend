@@ -5,7 +5,7 @@ use super::db_wrapper;
 
 use bookmarkt::common::entity::{ Entity, EntityBuilder };
 use bookmarkt::common::model::{ Link, Node };
-use bookmarkt::common::TreeId;
+use bookmarkt::common::TreePath;
 use bookmarkt::common::types::FnType;
 
 use bookmarkt::dao::{ Dao, EntityDao };
@@ -15,14 +15,14 @@ use self::uuid::Uuid;
 fn get_read_unit() -> Node {
     Node {
         id: Uuid::parse_str("00000000-0000-0000-0000-000000000002").unwrap(),
-        path: TreeId::new(String::from("01")),
+        path: TreePath::new(String::from("01")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000007").unwrap(),
-                path: TreeId::new(String::from("0100")),
+                path: TreePath::new(String::from("0100")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -31,14 +31,14 @@ fn get_read_unit() -> Node {
         nodes: vec!(
             Node {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000008").unwrap(),
-                path: TreeId::new(String::from("0101")),
+                path: TreePath::new(String::from("0101")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
                         id: Uuid::parse_str("00000000-0000-0000-0000-000000000013").unwrap(),
-                        path: TreeId::new(String::from("010100")),
+                        path: TreePath::new(String::from("010100")),
                         name: String::from("test"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -53,14 +53,14 @@ fn get_read_unit() -> Node {
 fn get_insert_unit() -> Node {
     Node {
         id: Uuid::parse_str("00000000-0000-0000-0000-000000000017").unwrap(),
-        path: TreeId::new(String::from("03")),
+        path: TreePath::new(String::from("03")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000018").unwrap(),
-                path: TreeId::new(String::from("0300")),
+                path: TreePath::new(String::from("0300")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -69,14 +69,14 @@ fn get_insert_unit() -> Node {
         nodes: vec!(
             Node {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000019").unwrap(),
-                path: TreeId::new(String::from("0301")),
+                path: TreePath::new(String::from("0301")),
                 name: String::from("test"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
                         id: Uuid::parse_str("00000000-0000-0000-0000-000000000020").unwrap(),
-                        path: TreeId::new(String::from("030100")),
+                        path: TreePath::new(String::from("030100")),
                         name: String::from("test"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -91,14 +91,14 @@ fn get_insert_unit() -> Node {
 fn get_update_unit() -> Node {
     Node {
         id: Uuid::parse_str("00000000-0000-0000-0000-000000000002").unwrap(),
-        path: TreeId::new(String::from("01")),
+        path: TreePath::new(String::from("01")),
         name: String::from("test_update"),
         url: String::from("test"),
         fn_type: FnType::None,
         links: vec!(
             Link {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000007").unwrap(),
-                path: TreeId::new(String::from("0100")),
+                path: TreePath::new(String::from("0100")),
                 name: String::from("test_update"),
                 url: String::from("test"),
                 fn_type: FnType::None
@@ -107,14 +107,14 @@ fn get_update_unit() -> Node {
         nodes: vec!(
             Node {
                 id: Uuid::parse_str("00000000-0000-0000-0000-000000000008").unwrap(),
-                path: TreeId::new(String::from("0101")),
+                path: TreePath::new(String::from("0101")),
                 name: String::from("test_update"),
                 url: String::from("test"),
                 fn_type: FnType::None,
                 links: vec!(
                     Link {
                         id: Uuid::parse_str("00000000-0000-0000-0000-000000000013").unwrap(),
-                        path: TreeId::new(String::from("010100")),
+                        path: TreePath::new(String::from("010100")),
                         name: String::from("test_update"),
                         url: String::from("test"),
                         fn_type: FnType::None
@@ -164,7 +164,7 @@ fn insert() {
 #[should_panic]
 fn delete() {
     let db = db_wrapper::init();
-    let test_path = TreeId::new(String::from("01"));
+    let test_path = TreePath::new(String::from("01"));
 
     let mut entity_path: Entity = EntityBuilder::default()
         .path(Some(test_path))
