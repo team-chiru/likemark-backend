@@ -1,7 +1,8 @@
 extern crate regex;
 
 use common::model::Node;
-use core::external::netscape_entity::NetscapeEntity;
+use common::entity::{ Entity, EntityBuilder };
+use core::external::types::{ Tag, Attribut };
 
 use core::external::base::Converter;
 use self::regex::Regex;
@@ -59,8 +60,20 @@ impl Netscape {
         sanitized.trim();
         sanitized
     }
+}
 
+struct ExternalData {
+    pub tags: Vec<Tag>,
+    pub attrbutes: Vec<Attribut>,
+}
 
+impl ExternalData {
+    fn new() -> Self {
+        ExternalData {
+            tags: Vec::new(),
+            attrbutes: Vec::new(),
+        }
+    }
 }
 
 impl Converter for Netscape {
@@ -78,8 +91,10 @@ impl Converter for Netscape {
         let content_regex = Regex::new(parse_set[1]).unwrap();
         let tag_regex = Regex::new(parse_set[2]).unwrap();
 
-        let netscape_entity: NetscapeEntity;
-
+        let data = ExternalData::new();
+        let root = EntityBuilder::default();
+        
+        // create hierarchy for external data
         for line in lines {
             println!("tag:");
             for capture in tag_regex.captures_iter(&line) {
@@ -101,7 +116,7 @@ impl Converter for Netscape {
             println!("\n");
         }
 
-
+        //
 
         vec![]
     }

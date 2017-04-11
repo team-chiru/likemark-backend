@@ -1,4 +1,4 @@
-enum Attribut {
+pub enum Attribut {
     Href(String),
     Date(String),
     Private(String),
@@ -35,8 +35,7 @@ impl From<(String, String)> for Attribut {
     }
 }
 
-
-enum BookmarkTag {
+pub enum Tag {
     P,
     H3,
     A,
