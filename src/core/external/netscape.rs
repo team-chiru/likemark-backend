@@ -82,6 +82,7 @@ impl Converter for Netscape {
             r#"(?i)([a-z]+)="([^"]*)""#,
             r#"(?i)<a.*>(.*?)</a>"#,
             r#"<[\|/]?([TITLE|H1|DL|DD|H3]+)?>"#,
+            r#"<[/]([TITLE|H1|DL|DD|H3]+)?>"#,
         ];
 
         let bookmark_string = Netscape::sanitize(bookmark_string);
@@ -90,15 +91,22 @@ impl Converter for Netscape {
         let attribut_regex = Regex::new(parse_set[0]).unwrap();
         let content_regex = Regex::new(parse_set[1]).unwrap();
         let tag_regex = Regex::new(parse_set[2]).unwrap();
+        let end_tag_regex = Regex::new(parse_set[3]).unwrap();
 
         let data = ExternalData::new();
         let root = EntityBuilder::default();
-        
+
         // create hierarchy for external data
         for line in lines {
             println!("tag:");
             for capture in tag_regex.captures_iter(&line) {
-                println!("<{:?}>", &capture[1]);
+                println!("{}", &capture[1]);
+
+            }
+
+            println!("end tag:");
+            for capture in end_tag_regex.captures_iter(&line) {
+                println!("{}", &capture[1]);
 
             }
 
