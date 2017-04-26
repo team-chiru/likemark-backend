@@ -1,8 +1,9 @@
-INSERT INTO entity (tree_id, name, url, struct_type, fn_type, rev_no) VALUES (
-	{{ tree_id }},
+INSERT INTO entity (uuid, path, name, url, struct_type, fn_type, rev_no) VALUES (
+	{{ uuid }},
+	{{ path }},
 	{{ name }},
 	{{ url }},
 	{{ struct_type }},
 	{{ fn_type }},
-	{{ rev_no }}
+	1
 );

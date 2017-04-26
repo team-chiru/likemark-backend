@@ -3,11 +3,21 @@ name = "bookmarkt"
 version = "0.1.0"
 authors = ["team-chiru <team-chiru@protonmail.com>"]
 
+
 [dependencies]
 rusqlite = "0.6"
 chrono = "*"
 yaml-rust = "*"
-toml = "*"
 regex = "*"
 log="*"
 env_logger="*"
+derive_builder="*"
+
+iron="*"
+unicase="*"
+params="*"
+uuid = { version = "*", features = ["serde", "v4"] }
+
+serde = "*"
+serde_derive="*"
+serde_json="*"

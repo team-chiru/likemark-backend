@@ -1,15 +1,15 @@
 use std::cmp::Ordering;
 
 #[derive(Debug, Clone)]
-pub struct TreeId {
+pub struct TreePath {
     id: String
 }
 
 static TREE_ID_STEP: usize = 2;
 
-impl TreeId {
+impl TreePath {
     pub fn new(s: String) -> Self {
-        TreeId {
+        TreePath {
             id: s
         }
     }
@@ -23,31 +23,31 @@ impl TreeId {
     }
 }
 
-impl Ord for TreeId {
-    fn cmp(&self, other: &TreeId) -> Ordering {
+impl Ord for TreePath {
+    fn cmp(&self, other: &TreePath) -> Ordering {
         self.id.cmp(&other.id)
     }
 }
 
-impl PartialOrd for TreeId {
-    fn partial_cmp(&self, other: &TreeId) -> Option<Ordering> {
+impl PartialOrd for TreePath {
+    fn partial_cmp(&self, other: &TreePath) -> Option<Ordering> {
         Some(self.id.cmp(&other.id))
     }
 }
 
-impl Eq for TreeId {}
+impl Eq for TreePath {}
 
-impl PartialEq for TreeId {
-    fn eq(&self, other: &TreeId) -> bool {
+impl PartialEq for TreePath {
+    fn eq(&self, other: &TreePath) -> bool {
         self.id == other.id
     }
 }
 
-pub fn level(ti: &TreeId) -> usize {
+pub fn level(ti: &TreePath) -> usize {
     ti.id.len() / TREE_ID_STEP
 }
 
-pub fn key(ti: &TreeId, level: usize) -> Option<String> {
+pub fn key(ti: &TreePath, level: usize) -> Option<String> {
     let sub_index = level*TREE_ID_STEP;
     let ref s = ti.id;
 
