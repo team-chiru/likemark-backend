@@ -2,10 +2,11 @@ use std::cmp::Ordering;
 
 #[derive(Debug, Clone)]
 pub struct TreePath {
-    id: String
+    pub id: String
 }
 
-static TREE_ID_STEP: usize = 2;
+pub const TREE_ID_STEP: usize = 2;
+pub const TREE_ID_BASE: &'static str = "00";
 
 impl TreePath {
     pub fn new(s: String) -> Self {
@@ -20,6 +21,10 @@ impl TreePath {
 
     pub fn len(&self) -> usize {
         self.id.len()
+    }
+
+    pub fn level(&self) -> usize {
+        self.id.len() / TREE_ID_STEP
     }
 }
 

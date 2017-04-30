@@ -100,6 +100,7 @@ impl Composite<Entity> for Node {
                 },
                 None => Uuid::nil()
             },
+
             path: clone.path.unwrap_or(TreePath::new(empty())),
             name: clone.name.unwrap_or(empty()),
             url: clone.url.unwrap_or(empty()),

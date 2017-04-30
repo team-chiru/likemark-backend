@@ -21,7 +21,7 @@ fn read() {
 
     let unit = Link {
         id: test_uuid,
-        path: TreePath::new(String::from("00001")),
+        path: TreePath::new(String::from("0001")),
         name: String::from("test"),
         url: String::from("test"),
         fn_type: FnType::None

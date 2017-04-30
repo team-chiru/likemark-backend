@@ -1,7 +1,7 @@
-mod base;
+mod converter;
 mod netscape;
-mod netscape_entity;
+mod html_data;
 mod types;
 
-pub use self::base::Converter;
+pub use self::converter::Converter;
 pub type Netscape = netscape::Netscape;
