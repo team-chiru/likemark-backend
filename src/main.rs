@@ -10,5 +10,7 @@ fn main() {
     let bookmark_file_path = String::from("tests/core/external/input/netscape_nested.html");
     let f = load_file(&bookmark_file_path);
     let bookmark_string = f.unwrap();
-    Netscape::parse(bookmark_string);
+    let nodes = Netscape::parse(bookmark_string);
+
+    println!("{:?}", nodes);
 }

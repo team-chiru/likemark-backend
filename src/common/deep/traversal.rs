@@ -1,7 +1,7 @@
 use common::deep::tree_path::{ TreePath, TREE_ID_STEP, TREE_ID_BASE };
 use std::marker;
 
-trait Traversal {
+pub trait Traversal {
     fn right(&self) -> Option<Self> where Self: marker::Sized;
     fn up(&self) -> Option<Self> where Self: marker::Sized;
     fn left(&self) -> Option<Self> where Self: marker::Sized;

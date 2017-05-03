@@ -1,2 +1,5 @@
 pub mod tree_path;
-pub mod traversal;
+mod traversal;
+
+pub type TreePath = tree_path::TreePath;
+pub use self::traversal::Traversal;

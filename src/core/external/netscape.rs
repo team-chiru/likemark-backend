@@ -1,65 +1,87 @@
 extern crate regex;
 
-use common::model::Node;
-use core::external::html_data::{ HtmlData };
+use common::model::{ Composite, Node, Link };
+use common::types::{ StructType };
+use common::deep::{ Traversal, TreePath };
+use common::entity::{ Entity, EntityBuilder };
 
 use core::external::Converter;
 use self::regex::Regex;
 
+use super::types::Tag;
+
 use tendril::TendrilSink;
 use html5ever::parse_document;
-use html5ever::rcdom::{Document, Doctype, Text, Comment, Element, RcDom, Handle};
+use html5ever::rcdom::{ NodeData, RcDom, Handle };
+
+struct NetscapeParser {
+    entities: Vec<Entity>,
+    unfinished: Vec<EntityBuilder>,
+    tree_path: TreePath,
+}
+
+impl NetscapeParser {
+    fn walk_nodes(&mut self, handles: Vec<Handle>) {
+        let saved_path = self.tree_path.clone();
+
+        if let Some(new_path) = self.tree_path.right() {
+            self.tree_path = new_path;
+
+            for child in handles.iter() {
+                self.walk_node(child.clone());
+            }
+        }
+
+        self.tree_path = saved_path;
+    }
+
+    fn walk_node(&mut self, handle: Handle) {
+        match handle.data {
+            NodeData::Text { ref contents } => {},
+
+            NodeData::Element { ref name, ref attrs, .. } => {
+                println!("{}", name.local);
+                match Tag::from(name) {
+                    Tag::DT => {},
+                    Tag::DD => {},
+                    Tag::DL => {
+                        let mut builder = EntityBuilder::default();
+                        builder.path(Some(self.tree_path.clone())).struct_type(Some(StructType::Node));
+
+                        self.unfinished.push(builder);
+                        self.walk_nodes(handle.children.borrow().to_vec());
+
+                        builder = self.unfinished.pop().unwrap();
+                        self.entities.push(builder.build().unwrap())
+                    },
+                    Tag::H3 => {},
+                    Tag::A => {},
+                    Tag::TITLE => {},
+                    Tag::H1 => {},
+                    _ => {
+
+                    }
+                }
+            },
+
+            _ => self.walk_nodes(handle.children.borrow().to_vec())
+        }
+    }
+}
+
+struct NetscapeBuilder {}
 
 pub struct Netscape {}
 
-fn sanitize(bookmark_string: String) -> String {
+fn sanitize(to_sanitized: String) -> String {
+    let sanitizers = vec![ r"<\\?br>", r"[\r\n] *" ];
+    let mut sanitized = to_sanitized;
 
-    let mut sanitized = bookmark_string;
-    sanitized = sanitized.replace("\t"," ");
-    sanitized = sanitized.replace("\r"," ");
-
-    let mut bookmark_str: String = String::from(&sanitized[..]);
-
-    let set = vec![
-        r"(?i)(<!DOCTYPE|<META|<TITLE|<H1|<P).*\s?",
-        r"(?mis)<!--.*?-->\s?",
-        r"(?mis)\s?<.?br>",
-    ];
-
-    let set_unique = vec![
-        r"(?mis)>(\s*?)<",
-        r"@\n<br>@mis",
-        r"@\n<DD@i",
-    ];
-
-    for regex in set {
-        let re = Regex::new(regex).unwrap();
-        let result = re.replace_all(&bookmark_str, "").to_string();
-        bookmark_str = result;
+    for raw in sanitizers {
+        let re = Regex::new(raw).unwrap();
+        sanitized = String::from(re.replace_all(&sanitized, ""));
     }
 
-    let mut re_unique: Regex;
-
-    for i in 0..3 {
-
-        re_unique = Regex::new(set_unique[i]).unwrap();
-
-        if i == 0{
-            re_unique.replace_all(&bookmark_str, ">\n<").to_string();
-        }
-
-        else if i == 1 {
-            re_unique.replace_all(&bookmark_str, "<br>").to_string();
-        }
-
-        else if i == 2 {
-            re_unique.replace_all(&bookmark_str, "<DD").to_string();
-        }
-
-    }
-
-    sanitized = bookmark_str;
-    sanitized.trim();
     sanitized
 }
 
@@ -70,6 +92,7 @@ pub fn escape_default(s: &str) -> String {
 impl Converter for Netscape {
     fn parse(bookmark_str: String) -> Vec<Node> {
         let html_str = sanitize(bookmark_str);
+
         let parser = parse_document(
             RcDom::default(),
             Default::default()
@@ -83,34 +106,18 @@ impl Converter for Netscape {
             Err(_) => panic!("Error")
         };
 
-        let document = dom.document.borrow();
-        //println!("{:?}",document);
+        let document = dom.document;
 
-        match document.node {
-            Document
-                => println!("#Document"),
+        let mut parser = NetscapeParser {
+            entities: vec![],
+            unfinished: vec![],
+            tree_path: TreePath::new(String::from("00")),
+        };
 
-            Doctype(ref name, ref public, ref system)
-                => println!("<!DOCTYPE {} \"{}\" \"{}\">", *name, *public, *system),
+        parser.walk_node(document);
 
-            Text(ref text)
-                => println!("#text: {:?}", escape_default(text)),
-
-            Comment(ref text)
-                => println!("<!-- {:?} -->", escape_default(text)),
-
-            Element(ref name, _, ref attrs) => {
-                assert!(name.ns == ns!(html));
-                print!("<{}", name.local);
-                for attr in attrs.iter() {
-                    assert!(attr.name.ns == ns!());
-                    print!(" {}=\"{}\"", attr.name.local, attr.value);
-                }
-                println!(">");
-            }
-        }
-
-        Vec::new()
+        println!("{:?}", parser.entities);
+        Node::compose_vec(parser.entities)
     }
 
     fn build(nodes: Vec<Node>) -> String {

@@ -1,3 +1,5 @@
+use html5ever::QualName;
+
 pub enum Attribut {
     Href(String),
     Date(String),
@@ -38,10 +40,20 @@ impl From<(String, String)> for Attribut {
 pub enum Tag {
     P,
     H3,
+    H1,
     A,
     TITLE,
-    BR,
     DL,
     DT,
     DD
+}
+
+impl<'a> From<&'a QualName> for Tag {
+    fn from(name: &'a QualName) -> Tag {
+        println!("{:?}", name.local);
+        match name.local.as_ref() {
+            "DL" => Tag::DL,
+            _ => Tag::DT
+        }
+    }
 }
