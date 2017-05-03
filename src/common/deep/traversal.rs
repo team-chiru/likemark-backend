@@ -8,27 +8,25 @@ trait Traversal {
     fn down(&self) -> Option<Self> where Self: marker::Sized;
 }
 
-pub const TREE_ID_LOW_BOUND: &'static str = "0";
-pub const TREE_ID_HIGH_BOUND: &'static str = "z";
+const CODEGEN: &'static str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-fn incr(to_incr: &String) -> Option<String> {
+fn incr_string(to_incr: &String) -> Option<String> {
     let mut is_incr = false;
     let rev = to_incr.chars().rev().collect::<String>();
     let mut from_incr = String::from("");
 
-    for byte in rev.as_bytes() {
-        let old = match String::from_utf8( vec![*byte] ) {
-            Ok(s) => s,
-            Err(_) => return None
-        };
-
-        if is_incr {
-            from_incr.push_str(&old);
-        } else if old == TREE_ID_HIGH_BOUND.to_string() {
-            from_incr.push_str(TREE_ID_LOW_BOUND);
-        } else if let Ok(new) = String::from_utf8( vec![*byte + 1] ) {
-            from_incr.push_str(&new);
-            is_incr = !is_incr;
+    for char in rev.chars() {
+        if let Some(index) = CODEGEN.find(char) {
+            if is_incr {
+                from_incr.push_str(&char.to_string());
+            } else if index == CODEGEN.len() - 1 {
+                from_incr.push_str(&CODEGEN[0 .. 1]);
+            } else {
+                from_incr.push_str(&CODEGEN[index + 1 .. index + 2]);
+                is_incr = !is_incr;
+            }
+        } else {
+            return None;
         }
     }
 
@@ -39,24 +37,24 @@ fn incr(to_incr: &String) -> Option<String> {
     }
 }
 
-fn decr(to_decr: &String) -> Option<String> {
+fn decrement_string(to_decr: &String) -> Option<String> {
     let mut is_decr = false;
     let rev = to_decr.chars().rev().collect::<String>();
     let mut from_decr = String::from("");
 
-    for byte in rev.as_bytes() {
-        let old = match String::from_utf8( vec![*byte] ) {
-            Ok(s) => s,
-            Err(_) => return None
-        };
-
-        if is_decr {
-            from_decr.push_str(&old);
-        } else if old == TREE_ID_LOW_BOUND.to_string() {
-            from_decr.push_str(TREE_ID_HIGH_BOUND);
-        } else if let Ok(new) = String::from_utf8( vec![*byte - 1] ) {
-            from_decr.push_str(&new);
-            is_decr = !is_decr;
+    for char in rev.chars() {
+        if let Some(index) = CODEGEN.find(char) {
+            if is_decr {
+                from_decr.push_str(&char.to_string());
+            } else if index == 0 {
+                let len = CODEGEN.len();
+                from_decr.push_str(&CODEGEN[len - 1 .. len]);
+            } else {
+                from_decr.push_str(&CODEGEN[index - 1 .. index]);
+                is_decr = !is_decr;
+            }
+        } else {
+            return None;
         }
     }
 
@@ -84,14 +82,11 @@ impl Traversal for TreePath {
         let mut parent_id = self.id();
         let child_id = parent_id.split_off(self.len() - TREE_ID_STEP);
 
-        match incr(&child_id) {
-            Some(new_id) => Some(
-                TreePath {
-                    id: parent_id + &new_id
-                }
-            ),
-            None => None
-        }
+        incr_string(&child_id).map(|new_id| {
+            TreePath {
+                id: parent_id + &new_id
+            }
+        })
     }
 
     fn left(&self) -> Option<TreePath> {
@@ -116,13 +111,10 @@ impl Traversal for TreePath {
         let mut parent_id = self.id();
         let child_id = parent_id.split_off(self.len() - TREE_ID_STEP);
 
-        match decr(&child_id) {
-            Some(new_id) => Some(
-                TreePath {
-                    id: parent_id + &new_id
-                }
-            ),
-            None => None
-        }
+        decrement_string(&child_id).map(|new_id| {
+            TreePath {
+                id: parent_id + &new_id
+            }
+        })
     }
 }
