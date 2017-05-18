@@ -6,6 +6,7 @@ use std::marker;
 //struct EntityBuilder {}
 
 #[derive(Debug, Clone, Default, Builder)]
+#[builder(field(private))]
 pub struct Entity {
     #[builder(default="None")]
     pub id: Option<i32>,
@@ -30,12 +31,4 @@ pub struct Entity {
 
     #[builder(default="None")]
     pub rev_no: Option<i32>
-}
-
-pub trait EntityComposite {
-    fn is_dead(&self) -> bool;
-    fn into_entities(&self) -> Vec<Entity>;
-    fn from_entity(&Entity) -> Self;
-    fn from_entities(Vec<Entity>) -> Vec<Self>
-        where Self: marker::Sized;
 }
