@@ -21,3 +21,6 @@ uuid = { version = "*", features = ["serde", "v4"] }
 serde = "*"
 serde_derive="*"
 serde_json="*"
+
+[dependencies.rustless]
+git = "https://github.com/rustless/rustless"
