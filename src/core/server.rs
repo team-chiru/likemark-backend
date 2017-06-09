@@ -18,6 +18,7 @@ fn get_body() -> String {
 }
 
 pub fn serve() {
+
     Iron::new(|req: &mut Request| {
         let mut resp = match req.method {
             Method::Get =>
