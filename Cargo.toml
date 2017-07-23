@@ -13,9 +13,9 @@ log="*"
 env_logger="*"
 derive_builder="*"
 
-hyper = "0.11.1"
+
 iron="*"
-unicase="*"
+unicase = "1.4.2" #FIXME >=2.0.0 versions has hyper incompatibility
 params="*"
 uuid = { version = "*", features = ["serde", "v4"] }
 

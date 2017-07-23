@@ -26,7 +26,7 @@ fn content_type() -> ContentType {
 fn allow_headers() -> AccessControlAllowHeaders {
     AccessControlAllowHeaders(
         vec![
-            //UniCase("content-type".to_owned())
+            UniCase(String::from("content-type"))
         ]
     )
 }
