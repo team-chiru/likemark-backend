@@ -9,4 +9,5 @@ use bookmarkt::core::server;
 
 fn main() {
     server::serve();
+    println!("Server started on localhost:3000");
 }

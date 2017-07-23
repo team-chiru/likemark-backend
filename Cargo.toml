@@ -13,6 +13,7 @@ log="*"
 env_logger="*"
 derive_builder="*"
 
+hyper = "0.11.1"
 iron="*"
 unicase="*"
 params="*"
@@ -21,6 +22,7 @@ uuid = { version = "*", features = ["serde", "v4"] }
 serde = "*"
 serde_derive="*"
 serde_json="*"
+valico = "1.0.1"
 
 [dependencies.rustless]
 git = "https://github.com/rustless/rustless"
